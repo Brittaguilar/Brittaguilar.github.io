@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Artifact Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;700&display=swap">
+<style>
+/* Layout: gradient masthead with live counts, a sticky toolbar (search, tag chips, sort), then a card grid. Data comes from artifacts.json. */
+:root{
+  --bg:#FFFFFF; --panel:#F5F3EE; --ink:#1E1646; --ink-2:#4F4870; --line:#DAD5E6;
+  --violet:#7B4FA0; --indigo:#2A1F5C; --tint:#F1EEFC; --teal:#12A3A3; --teal-deep:#0B7C7C; --teal-tint:#E2F4F4;
+  --warn:#9A5B00; --warn-tint:#FFF1D6; --grad:linear-gradient(135deg,#7B4FA0,#2A1F5C);
+  --font:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#130E31; --panel:#1D1750; --ink:#F1EEFA; --ink-2:#BDB5DA; --line:#3A3278; --violet:#B596DE; --indigo:#0E0A26;
+  --tint:#251E63; --teal:#3CC9C9; --teal-deep:#3CC9C9; --teal-tint:#123E52; --warn:#FFC766; --warn-tint:#3D2E10; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#130E31; --panel:#1D1750; --ink:#F1EEFA; --ink-2:#BDB5DA; --line:#3A3278; --violet:#B596DE; --indigo:#0E0A26;
+  --tint:#251E63; --teal:#3CC9C9; --teal-deep:#3CC9C9; --teal-tint:#123E52; --warn:#FFC766; --warn-tint:#3D2E10; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1080px;margin-inline:auto;padding-inline:16px}
+h1,h2,h3,p{margin:0}
+.eyebrow{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.hero{background:var(--grad);color:#fff;border-bottom:4px solid var(--teal);position:relative;overflow:hidden;padding-block:48px 36px}
+.hero .wrap{position:relative;z-index:1}
+.hero .eyebrow{color:#CFC2EC}
+.hero h1{font-weight:400;font-size:clamp(2rem,5.5vw,3.2rem);line-height:1.1;margin-top:10px}
+.hero p.sub{margin-top:14px;max-width:58ch;color:#F1EEFA;font-size:1.05rem}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.2);pointer-events:none;width:420px;height:420px;right:-120px;top:-150px}
+.ring.b{width:240px;height:240px;right:70px;top:40px;border-color:rgba(60,201,201,.3)}
+@media(max-width:760px){.ring{display:none}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:26px}
+.st{border-top:1px solid rgba(255,255,255,.3);padding-top:10px}
+.st .k{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#CFC2EC;font-weight:700}
+.st .v{font-size:1.9rem;font-weight:300;line-height:1.15;font-variant-numeric:tabular-nums}
+.theme{position:absolute;top:14px;right:16px;z-index:2;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 12px;font:inherit;font-size:.78rem;cursor:pointer}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:14px}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.bar input,.bar select{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:9px 12px;min-width:0}
+.bar input{flex:1 1 220px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 100%}
+.chip{appearance:none;font:inherit;font-size:.82rem;font-weight:700;background:var(--bg);color:var(--ink-2);border:1px solid var(--line);padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{background:var(--violet);color:#130E31}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{background:var(--violet);color:#130E31}}
+.chip:focus-visible,.bar input:focus-visible,.bar select:focus-visible,.theme:focus-visible,a.btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+main{padding-block:28px 56px}
+.count{font-size:.85rem;color:var(--ink-2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+.card{background:var(--panel);padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0;border-top:3px solid var(--line)}
+.card.live{border-top-color:var(--teal)}
+.card.queued{border-top-color:var(--violet)}
+.card h2{font-size:1.2rem;font-weight:700;line-height:1.25}
+.card p{color:var(--ink-2);font-size:.95rem}
+.pill{display:inline-block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:2px 8px}
+.pill.live{background:var(--teal-tint);color:var(--teal-deep)}
+.pill.queued{background:var(--tint);color:var(--violet)}
+.pill.bad{background:var(--warn-tint);color:var(--warn)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{font-size:.78rem;color:var(--ink-2);border:1px solid var(--line);padding:1px 8px}
+.dates{font-size:.8rem;color:var(--ink-2);font-variant-numeric:tabular-nums;margin-top:auto}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+a.btn{font-size:.88rem;font-weight:700;text-decoration:none;padding:8px 14px;border:1px solid var(--teal-deep);color:var(--teal-deep)}
+a.btn.main{background:var(--teal-deep);color:#fff}
+:root[data-theme="dark"] a.btn.main{color:#06302F;background:var(--teal)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) a.btn.main{color:#06302F;background:var(--teal)}}
+.empty{padding:40px 0;color:var(--ink-2)}
+footer{background:var(--grad);border-top:4px solid var(--teal);color:#E8E1F7;padding-block:24px;font-size:.85rem}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <button class="theme" id="themeBtn" type="button">Theme</button>
+  <div class="ring"></div><div class="ring b"></div>
+  <div class="wrap">
+    <div class="eyebrow">Science Communications &middot; Britt Aguilar</div>
+    <h1>Artifact Hub</h1>
+    <p class="sub">Every interactive page published from Claude to GitHub Pages, with links, tags and last update dates.</p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+<div class="bar"><div class="wrap">
+  <input id="q" type="search" placeholder="Search titles, descriptions, tags" aria-label="Search artifacts">
+  <select id="sort" aria-label="Sort"><option value="upd">Recently updated</option><option value="az">A to Z</option><option value="new">Newest created</option></select>
+  <div class="chips" id="chips" role="group" aria-label="Filter by tag"></div>
+</div></div>
+<main class="wrap">
+  <div class="count" id="count" aria-live="polite"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>No artifacts match. Clear the search or choose another tag.</div>
+</main>
+<footer><div class="wrap" id="foot"></div></footer>
+<script>
+(function(){
+  var BASE='https://brittaguilar.github.io/', REPO='https://github.com/Brittaguilar/Brittaguilar.github.io/tree/main/';
+  var FALLBACK={"updatedAt":"2026-10-08","items":[
+{"slug":"ton-narrative-training","title":"TON Narrative Training","description":"Overview of The Open Notebook's fall virtual narrative training and the January 2027 Banbury workshop, with interactive survey results.","tags":["SciComms","Training","Open Notebook"],"status":"live","created":"2026-10-08","updated":"2026-10-08"},
+{"slug":"awardee-library","title":"SciComms Awardee Library","description":"Showcase of books by SciComms Awardees.","tags":["SciComms","Awardees"],"status":"live","updated":"2026-09-27","created":"2026-09-27"},
+{"slug":"ai-for-audio","title":"AI for Audio Journalists","description":"Guide to using Claude in audio journalism.","tags":["Guides"],"status":"live","updated":"2026-09-19","created":"2026-09-19"},
+{"slug":"wander","title":"Wander","description":"Discover the web.","tags":["Experiments"],"status":"live","updated":"2026-09-14","created":"2026-09-14"},
+{"slug":"collaborator-directory","title":"SciComm Collaborator Directory","description":"Directory of freelance science communicators.","tags":["SciComms","Directory"],"status":"live","updated":"2026-08-05","created":"2026-08-05"},
+{"slug":"podcast-matcher","title":"AI2050 Podcast Matchmaker","description":"Matches AI2050 fellows with podcasts.","tags":["Directory","AI2050"],"status":"live","updated":"2026-05-07","created":"2026-05-07"},
+{"slug":"author-network","title":"Author Network Map","description":"Network map of awardee authors.","tags":["SciComms","Awardees"],"status":"live","updated":"2026-05-06","created":"2026-05-06"}
+]}
+;
+  var root=document.documentElement, tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme'); return t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');}
+  tb.textContent=cur()==='dark'?'Light mode':'Dark mode';
+  tb.onclick=function(){var n=cur()==='dark'?'light':'dark'; root.setAttribute('data-theme',n); tb.textContent=n==='dark'?'Light mode':'Dark mode';};
+
+  var items=[], tag='All', live={}, source='snapshot', stamp='';
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function ago(d){
+    if(!d) return 'n/a';
+    var days=Math.round((new Date()-new Date(d+'T12:00:00'))/864e5);
+    if(days<=0) return 'today'; if(days===1) return 'yesterday'; if(days<31) return days+' days ago';
+    var m=Math.round(days/30.4); return m+(m===1?' month ago':' months ago');
+  }
+  function url(it){return it.status==='live'?BASE+it.slug+'/':(it.url||'#');}
+  function stats(){
+    var l=items.filter(function(i){return i.status==='live';}).length;
+    var tags={}; items.forEach(function(i){(i.tags||[]).forEach(function(t){tags[t]=1;});});
+    var last=items.map(function(i){return i.updated||'';}).sort().pop();
+    document.getElementById('stats').innerHTML=
+      '<div class="st"><div class="k">Live on GitHub</div><div class="v">'+l+'</div></div>'+
+      '<div class="st"><div class="k">Tags</div><div class="v">'+Object.keys(tags).length+'</div></div>'+
+      '<div class="st"><div class="k">Last update</div><div class="v">'+esc(ago(last))+'</div></div>';
+    var all=['All'].concat(Object.keys(tags).sort());
+    document.getElementById('chips').innerHTML=all.map(function(t){return '<button type="button" class="chip" data-t="'+esc(t)+'" aria-pressed="'+(t===tag)+'">'+esc(t)+'</button>';}).join('');
+    [].forEach.call(document.querySelectorAll('.chip'),function(b){b.onclick=function(){tag=b.getAttribute('data-t'); stats(); draw();};});
+  }
+  function draw(){
+    var q=document.getElementById('q').value.trim().toLowerCase(), s=document.getElementById('sort').value;
+    var list=items.filter(function(i){
+      if(tag!=='All' && (i.tags||[]).indexOf(tag)<0) return false;
+      return !q || (i.title+' '+(i.description||'')+' '+(i.tags||[]).join(' ')).toLowerCase().indexOf(q)>-1;
+    });
+    list.sort(function(a,b){
+      if(s==='az') return a.title.localeCompare(b.title);
+      if(s==='new') return (b.created||'').localeCompare(a.created||'');
+      return (b.updated||'').localeCompare(a.updated||'');
+    });
+    document.getElementById('count').textContent=list.length+' of '+items.length+' artifacts';
+    document.getElementById('empty').hidden=list.length>0;
+    document.getElementById('grid').innerHTML=list.map(function(i){
+      var st=i.status==='live'?'live':'queued';
+      var pill=i.status==='live'?(live[i.slug]===false?'<span class="pill bad">Not found</span>':'<span class="pill live">'+(live[i.slug]?'Verified live':'Live')+'</span>'):'<span class="pill queued">On Netlify, queued</span>';
+      var dates=(i.created?'Created '+esc(i.created)+' &middot; ':'')+'Updated '+esc(i.updated||'n/a')+' ('+esc(ago(i.updated))+')';
+      var src=i.status==='live'?'<a class="btn" href="'+REPO+esc(i.slug)+'" target="_blank" rel="noopener">Source</a>':'';
+      return '<article class="card '+st+'"><div class="meta">'+pill+(i.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('')+'</div>'+
+        '<h2>'+esc(i.title)+'</h2><p>'+esc(i.description||'')+'</p><div class="dates">'+dates+'</div>'+
+        '<div class="acts"><a class="btn main" href="'+esc(url(i))+'" target="_blank" rel="noopener">Open</a>'+src+'</div></article>';
+    }).join('');
+  }
+  function checks(){
+    if(location.hostname!=='brittaguilar.github.io') return;
+    items.filter(function(i){return i.status==='live';}).forEach(function(i){
+      fetch(BASE+i.slug+'/',{method:'HEAD',cache:'no-store'}).then(function(r){live[i.slug]=r.ok; draw();}).catch(function(){});
+    });
+  }
+  function foot(){document.getElementById('foot').textContent='Source: '+(source==='live'?'artifacts.json from the hub repo':'embedded snapshot, saved '+stamp)+'. Not indexed by search engines.';}
+  document.getElementById('q').oninput=draw; document.getElementById('sort').onchange=draw;
+  fetch('../artifacts.json',{cache:'no-store'}).then(function(r){if(!r.ok) throw 0; return r.json();}).then(function(d){source='live'; return d;})
+    .catch(function(){return FALLBACK;}).then(function(d){items=d.items; stamp=d.updatedAt; stats(); draw(); foot(); checks();});
+})();
+</script>
+
+</body>
+</html>
