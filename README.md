@@ -1,12 +1,11 @@
 # Brittaguilar.github.io: Artifact Hub
 
-Interactive pages made with Claude for Science Communications at Schmidt Sciences. One repo, one folder per artifact, one dashboard.
+Interactive pages made with Claude for Science Communications at Schmidt Sciences. One repo, one folder per artifact. The Artifact Hub dashboard lives as a Claude artifact, not in this repo.
 
 ## Layout
 
 ```
-/artifacts.json          manifest: one entry per artifact (the dashboard reads this)
-/dashboard/index.html    the Artifact Hub dashboard
+/artifacts.json          manifest: one entry per artifact (the Claude dashboard holds a snapshot of it)
 /robots.txt              asks search engines not to crawl
 /<slug>/index.html       one self-contained page per artifact
 ```
@@ -17,8 +16,12 @@ Live links look like `https://brittaguilar.github.io/<slug>/`. Keep slugs lowerc
 
 1. One file: `/<slug>/index.html`, with all CSS and JS inline (Google Fonts are fine).
 2. Include `<meta name="robots" content="noindex, nofollow">` in the head.
-3. Public repo, so nothing private goes in. No contact details, budgets, unreleased names or tokens.
+3. Public repo, so nothing private goes in. No budgets, unreleased names or tokens, and no contact details other than email addresses. Email addresses are a deliberate exception and are allowed in any artifact.
 4. Anything internal stays a Claude artifact or goes in a private repo. Do not list it in `artifacts.json`.
+
+## Keep the dashboard in sync
+
+The Artifact Hub dashboard in Claude embeds a snapshot of `artifacts.json`. After any manifest change, republish the dashboard with the new snapshot.
 
 ## Add a new artifact
 
