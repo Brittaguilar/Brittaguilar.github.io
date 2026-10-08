@@ -1,3 +1,12 @@
+{"updatedAt":"2026-10-08","items":[
+{"slug":"ton-narrative-training","title":"TON Narrative Training","description":"Overview of The Open Notebook's fall virtual narrative training and the January 2027 Banbury workshop, with interactive survey results.","tags":["SciComms","Training","Open Notebook"],"status":"live","created":"2026-10-08","updated":"2026-10-08"},
+{"slug":"awardee-library","title":"SciComms Awardee Library","description":"Showcase of books by SciComms Awardees.","tags":["SciComms","Awardees"],"status":"live","updated":"2026-09-27","created":"2026-09-27"},
+{"slug":"ai-for-audio","title":"AI for Audio Journalists","description":"Guide to using Claude in audio journalism.","tags":["Guides"],"status":"live","updated":"2026-09-19","created":"2026-09-19"},
+{"slug":"wander","title":"Wander","description":"Discover the web.","tags":["Experiments"],"status":"live","updated":"2026-09-14","created":"2026-09-14"},
+{"slug":"collaborator-directory","title":"SciComm Collaborator Directory","description":"Directory of freelance science communicators.","tags":["SciComms","Directory"],"status":"live","updated":"2026-08-05","created":"2026-08-05"},
+{"slug":"podcast-matcher","title":"AI2050 Podcast Matchmaker","description":"Matches AI2050 fellows with podcasts.","tags":["Directory","AI2050"],"status":"live","updated":"2026-05-07","created":"2026-05-07"},
+{"slug":"author-network","title":"Author Network Map","description":"Network map of awardee authors.","tags":["SciComms","Awardees"],"status":"live","updated":"2026-05-06","created":"2026-05-06"}
+]}
 {
   "updatedAt": "2026-10-08",
   "items": [
