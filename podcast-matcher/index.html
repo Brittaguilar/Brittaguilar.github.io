@@ -1,0 +1,2090 @@
+<meta charset="utf-8">
+<title>AI2050 Podcast Matchmaker</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --surface-2: #f4f2eb;
+    --border: rgba(20, 20, 20, 0.10);
+    --border-2: rgba(20, 20, 20, 0.18);
+    --text: #1a1a1a;
+    --text-2: #5a5a55;
+    --text-3: #888880;
+    --accent: #3C3489;
+    --accent-light: #EEEDFE;
+    --teal: #0F6E56;
+    --teal-light: #E1F5EE;
+    --coral: #993C1D;
+    --coral-light: #FAECE7;
+    --amber: #854F0B;
+    --amber-light: #FAEEDA;
+    --pink: #993556;
+    --pink-light: #FBEAF0;
+    --gray-light: #F1EFE8;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { max-width: 1280px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  /* Header */
+  header { margin-bottom: 24px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); font-weight: 500; }
+  h1 { font-size: 28px; font-weight: 600; line-height: 1.2; margin: 6px 0 8px; letter-spacing: -0.01em; }
+  .subtitle { color: var(--text-2); font-size: 15px; max-width: 720px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: 20px 0 24px; }
+  .tab {
+    padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--text-2);
+    border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-count { display: inline-block; margin-left: 6px; font-size: 11px; padding: 1px 7px; background: var(--surface-2); color: var(--text-2); border-radius: 10px; font-weight: 500; }
+  .tab.active .tab-count { background: var(--accent-light); color: var(--accent); }
+
+  /* Stats strip */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .stat-label { font-size: 12px; color: var(--text-3); margin-bottom: 4px; }
+  .stat-num { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* Filter bar */
+  .filterbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; align-items: center; }
+  .search { flex: 1; min-width: 240px; position: relative; }
+  .search input {
+    width: 100%; padding: 9px 14px 9px 36px; font-size: 14px; border: 1px solid var(--border-2);
+    border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit;
+  }
+  .search input:focus { outline: none; border-color: var(--accent); }
+  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-3); }
+  select {
+    padding: 9px 32px 9px 12px; font-size: 14px; border: 1px solid var(--border-2);
+    border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit;
+    appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; cursor: pointer;
+  }
+
+  /* Cards grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px; transition: all 0.15s; cursor: pointer; position: relative;
+  }
+  .card:hover { border-color: var(--border-2); box-shadow: var(--shadow); }
+  .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .card-title { font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1; }
+  .card-title a { color: inherit; text-decoration: none; border-bottom: 1px dashed transparent; transition: border-color 0.15s; }
+  .card-title a:hover { border-bottom-color: var(--accent); }
+  .card-title .ext-icon { font-size: 11px; color: var(--text-2); margin-left: 5px; opacity: 0.6; vertical-align: middle; }
+  .card-title a:hover .ext-icon { opacity: 1; }
+  .card-host { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+  .card-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; margin: 8px 0 12px; }
+
+  /* Tags / pills */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 12px; font-weight: 500;
+    background: var(--surface-2); color: var(--text-2);
+  }
+  .tag.purple { background: var(--accent-light); color: var(--accent); }
+  .tag.teal { background: var(--teal-light); color: var(--teal); }
+  .tag.coral { background: var(--coral-light); color: var(--coral); }
+  .tag.amber { background: var(--amber-light); color: var(--amber); }
+  .tag.pink { background: var(--pink-light); color: var(--pink); }
+
+  /* Likelihood meter */
+  .meter { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+  .meter-bar { flex: 1; height: 5px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 3px; }
+  .meter-fill.high { background: #1D9E75; }
+  .meter-fill.med { background: #EF9F27; }
+  .meter-fill.low { background: #E24B4A; }
+  .meter-label { font-size: 11px; font-weight: 500; min-width: 90px; text-align: right; color: var(--text-2); }
+
+  /* Footer rows in cards */
+  .meta-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); padding: 4px 0; border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px; }
+  .meta-row strong { color: var(--text-2); font-weight: 500; }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(20,20,20,0.55); z-index: 100;
+    display: none; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: 14px; max-width: 720px; width: 100%;
+    padding: 28px 32px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  }
+  .modal-close { float: right; font-size: 22px; color: var(--text-3); background: none; border: none; cursor: pointer; line-height: 1; }
+  .modal-close:hover { color: var(--text); }
+  .modal h2 { font-size: 22px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .modal h3 { font-size: 13px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin: 18px 0 8px; }
+  .modal p { color: var(--text-2); margin-bottom: 8px; }
+  .modal a { color: var(--accent); text-decoration: none; }
+  .modal a:hover { text-decoration: underline; }
+  .matches-list { list-style: none; }
+  .matches-list li {
+    padding: 10px 12px; background: var(--surface-2); border-radius: 8px; margin-bottom: 6px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  }
+  .matches-list .why { color: var(--text-2); font-size: 12px; flex: 1; }
+
+  /* Match section special styling */
+  .match-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .match-header {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 14px;
+  }
+  .match-pod {
+    flex: 1;
+  }
+  .match-pod-name { font-weight: 600; font-size: 16px; }
+  .match-pod-host { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+  .match-pod-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--pink-light); color: var(--pink); font-weight: 500; margin-top: 6px; }
+  .match-fellows { display: grid; gap: 8px; }
+  .match-fellow {
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 14px; padding: 8px 0; font-size: 13px;
+    align-items: start;
+  }
+  .match-fellow-name { font-weight: 500; }
+  .match-fellow-aff { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .match-reason { color: var(--text-2); font-size: 13px; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-3); }
+
+  /* Strategy section */
+  .strategy { background: var(--accent-light); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
+  .strategy h3 { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+  .strategy p { color: #2c2870; font-size: 14px; line-height: 1.6; }
+  .strategy ol { padding-left: 22px; color: #2c2870; font-size: 14px; }
+  .strategy li { margin-bottom: 6px; }
+
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid { grid-template-columns: 1fr; }
+    .match-fellow { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+
+<div class="app">
+  <header>
+    <div class="eyebrow">AI2050 × Schmidt Awards · Podcast outreach planner</div>
+    <h1>Podcast matchmaker for AI2050 fellows</h1>
+    <p class="subtitle">A working tool to plan podcast outreach for AI2050 fellows. Includes a three-tier ladder of external podcasts — from small "practice" shows to mid-tier specialist intellectual shows to flagship outlets — plus podcasts hosted by Schmidt Awards science-communication alumni. Click any card for full details.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">AI2050 fellows</div><div class="stat-num" id="stat-fellows">88</div></div>
+    <div class="stat"><div class="stat-label">External podcasts</div><div class="stat-num" id="stat-pods">—</div></div>
+    <div class="stat"><div class="stat-label">★ Schmidt-connected</div><div class="stat-num" id="stat-schmidt">—</div></div>
+    <div class="stat"><div class="stat-label">Schmidt-alum hosted</div><div class="stat-num" id="stat-internal">12</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="external">External podcasts <span class="tab-count" id="ct-ext">12</span></button>
+    <button class="tab" data-tab="internal">Schmidt-alum podcasts <span class="tab-count" id="ct-int">7</span></button>
+    <button class="tab" data-tab="matches">Suggested matches <span class="tab-count" id="ct-mat">14</span></button>
+    <button class="tab" data-tab="fellows">AI2050 fellows <span class="tab-count" id="ct-fel">88</span></button>
+    <button class="tab" data-tab="strategy">Strategy</button>
+  </div>
+
+  <div id="filterbar-ext" class="filterbar">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-ext" placeholder="Search podcasts by name, host, audience…">
+    </div>
+    <select id="filter-tier">
+      <option value="">All tiers</option>
+      <option value="practice">Tier 1: Practice shows (smaller, easy)</option>
+      <option value="midtier">Tier 2: Mid-tier (specialist audiences)</option>
+      <option value="flagship">Tier 3: Flagship (largest reach)</option>
+    </select>
+    <select id="filter-likelihood">
+      <option value="">All likelihoods</option>
+      <option value="high">High (easy to book)</option>
+      <option value="med">Medium</option>
+      <option value="low">Low (hardest to book)</option>
+    </select>
+    <select id="filter-category">
+      <option value="">All categories</option>
+      <option value="ai-research">AI / ML research</option>
+      <option value="ideas">Ideas / thinkers</option>
+      <option value="policy">Policy / society</option>
+      <option value="science">General science</option>
+      <option value="tech-business">Tech / business</option>
+      <option value="academia">Academic life</option>
+    </select>
+    <select id="filter-schmidt">
+      <option value="">All connections</option>
+      <option value="yes">★ Schmidt-connected only</option>
+    </select>
+  </div>
+
+  <div id="filterbar-fellows" class="filterbar" style="display:none">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-fel" placeholder="Search fellows by name, institution, area…">
+    </div>
+    <select id="filter-cohort">
+      <option value="">All cohorts</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+    </select>
+    <select id="filter-level">
+      <option value="">All levels</option>
+      <option value="senior">Senior fellows</option>
+      <option value="early">Early career fellows</option>
+    </select>
+  </div>
+
+  <div id="grid-ext" class="grid"></div>
+  <div id="grid-int" class="grid" style="display:none"></div>
+  <div id="grid-mat" style="display:none"></div>
+  <div id="grid-fel" class="grid" style="display:none"></div>
+  <div id="grid-strat" style="display:none"></div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// =======================================================
+// DATA
+// =======================================================
+
+// External podcasts — three tiers from "practice" shows to flagship reach
+const externalPods = [
+
+  // ============ TIER 1: PRACTICE SHOWS (smaller listenership, easy to book) ============
+  {
+    name: "The Gradient Podcast",
+    url: "https://thegradientpub.substack.com/s/podcast",
+    host: "Daniel Bashir",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "ML researchers, paper readers (~5–15K listeners)",
+    desc: "Volunteer-run by ML researchers. Each episode has a paper author walk through methodology. Excellent first podcast for an early-career researcher — low pressure, deeply prepared host.",
+    likelihood: "high",
+    likelihoodLabel: "High — paper-anchored interviews",
+    contact: "thegradient.pub/contact · @gradientpub on X",
+    fitNotes: "Best venue when a fellow has a recent paper to discuss. Format gives time to explain methodology carefully.",
+    cadence: "Weekly · 60–90 min",
+    bestFitTags: ["Recent paper", "First podcast OK", "Theory"]
+  },
+  {
+    name: "Data Skeptic",
+    url: "https://dataskeptic.com",
+    host: "Kyle Polich",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "Data scientists, ML practitioners",
+    desc: "Long-running show (since 2014) covering ML, statistics, and data science. Books many academic researchers; tone is friendly and accessible. Great early-career practice venue.",
+    likelihood: "high",
+    likelihoodLabel: "High — academic-friendly",
+    contact: "dataskeptic.com/contact",
+    cadence: "Weekly · ~30–45 min",
+    fitNotes: "Polich gives guests room to explain. Strong for any fellow working on data-heavy applied ML.",
+    bestFitTags: ["First podcast OK", "Applied ML", "Stats"]
+  },
+  {
+    name: "Learning Bayesian Statistics",
+    url: "https://learnbayesstats.com",
+    host: "Alex Andorra",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "Bayesian / probabilistic ML community (~3–8K)",
+    desc: "Specialist show for Bayesian statisticians and probabilistic ML researchers. Small but engaged audience. Host is welcoming to all career stages.",
+    likelihood: "high",
+    likelihoodLabel: "High — niche, welcoming",
+    contact: "learnbayesstats.com/contact",
+    cadence: "Biweekly · ~60 min",
+    fitNotes: "Perfect first podcast for fellows working on probabilistic methods (Semenova, Pierson, Dieng).",
+    bestFitTags: ["Probabilistic ML", "First podcast OK"]
+  },
+  {
+    name: "TalkRL",
+    url: "https://www.talkrl.com",
+    host: "Robin Ranjit Singh Chauhan",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "Reinforcement learning researchers (~5–12K)",
+    desc: "All-RL, all-the-time. In-depth interviews with RL researchers from MILA, OpenAI, MIT, DeepMind, Berkeley. Very specialized but very engaged audience.",
+    likelihood: "high",
+    likelihoodLabel: "High — RL specialist",
+    contact: "talkrl.com/contact · @talkrlpodcast on X",
+    cadence: "Monthly · ~45 min",
+    fitNotes: "Ideal for RL-focused fellows (Jaques, McIlraith, Kumar, Finn, Hadfield-Menell).",
+    bestFitTags: ["RL focused", "Niche audience"]
+  },
+  {
+    name: "Practical AI",
+    url: "https://changelog.com/practicalai",
+    host: "Daniel Whitenack & Chris Benson",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "AI practitioners, software engineers (~10–25K)",
+    desc: "Lively, friendly show by Changelog Media. Covers practical AI applications and accessible explanations of research. Welcomes academic guests.",
+    likelihood: "high",
+    likelihoodLabel: "High — practitioner-friendly",
+    contact: "changelog.com/practicalai · editors@changelog.com",
+    cadence: "Weekly · ~45 min",
+    fitNotes: "Good practice venue. Hosts make complex work accessible without dumbing it down.",
+    bestFitTags: ["Applied ML", "Accessible"]
+  },
+  {
+    name: "Brain Inspired",
+    url: "https://braininspired.co",
+    host: "Paul Middlebrooks",
+    tier: "practice",
+    category: "science",
+    audienceLabel: "Neuro-AI, computational neuroscience (~3–10K)",
+    desc: "Conversations at the intersection of neuroscience and AI. Host is a neuroscience postdoc; tone is intellectually generous. Loves academic guests.",
+    likelihood: "high",
+    likelihoodLabel: "High — niche-friendly",
+    contact: "braininspired.co/contact · @pgmid on X",
+    cadence: "Biweekly · ~90 min",
+    fitNotes: "Perfect for fellows whose work bridges brains and machines (Schrimpf, Ganguli, Tenenbaum, Kriegman).",
+    bestFitTags: ["Neuro-AI", "Cognitive science"]
+  },
+  {
+    name: "The Inside View",
+    url: "https://theinsideview.ai",
+    host: "Michaël Trazzi",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "AI safety / alignment researchers (~5–15K)",
+    desc: "Long-form interviews focused on AI safety and alignment, including with researchers from Anthropic, FAR AI, OpenAI, Hugging Face. Note: Trazzi has shifted significantly toward AI safety documentaries (e.g., his 2024 SB-1047 documentary) and activism (Sept 2025 hunger strike outside Google DeepMind), so the podcast cadence is now sporadic. Pitch should be aware of his clear stance favoring slowdown on frontier AI.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — sporadic; clear safety stance",
+    contact: "theinsideview.ai/contact · @MichaelTrazzi on X",
+    cadence: "Variable · 1–3 hr",
+    fitNotes: "Strong fit for safety / alignment fellows (Hendrycks, Steinhardt, Gleave, Hadfield-Menell). Less of a fit for fellows accelerating frontier capabilities — Trazzi's editorial framing leans cautionary.",
+    bestFitTags: ["AI safety", "Alignment", "Documentary"]
+  },
+  {
+    name: "AXRP (AI X-risk Research Podcast)",
+    url: "https://axrp.net",
+    host: "Daniel Filan",
+    tier: "practice",
+    category: "ai-research",
+    audienceLabel: "AI alignment community (~3–8K)",
+    desc: "Technical interviews on AI alignment research. Filan is a Berkeley CS PhD; questions are sharp and informed. Small audience, high quality.",
+    likelihood: "high",
+    likelihoodLabel: "High — alignment specialist",
+    contact: "axrp.net · @AXRPodcast on X",
+    cadence: "Monthly · ~90 min",
+    fitNotes: "Best for fellows with concrete alignment / interpretability research.",
+    bestFitTags: ["Alignment", "Interpretability"]
+  },
+  {
+    name: "Increments",
+    url: "https://www.incrementspodcast.com",
+    host: "Vaden Masrani & Ben Chugg",
+    tier: "practice",
+    category: "ideas",
+    audienceLabel: "Philosophy of science, rationalist-adjacent (~3–8K)",
+    desc: "Two academics (ML PhD + statistics PhD) discussing philosophy of science, AI, and ideas. Friendly to academic guests willing to engage in real intellectual debate.",
+    likelihood: "high",
+    likelihoodLabel: "High — open to academics",
+    contact: "incrementspodcast.com · @IncrementsPod on X",
+    cadence: "Monthly · ~90 min",
+    fitNotes: "Strong for AI philosophy / epistemology work (Millière, Vold, Kasirzadeh, Zerilli, Eggert).",
+    bestFitTags: ["Philosophy", "Ideas"]
+  },
+  {
+    name: "New Books Network (AI book episodes)",
+    url: "https://newbooksnetwork.com",
+    host: "Channel hosts vary — Marshall Poe founded the network",
+    tier: "practice",
+    category: "academia",
+    audienceLabel: "Academic readers (~2–8K per channel; ~500K/mo network-wide)",
+    desc: "The New Books Network is a 150+ channel academic interview podcast publishing 70–100 episodes/week (28,000+ total since 2007). AI book episodes appear across several channels — New Books in Technology, Critical Theory, Mathematics, Science Technology and Society, and others — depending on the book's framing. Format is a single host interviewing an author about a recently published book.",
+    likelihood: "high",
+    likelihoodLabel: "High — book-anchored, very open",
+    contact: "newbooksnetwork.com/pitch-a-book · caleb@newbooksnetwork.com (CEO/Publisher Caleb Zakarin)",
+    cadence: "Per channel: ~weekly · ~60–90 min",
+    fitNotes: "Perfect for any fellow with a recent or forthcoming book on AI — past guests include Arvind Narayanan (AI Snake Oil), Eric Topol (Deep Medicine), Ranjodh Singh Dhaliwal et al. (Neural Networks), Mark Seligman (AI and Ada). Pitch the relevant channel based on framing.",
+    bestFitTags: ["Recent book", "First podcast OK"]
+  },
+  {
+    name: "PhilosophyBites",
+    url: "https://philosophybites.com",
+    host: "Nigel Warburton & David Edmonds",
+    tier: "practice",
+    category: "ideas",
+    audienceLabel: "Philosophy-curious general (~30K)",
+    desc: "Long-running interview show with philosophers on a single idea each. Episodes are short (~20 min). Good practice venue with intellectual audience.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — selective but welcomes academics",
+    contact: "philosophybites.com/contact",
+    cadence: "Biweekly · ~20 min",
+    fitNotes: "For fellows whose AI work is philosophically rich (Tasioulas, Vold, Kasirzadeh, Eggert, Zerilli, Millière).",
+    bestFitTags: ["Philosophy", "Ethics"]
+  },
+
+  {
+    name: "Embrace the Void",
+    url: "https://www.voidpod.com",
+    host: "Aaron Rabinowitz",
+    tier: "practice",
+    category: "ideas",
+    audienceLabel: "Philosophy / existential-risk audience (~2–6K)",
+    desc: "Aaron Rabinowitz explores existential risk, philosophy, and ethics. Conversational, thoughtful, welcoming to academic guests across career stages.",
+    likelihood: "high",
+    likelihoodLabel: "High — academic-friendly",
+    contact: "embracethevoidpodcast.com · @ravinrabbit on X",
+    cadence: "Weekly · ~75 min",
+    fitNotes: "Strong fit for fellows working on AI ethics, x-risk, philosophy of AI (Kasirzadeh, Vold, Zerilli, Eggert, Millière).",
+    bestFitTags: ["Philosophy", "X-risk", "First podcast OK"]
+  },
+  {
+    name: "Hear This Idea",
+    url: "https://hearthisidea.com",
+    host: "Fin Moorhouse & Luca Righetti",
+    tier: "practice",
+    category: "ideas",
+    audienceLabel: "EA-adjacent intellectual general (~5–15K)",
+    desc: "Long interviews on innovative ideas from academics and policy thinkers, often touching AI governance, longtermism, and policy.",
+    likelihood: "high",
+    likelihoodLabel: "High — academic-welcoming",
+    contact: "hearthisidea.com/contact",
+    cadence: "Variable · ~90 min",
+    fitNotes: "Excellent for fellows with policy or longtermist angles — patient, prepared hosts.",
+    bestFitTags: ["AI policy", "Long-form", "Big ideas"]
+  },
+  {
+    name: "Converging Dialogues",
+    url: "https://convergingdialogues.substack.com",
+    host: "Xavier Bonilla",
+    tier: "practice",
+    category: "ideas",
+    audienceLabel: "Interdisciplinary scholarly audience (~3–8K)",
+    desc: "Long-form interdisciplinary conversations with scholars about pressing contemporary issues. Patient host who lets guests develop arguments.",
+    likelihood: "high",
+    likelihoodLabel: "High — books academics regularly",
+    contact: "convergingdialogues.com",
+    cadence: "Weekly · ~90 min",
+    fitNotes: "Good for fellows whose work bridges disciplines — Bonilla welcomes complexity.",
+    bestFitTags: ["Interdisciplinary", "Long-form", "Big ideas"]
+  },
+  {
+    name: "Win-Win",
+    url: "https://www.winwinpodcast.com",
+    host: "Liv Boeree",
+    tier: "practice",
+    category: "ideas",
+    audienceLabel: "Game theory / strategy audience (~10–25K)",
+    desc: "Liv Boeree (former poker pro turned game-theory communicator) explores competition and how it manifests in modern society.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — game-theory/strategy fit",
+    contact: "livboeree.com · @Liv_Boeree on X",
+    cadence: "Variable · ~60 min",
+    fitNotes: "Strong fit for fellows working on multi-agent systems, game theory, cooperation (Farina, McIlraith, Schroeder de Witt, Wilder, Xu).",
+    bestFitTags: ["Game theory", "Multi-agent", "Cooperation"]
+  },
+
+  {
+    name: "The Quanta Podcast",
+    url: "https://www.quantamagazine.org/tag/quanta-podcast/",
+    host: "Samir Patel (EIC, Quanta Magazine); audio editions read by Susan Valot",
+    tier: "practice",
+    category: "science",
+    audienceLabel: "Quanta readers, science-curious general (~30–60K)",
+    desc: "Quanta Magazine's podcast feed (id 1021340531). Relaunched April 2025 as a weekly editor-anchored show: every Tuesday, EIC Samir Patel interviews Quanta writers and editors about recent coverage in math, physics, biology, computer science, and AI. The older Quanta Science Podcast (audio editions of Quanta articles read by Susan Valot) was absorbed into this same feed and now appears as biweekly Thursday 'audio edition' episodes.",
+    likelihood: "high",
+    likelihoodLabel: "Very high — direct Schmidt connection",
+    contact: "magazine@quantamag.org · Schmidt-staff intro to Jordana Cepelewicz",
+    cadence: "Weekly Tuesdays (interviews) · biweekly Thursdays (audio editions) · ~30 min",
+    fitNotes: "Best for fellows whose work is likely to be covered in Quanta — AI for science, theoretical work, mathematics, foundational ML. Format is editor-anchored, so the path is via Quanta's editorial pipeline.",
+    bestFitTags: ["AI for science", "Theory", "First podcast OK"],
+    schmidtConnection: "Jordana Cepelewicz (math editor at Quanta) is a 2023 Schmidt Awards alum (Science Journalist: Early Career). Schmidt Sciences also has direct ties to the Simons Foundation (Quanta's parent). Schmidt-staff intro to Jordana is the highest-leverage path; she can route fellows to the right Quanta editor and into the podcast pipeline."
+  },
+
+  // ============ TIER 2: MID-TIER SHOWS (specialist audiences, solid reach) ============
+
+  {
+    name: "The Cognitive Revolution",
+    url: "https://www.cognitiverevolution.ai",
+    host: "Nathan Labenz",
+    tier: "midtier",
+    category: "ai-research",
+    audienceLabel: "AI builders, researchers, investors",
+    desc: "Long-form conversations with AI builders and researchers, plus AI Scouting Reports synthesizing complex topics. Labenz brings a thoughtful analytical lens. Frequently books frontier-lab and academic researchers.",
+    likelihood: "high",
+    likelihoodLabel: "High — actively books academics",
+    contact: "Booking via website contact form: cognitiverevolution.ai",
+    fitNotes: "Welcomes deep technical interviews. Strong fit for fellows working on safety, alignment, agents, and frontier capabilities.",
+    cadence: "Weekly · 1.5–3 hr episodes",
+    bestFitTags: ["Alignment", "LLM research", "AI agents", "Mechanistic interp"]
+  },
+  {
+    name: "Machine Learning Street Talk",
+    url: "https://www.youtube.com/@MachineLearningStreetTalk",
+    host: "Tim Scarfe & Keith Duggar",
+    tier: "midtier",
+    category: "ai-research",
+    audienceLabel: "ML researchers, cognitive scientists",
+    desc: "Arguably the most technically rigorous AI podcast in the English-speaking world. Covers AI, cognitive science, neuroscience, philosophy of mind. Hand-picked technical guests, no hype.",
+    likelihood: "high",
+    likelihoodLabel: "High — academic-friendly",
+    contact: "Booking: machinelearningstreettalk.com / @MLStreetTalk on X",
+    fitNotes: "Ideal for fellows whose work crosses ML and cognitive science (e.g., Tenenbaum, Mitchell-style topics). Loves theoretical depth.",
+    cadence: "Roughly fortnightly · 2 hr episodes",
+    bestFitTags: ["Theory", "Cognition", "Neuro-AI", "Foundations"]
+  },
+  {
+    name: "The TWIML AI Podcast",
+    url: "https://twimlai.com",
+    host: "Sam Charrington",
+    tier: "midtier",
+    category: "ai-research",
+    audienceLabel: "ML researchers, data scientists, ML eng leaders",
+    desc: "Running since 2016, 700+ episodes. A staple for ML researchers and engineering leaders. Regularly features academic researchers presenting recent work.",
+    likelihood: "high",
+    likelihoodLabel: "High — researcher-focused",
+    contact: "Pitch via twimlai.com/contact · sam@twimlai.com",
+    fitNotes: "Strong fit for fellows with a recent paper or release. Sam is comfortable with deep technical content. Predictable pipeline for academics.",
+    cadence: "Weekly · ~60 min",
+    bestFitTags: ["Recent paper", "Applied ML", "Open research"]
+  },
+  {
+    name: "Eye on AI",
+    url: "https://www.eye-on.ai",
+    host: "Craig S. Smith",
+    tier: "midtier",
+    category: "ai-research",
+    audienceLabel: "AI-curious general, research-leaning",
+    desc: "Biweekly podcast hosted by a former NYT correspondent. Features researchers and developers shaping the AI landscape. Broad coverage.",
+    likelihood: "high",
+    likelihoodLabel: "High — books researchers regularly",
+    contact: "eye-on.ai/contact · craig@eye-on.ai",
+    fitNotes: "Open to academic guests across AI subfields. Good entry point for early-career fellows who haven't done much podcasting.",
+    cadence: "Biweekly · ~45 min",
+    bestFitTags: ["Any AI topic", "Early-career friendly"]
+  },
+  {
+    name: "Your Undivided Attention",
+    url: "https://www.humanetech.com/podcast",
+    host: "Tristan Harris & Aza Raskin",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "Policy, ethics, society-focused",
+    desc: "Center for Humane Technology podcast on AI's societal impact. Focus on alignment, safety, governance, and digital well-being.",
+    likelihood: "high",
+    likelihoodLabel: "High — books AI ethics researchers",
+    contact: "humanetech.com/contact",
+    fitNotes: "Excellent fit for AI2050 fellows working on safety, alignment, ethics, and governance.",
+    cadence: "Biweekly · ~45 min",
+    bestFitTags: ["AI safety", "Alignment", "Ethics", "Governance"]
+  },
+  {
+    name: "80,000 Hours Podcast",
+    url: "https://80000hours.org/podcast/",
+    host: "Rob Wiblin & Luisa Rodriguez",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "EA-adjacent, career-curious researchers",
+    desc: "Long-form interviews on the world's most pressing problems, including AI risk and governance. Guests get 2–4 hours to develop ideas; very prepared hosts.",
+    likelihood: "high",
+    likelihoodLabel: "High — books AI safety/policy researchers",
+    contact: "80000hours.org/podcast · podcast@80000hours.org",
+    cadence: "Weekly · 2–4 hr",
+    fitNotes: "Strong fit for fellows working on AI governance, safety, biosecurity-AI, or AI's effects on the global economy and labor.",
+    bestFitTags: ["AI policy", "AI safety", "Long-form"]
+  },
+  {
+    name: "Future of Life Institute Podcast",
+    url: "https://futureoflife.org/podcast/",
+    host: "Gus Docker",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "AI safety, x-risk, policy audience",
+    desc: "Long-running podcast (10+ years, 265+ episodes) on the future of life and existential risks, with heavy AI focus. Books academic researchers regularly.",
+    likelihood: "high",
+    likelihoodLabel: "High — established academic pipeline",
+    contact: "futureoflife.org/contact",
+    cadence: "Biweekly · ~90 min",
+    fitNotes: "Excellent for fellows working on AI safety, AGI policy, governance (Russell, Hendrycks, Steinhardt, Hadfield).",
+    bestFitTags: ["AI safety", "X-risk", "Long-form"]
+  },
+  {
+    name: "Mindscape",
+    url: "https://www.preposterousuniverse.com/podcast/",
+    host: "Sean Carroll",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Science/philosophy intellectual general (~50K+)",
+    desc: "Caltech physicist Sean Carroll's wide-ranging interview show on science, philosophy, society. Books academics across many fields. AI episodes are frequent.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — selective but books AI researchers",
+    contact: "preposterousuniverse.com/podcast · @seanmcarroll on X",
+    cadence: "Weekly · ~90 min",
+    fitNotes: "Strong fit for AI2050 senior fellows whose work has broader intellectual implications. Good for AI-and-physics, theory, philosophy of mind.",
+    bestFitTags: ["Big ideas", "Theory", "Philosophy"]
+  },
+  {
+    name: "Conversations with Tyler",
+    url: "https://conversationswithtyler.com",
+    host: "Tyler Cowen",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Intellectual / policy-curious general (~50K+)",
+    desc: "George Mason economist Tyler Cowen interviews thinkers across disciplines. Famously rapid-fire and well-prepared. Picks distinctive minds rather than household names.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — Cowen picks personally",
+    contact: "Pitch via mercatus.org · @tylercowen on X",
+    cadence: "Biweekly · ~60 min",
+    fitNotes: "Best for fellows with distinctive ideas and a strong public-facing perspective. Cowen has had AI researchers like Demis Hassabis, Jeff Holmes.",
+    bestFitTags: ["Big ideas", "Public profile", "Senior fellows"]
+  },
+  {
+    name: "EconTalk",
+    url: "https://www.econtalk.org",
+    host: "Russ Roberts",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Economics-leaning intellectual general (~30K+)",
+    desc: "Hoover Institution economist Russ Roberts has run EconTalk since 2006. Long, careful conversations. AI and labor topics are recurring.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — favors econ-relevant work",
+    contact: "econtalk.org/contact · russroberts@stanford.edu",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Strong for fellows working on AI and labor, AI and economics (Brynjolfsson, Autor, Rock, Raymond).",
+    bestFitTags: ["AI & labor", "Economics", "Senior fellows"]
+  },
+  {
+    name: "The Ezra Klein Show",
+    url: "https://www.nytimes.com/column/ezra-klein-podcast",
+    host: "Ezra Klein",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "NYT readers, policy-engaged general (~500K+)",
+    desc: "NYT Opinion columnist's long-form interview show on politics, ideas, and society. AI episodes are increasingly common; books the most articulate researchers.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — selective but values AI voices",
+    contact: "ezra@nytimes.com (very high volume)",
+    cadence: "Twice weekly · ~75 min",
+    fitNotes: "Best for fellows who can speak to public-policy implications. Klein has hosted Yejin Choi, Gillian Hadfield, others. Strong fit for ethics/governance.",
+    bestFitTags: ["AI policy", "Public profile", "Ethics"]
+  },
+  {
+    name: "On with Kara Swisher",
+    url: "https://www.vox.com/on-with-kara-swisher",
+    host: "Kara Swisher",
+    tier: "midtier",
+    category: "tech-business",
+    audienceLabel: "Tech, business, media leaders (~200K+)",
+    desc: "Twice-weekly interviews with power players across tech, business, media, politics. \"Smart people like difficult questions.\" AI-relevant guests are frequent.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — Senior Fellows realistic",
+    contact: "on@voxmedia.com",
+    cadence: "Twice weekly · ~60 min",
+    fitNotes: "Strong fit for AI2050 Senior Fellows with public profile or news-driven work (Russell, Li, Rus, Brynjolfsson).",
+    bestFitTags: ["Senior fellows", "Public profile", "Tech business"]
+  },
+  {
+    name: "Pivot",
+    url: "https://podcasts.voxmedia.com/show/pivot",
+    host: "Kara Swisher & Scott Galloway",
+    tier: "midtier",
+    category: "tech-business",
+    audienceLabel: "Tech-business audience (~300K+)",
+    desc: "Weekly tech-business podcast. Less academic-focused than On with Kara Swisher, but books AI thought leaders when stories warrant.",
+    likelihood: "low",
+    likelihoodLabel: "Low — needs strong news hook",
+    contact: "pivot@nymag.com",
+    cadence: "Twice weekly · ~60 min",
+    fitNotes: "Only realistic for fellows with major news cycle (e.g., commercial AI launch, prominent op-ed, major prize).",
+    bestFitTags: ["Senior fellows", "News-driven"]
+  },
+  {
+    name: "Decoder with Nilay Patel",
+    url: "https://www.theverge.com/decoder-podcast-with-nilay-patel",
+    host: "Nilay Patel",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "Policy, business, decision-makers",
+    desc: "Goes deep on single topics: AI regulation, chip export controls, training economics, copyright lawsuits. Guests are decision-makers and senior researchers.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — strong fit for policy work",
+    contact: "decoder@theverge.com",
+    fitNotes: "Strong fit for AI2050 fellows working on governance, policy, and societal implications.",
+    cadence: "Weekly · ~1 hr",
+    bestFitTags: ["AI policy", "Governance", "Regulation"]
+  },
+  {
+    name: "Training Data (Sequoia)",
+    url: "https://www.sequoiacap.com/podcast/",
+    host: "Sonya Huang, Pat Grady & Stephanie Zhan",
+    tier: "midtier",
+    category: "tech-business",
+    audienceLabel: "Founders, investors, builders",
+    desc: "Sequoia Capital's series of conversations with AI builders and researchers. 75+ weekly episodes. Recent: Harrison Chase (LangChain), Anna Goldie & Azalia Mirhoseini.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — researchers welcome alongside founders",
+    contact: "training-data@sequoiacap.com",
+    fitNotes: "Strong fit for fellows whose research has commercial or applied dimensions. Less ideal for pure-theory work.",
+    cadence: "Weekly · ~1 hr",
+    bestFitTags: ["Applied AI", "Research-to-product"]
+  },
+  {
+    name: "a16z Podcast",
+    url: "https://a16z.com/podcasts/a16z-podcast/",
+    host: "Andreessen Horowitz partners",
+    tier: "midtier",
+    category: "tech-business",
+    audienceLabel: "Tech founders, investors, builders (~100K+)",
+    desc: "Long-running podcast from Andreessen Horowitz covering AI, biotech, fintech. Books academic researchers when work has commercial dimension.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — applied focus",
+    contact: "a16z.com/podcast · podcast@a16z.com",
+    cadence: "Weekly · ~45 min",
+    fitNotes: "Strong for fellows with applied research or startup connections (Hie, Dao, Smidt, Coley).",
+    bestFitTags: ["Applied AI", "Research-to-product"]
+  },
+  {
+    name: "Big Technology Podcast",
+    url: "https://www.bigtechnology.com/podcast",
+    host: "Alex Kantrowitz",
+    tier: "midtier",
+    category: "tech-business",
+    audienceLabel: "Tech industry insiders (~50K)",
+    desc: "Weekly tech industry podcast with frequent AI focus. Friendly to academic researchers who can speak to industry implications.",
+    likelihood: "high",
+    likelihoodLabel: "High — open to academics",
+    contact: "bigtechnology.com · @Kantrowitz on X",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Good practice venue. Kantrowitz asks crisp questions and is comfortable with technical depth.",
+    bestFitTags: ["Tech business", "Applied AI"]
+  },
+  {
+    name: "ChinaTalk",
+    url: "https://www.chinatalk.media",
+    host: "Jordan Schneider",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "China policy, AI policy, geopolitics audience",
+    desc: "Long-running interview podcast (371+ episodes) on China, technology, and US-China relations, with heavy AI focus. Distributed via Apple Podcasts and Spotify; companion newsletter at chinatalk.media. Books AI policy researchers regularly.",
+    likelihood: "high",
+    likelihoodLabel: "High — books AI policy academics",
+    contact: "chinatalk.media · @jordanschnyc on X",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Strong fit for fellows working on AI governance, US-China AI competition, export controls (Ding, Hadfield, Zhang).",
+    bestFitTags: ["AI policy", "Geopolitics"]
+  },
+  {
+    name: "Lawfare Podcast",
+    url: "https://www.lawfaremedia.org/podcasts-multimedia/lawfare-podcast",
+    host: "Various Lawfare staff",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "National security & legal policy audience",
+    desc: "National-security-focused podcast that has expanded into AI governance. Books law professors and AI policy researchers.",
+    likelihood: "high",
+    likelihoodLabel: "High — welcomes AI policy academics",
+    contact: "lawfaremedia.org/contact",
+    cadence: "Multiple per week · ~45 min",
+    fitNotes: "Best for fellows working on AI law, governance, national security implications (Hadfield, Ding, Zhang, Wooldridge).",
+    bestFitTags: ["AI policy", "Law", "Governance"]
+  },
+  {
+    name: "Tech Policy Press Podcast",
+    url: "https://www.techpolicy.press/podcast/",
+    host: "Justin Hendrix",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "Tech policy researchers, civil society",
+    desc: "Tech-policy-focused podcast that books academic AI researchers and civil-society voices. Strong for democracy, fairness, governance work.",
+    likelihood: "high",
+    likelihoodLabel: "High — academic-friendly",
+    contact: "techpolicy.press/contact",
+    cadence: "Weekly · ~45 min",
+    fitNotes: "Strong fit for fellows working on AI fairness, democracy, content moderation (Coston, Field, Ghassemi, Pierson).",
+    bestFitTags: ["AI policy", "Fairness", "Democracy"]
+  },
+  {
+    name: "Last Week in AI",
+    url: "https://lastweekin.ai",
+    host: "Andrey Kurenkov & Jeremie Harris",
+    tier: "midtier",
+    category: "ai-research",
+    audienceLabel: "AI-engaged practitioners (~30K)",
+    desc: "Weekly news roundup with occasional researcher interviews. Friendly to academics; Kurenkov holds a Stanford CS PhD.",
+    likelihood: "high",
+    likelihoodLabel: "High — researcher hosts",
+    contact: "lastweekin.ai · @andrey_kurenkov on X",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Good practice venue. Hosts ask informed questions and can engage at depth.",
+    bestFitTags: ["AI research", "News-anchored"]
+  },
+  {
+    name: "Generally Intelligent",
+    url: "https://generallyintelligent.com/podcast",
+    host: "Kanjun Qiu",
+    tier: "midtier",
+    category: "ai-research",
+    audienceLabel: "AI researchers, founders (~10–25K)",
+    desc: "Long-form interviews focused on the science of AI. Host is co-founder of Imbue (formerly Generally Intelligent) and asks unusually deep questions.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — research-focused",
+    contact: "imbue.com · @kanjun on X",
+    cadence: "Monthly · 90+ min",
+    fitNotes: "Best for fellows whose work touches on the foundations of AI capability and intelligence.",
+    bestFitTags: ["Theory", "Frontier AI"]
+  },
+  {
+    name: "Science Fictions Podcast (formerly The Studies Show)",
+    url: "https://sciencefictionspod.substack.com",
+    host: "Tom Chivers & Stuart Ritchie",
+    tier: "midtier",
+    category: "science",
+    audienceLabel: "Evidence-curious general (~30K+)",
+    desc: "Renamed from The Studies Show in September 2025; now part of the Works in Progress podcast network. Two science writers examine the latest scientific controversies — replication crises, hype, fraud, and methodological controversies. Stuart Ritchie now works on Research Communications at Anthropic; Tom Chivers is a science writer at Semafor and author of books on statistics and AI. Skeptical, methodologically rigorous tone. Topics range across all science but AI/ML methodology is well within scope.",
+    likelihood: "high",
+    likelihoodLabel: "High — methodology-focused; Anthropic adjacency",
+    contact: "sciencefictionspod.substack.com · @TomChivers and @StuartJRitchie on X",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Strong fit for fellows whose work involves evaluating AI claims, benchmarks, replication, or methodology critiques. Stuart Ritchie at Anthropic could be a useful internal connector.",
+    bestFitTags: ["Methodology", "Evaluation", "Skepticism", "AI evaluation"]
+  },
+  {
+    name: "Big Think Podcast",
+    url: "https://bigthink.com/podcast/",
+    host: "Repurposed from Big Think video catalog",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Ideas-curious general public (~100K+)",
+    desc: "Daily audio show that repackages Big Think's video interview catalog (going back to 2008). Not a traditional booked-interview format — to appear, fellows would need to be filmed for Big Think's video platform first, after which audio gets distributed via the podcast. Contact Big Think editorial directly to pitch a video interview.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — video-first; audio is repurposing",
+    contact: "bigthink.com/contact",
+    cadence: "Daily · ~10–20 min",
+    fitNotes: "Good for fellows whose work has a single sharp idea that translates to a short video. Pitch as a Big Think video, not as a podcast guest.",
+    bestFitTags: ["Big ideas", "Short form", "Video-first"]
+  },
+  {
+    name: "Clearer Thinking",
+    url: "https://podcast.clearerthinking.org",
+    host: "Spencer Greenberg",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Rationalist-adjacent intellectual general (~20K)",
+    desc: "Math PhD entrepreneur explores how to think more clearly. Books academics across psychology, economics, AI, philosophy.",
+    likelihood: "high",
+    likelihoodLabel: "High — academic-friendly",
+    contact: "clearerthinkingpodcast.com",
+    cadence: "Weekly · ~90 min",
+    fitNotes: "Strong fit for AI ethics, decision-making, and reasoning research (Steinhardt, Lakkaraju, Kasirzadeh, Fazelpour).",
+    bestFitTags: ["Reasoning", "Ethics", "Big ideas"]
+  },
+  {
+    name: "Sam Harris — Making Sense",
+    url: "https://www.samharris.org/podcast",
+    host: "Sam Harris",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Intellectual general public (~500K+)",
+    desc: "Weekly long-form podcast on philosophy, science, AI, and society. AI safety has been a recurring topic; Harris regularly hosts AI researchers.",
+    likelihood: "low",
+    likelihoodLabel: "Low — selective, polarizing",
+    contact: "samharris.org/contact",
+    cadence: "Weekly · ~90 min",
+    fitNotes: "Realistic only for senior or distinctive fellows with willingness to engage on AI safety / consciousness topics. Polarizing audience — fellows should consider trade-offs.",
+    bestFitTags: ["AI safety", "Consciousness", "Senior fellows"]
+  },
+
+  {
+    name: "In Our Time (BBC)",
+    url: "https://www.bbc.co.uk/programmes/b006qykl",
+    host: "Melvyn Bragg",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "BBC Radio 4 audience, intellectual UK general (~2M+)",
+    desc: "Long-running BBC Radio 4 program (since 1998) where three academics discuss a single topic in depth. Books primarily UK-based academics.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — UK academics favored",
+    contact: "BBC Radio 4 booking · in.our.time@bbc.co.uk",
+    cadence: "Weekly · ~50 min",
+    fitNotes: "Strong fit for UK-based AI2050 fellows (Torr, Wooldridge, Tasioulas, Millière, Wen, Semenova, Zerilli, Nowaczyk-Basińska). Topic-driven, not guest-driven.",
+    bestFitTags: ["Big ideas", "UK fellows", "Senior fellows"]
+  },
+  {
+    name: "The Partially Examined Life",
+    url: "https://partiallyexaminedlife.com",
+    host: "Mark Linsenmayer, Wes Alwan, Seth Paskin & Dylan Casey",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Philosophy-engaged general public (~30–50K)",
+    desc: "Long-running philosophy podcast (since 2009, 380+ episodes). Four hosts who once intended to do philosophy professionally read and discuss classical philosophical texts in depth. Coverage of AI/philosophy of mind topics is occasional rather than primary; in late 2025 the hosts publicly debated how to cover AI on the show. Strong fit specifically for fellows working on classical philosophical questions raised by AI (consciousness, agency, moral status, ethics).",
+    likelihood: "med",
+    likelihoodLabel: "Medium — text-driven; AI is secondary",
+    contact: "partiallyexaminedlife.com/contact",
+    cadence: "Biweekly · ~90 min",
+    fitNotes: "Best fit for fellows whose work bears directly on classical philosophical questions (Millière on consciousness, Vold on moral status, Kasirzadeh/Tasioulas on AI ethics, Zerilli on philosophy of AI).",
+    bestFitTags: ["Philosophy", "Ethics", "Philosophy of mind"]
+  },
+  {
+    name: "Plain English with Derek Thompson",
+    url: "https://www.theringer.com/podcasts/plain-english-with-derek-thompson",
+    host: "Derek Thompson",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Business / culture / policy general (~100K+)",
+    desc: "The Atlantic staff writer Derek Thompson's interview show on business, technology, work, and society. Strong intellectual audience; books academics regularly.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — needs accessible framing",
+    contact: "Via The Ringer / Spotify · @DKThomp on X",
+    cadence: "Twice weekly · ~50 min",
+    fitNotes: "Strong fit for AI-and-economy or AI-and-labor fellows (Brynjolfsson, Autor, Rock, Raymond), and for AI policy fellows with public-facing perspective.",
+    bestFitTags: ["AI & labor", "Public profile", "Economics"]
+  },
+  {
+    name: "Keen On",
+    url: "https://lithub.com/category/keen-on/",
+    host: "Andrew Keen",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Tech-policy intellectual general (~20K)",
+    desc: "Andrew Keen interviews leaders about current affairs, tech, and culture. Frequent AI focus. Daily cadence means high guest volume — easier to book than weekly shows.",
+    likelihood: "high",
+    likelihoodLabel: "High — daily slots, books academics",
+    contact: "keenon.tv · @ajkeen on X",
+    cadence: "Multiple per week · ~30 min",
+    fitNotes: "Good practice venue at the higher end. Keen is comfortable with technical content and policy implications.",
+    bestFitTags: ["Tech policy", "Public-facing"]
+  },
+  {
+    name: "Keep Talking",
+    url: "https://keeptalking.substack.com",
+    host: "Dan Riley",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Long-form interview audience (~10–25K)",
+    desc: "Long-form interviews about big ideas, society, and the human condition. Patient host, thoughtful preparation, books academics across fields.",
+    likelihood: "high",
+    likelihoodLabel: "High — open to academic guests",
+    contact: "Via show website / social media",
+    cadence: "Weekly · ~90 min",
+    fitNotes: "Solid fit for AI2050 fellows whose work has broad intellectual or social implications.",
+    bestFitTags: ["Big ideas", "Long-form"]
+  },
+  {
+    name: "The Michael Shermer Show",
+    url: "https://michaelshermer.com/the-michael-shermer-show/",
+    host: "Michael Shermer",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Skeptical / science-curious general (~50–100K)",
+    desc: "Skeptic Magazine founder's show on science, skepticism, liberty, and the search for truth. Books academics regularly; AI is a recurring topic.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — selective but academic-friendly",
+    contact: "michaelshermer.com/contact",
+    cadence: "Twice weekly · ~90 min",
+    fitNotes: "Strong fit for fellows on AI safety, ethics, philosophy of mind. Audience is skeptical-rationalist; mode of conversation is debate-friendly.",
+    bestFitTags: ["AI safety", "Philosophy", "Skepticism"]
+  },
+  {
+    name: "Within Reason (formerly The CosmicSkeptic Podcast)",
+    url: "https://www.alexoconnor.com",
+    host: "Alex O'Connor",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Philosophy / religion / consciousness audience (~1M+ YouTube)",
+    desc: "Renamed from The CosmicSkeptic Podcast in 2023. Alex O'Connor's interview show, primarily focused on philosophy of religion, atheism, ethics, and consciousness. Notable guests include Richard Dawkins, David Deutsch, Sam Harris, Jordan Peterson, Carlo Rovelli. Occasional episodes on AI/consciousness/mind.",
+    likelihood: "low",
+    likelihoodLabel: "Low — religion-focused; selective on AI",
+    contact: "alexoconnor.com · cosmicskeptic@gmail.com",
+    cadence: "Variable · ~60–120 min",
+    fitNotes: "Only relevant for fellows whose work bears on consciousness, philosophy of mind, or moral status of AI (Millière, Kasirzadeh, Vold). Most AI2050 work is off-topic for the show.",
+    bestFitTags: ["Philosophy of mind", "Consciousness", "Niche fit"]
+  },
+  {
+    name: "Vox Conversations",
+    url: "https://www.vox.com/podcasts",
+    host: "Various Vox staff",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Vox audience, policy-engaged general (~100K+)",
+    desc: "Vox's interview podcast on the world's most pressing issues. Book academics regularly; AI features prominently.",
+    likelihood: "high",
+    likelihoodLabel: "High — books academics",
+    contact: "vox.com/contact",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Good fit for fellows with a public-explainer angle on their work.",
+    bestFitTags: ["AI policy", "Public-facing"]
+  },
+  {
+    name: "The Weeds",
+    url: "https://www.vox.com/podcasts",
+    host: "Vox staff",
+    tier: "midtier",
+    category: "policy",
+    audienceLabel: "Policy-wonk audience (~50–100K)",
+    desc: "Vox's deep-dive policy show on American politics. Books academics for policy-relevant deep dives.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — needs policy hook",
+    contact: "vox.com/contact",
+    cadence: "Twice weekly · ~50 min",
+    fitNotes: "Best for fellows with concrete US policy implications (Hadfield, Ding, Zhang, Donti, Rolnick).",
+    bestFitTags: ["AI policy", "US policy"]
+  },
+  {
+    name: "The Journal",
+    url: "https://www.wsj.com/podcasts/the-journal",
+    host: "Ryan Knutson, Jessica Mendoza & Kate Linebaugh (WSJ + Spotify)",
+    tier: "midtier",
+    category: "tech-business",
+    audienceLabel: "Business news audience (~500K+)",
+    desc: "WSJ daily business and economics podcast, co-produced with Spotify. Books academic researchers when stories warrant. Strong economics and tech focus; AI features regularly (e.g., Meta's AI talent push, AI bubble debates).",
+    likelihood: "low",
+    likelihoodLabel: "Low — needs major news angle",
+    contact: "Via WSJ communications",
+    cadence: "Daily · ~20 min",
+    fitNotes: "Realistic for fellows working on AI economics or AI-and-labor with timely news connection (Brynjolfsson, Autor, Rock, Raymond).",
+    bestFitTags: ["Economics", "AI & labor", "News-driven"]
+  },
+  {
+    name: "Unsiloed",
+    url: "https://www.unsiloedpodcast.com",
+    host: "Greg LaBlanc",
+    tier: "midtier",
+    category: "ideas",
+    audienceLabel: "Cross-disciplinary professional audience (~10K)",
+    desc: "Greg LaBlanc (UC Berkeley, Stanford, and HEC Paris lecturer) hosts interdisciplinary conversations with authors and experts. Strong record of booking academics across fields. Currently very active.",
+    likelihood: "high",
+    likelihoodLabel: "High — interdisciplinary focus",
+    contact: "unsiloedpodcast.com",
+    cadence: "Multi-weekly · ~50–60 min",
+    fitNotes: "Strong fit for fellows whose AI work crosses disciplines (e.g., AI for biology, AI for physics, AI for materials).",
+    bestFitTags: ["Interdisciplinary", "AI for science"]
+  },
+  {
+    name: "With Good Reason",
+    url: "https://www.withgoodreasonradio.org",
+    host: "Sarah McConnell",
+    tier: "midtier",
+    category: "academia",
+    audienceLabel: "NPR / public radio listeners (~30–80K)",
+    desc: "Brings together higher education institutions and Virginia Humanities to make scholarly research accessible. Distributed via public radio. Built specifically for academic guests.",
+    likelihood: "high",
+    likelihoodLabel: "Very high — built for academics",
+    contact: "withgoodreasonradio.org · info@vfh.org",
+    cadence: "Weekly · ~30 min",
+    fitNotes: "Excellent practice venue at the higher end of the practice tier. Hosts make scholarly work accessible without dumbing it down. Public-radio reach.",
+    bestFitTags: ["Academic-friendly", "Public radio", "First podcast OK"]
+  },
+
+  // ============ TIER 3: FLAGSHIP SHOWS (highest reach, hardest to book) ============
+  {
+    name: "Lex Fridman Podcast",
+    url: "https://lexfridman.com/podcast/",
+    host: "Lex Fridman",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "Massive general + tech audience (millions)",
+    desc: "Iconic marathon conversations. AI episodes consistently land highest-profile guests in the field. Largest audience reach of any AI-adjacent show. Lex personally curates.",
+    likelihood: "low",
+    likelihoodLabel: "Low — heavily curated by Lex personally",
+    contact: "lexfridman.com/contact · cold pitches rarely succeed",
+    fitNotes: "Unrealistic for most early-career fellows. Senior Fellows with public profile (Fei-Fei Li, Stuart Russell, Daniela Rus) are realistic candidates. Personal intros via past guests work best.",
+    cadence: "Weekly · 2–4 hr",
+    bestFitTags: ["Senior fellows", "Public profile"]
+  },
+  {
+    name: "Dwarkesh Podcast",
+    url: "https://www.dwarkeshpatel.com/podcast",
+    host: "Dwarkesh Patel",
+    tier: "flagship",
+    category: "ai-research",
+    audienceLabel: "AI thought leaders, broad tech audience (~500K+)",
+    desc: "Deeply researched interviews with people building frontier AI. Long, meticulous, very high-signal. Recent guests include Jensen Huang, Terry Tao, and senior frontier-lab researchers.",
+    likelihood: "low",
+    likelihoodLabel: "Low — extremely selective",
+    contact: "Pitch via dwarkesh.com or @dwarkesh_sp on X",
+    fitNotes: "Only the most senior or distinctive AI2050 fellows likely to land here. Rejects most pitches. Senior Fellows with major recent work or contrarian takes are best candidates.",
+    cadence: "Weekly · 2–4 hr episodes",
+    bestFitTags: ["Senior fellows", "Frontier work", "Big ideas"]
+  },
+  {
+    name: "Hard Fork (NYT)",
+    url: "https://www.nytimes.com/column/hard-fork",
+    host: "Kevin Roose & Casey Newton",
+    tier: "flagship",
+    category: "tech-business",
+    audienceLabel: "General public, tech-curious (~500K+)",
+    desc: "Award-winning weekly NYT show with heavy AI focus. Brings in researchers and reporters for accessible, hype-free analysis of AI news.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — books researchers when news-relevant",
+    contact: "hardfork@nytimes.com",
+    fitNotes: "Best when a fellow's work is newsworthy or tied to a current debate (alignment, safety, copyright, labor). Accessible communicators preferred.",
+    cadence: "Weekly · ~1 hr",
+    bestFitTags: ["Policy", "AI safety", "AI & labor"]
+  },
+  {
+    name: "Google DeepMind: The Podcast",
+    url: "https://deepmind.google/discover/the-podcast/",
+    host: "Hannah Fry",
+    tier: "flagship",
+    category: "science",
+    audienceLabel: "General science-curious public",
+    desc: "Fry takes listeners inside DeepMind to uncover how AI is transforming the world. Excellent science communication; mostly internal DeepMind guests but features external researchers.",
+    likelihood: "low",
+    likelihoodLabel: "Low — mostly DeepMind staff",
+    contact: "Via deepmind.google contact form",
+    fitNotes: "Possible for fellows with DeepMind collaborations or whose work directly intersects with DeepMind's portfolio.",
+    cadence: "Seasonal · ~30 min",
+    bestFitTags: ["Senior fellows", "DeepMind ties"]
+  },
+  {
+    name: "Radiolab",
+    url: "https://radiolab.org",
+    host: "WNYC Studios team",
+    tier: "flagship",
+    category: "science",
+    audienceLabel: "General public (~2M+)",
+    desc: "Beautifully produced WNYC science storytelling show. Doesn't do simple interviews — uses researchers as voices in narrative episodes. AI is a recurring topic.",
+    likelihood: "low",
+    likelihoodLabel: "Low — story-driven, not interview",
+    contact: "radiolab.org/contact",
+    cadence: "Weekly · ~60 min",
+    fitNotes: "Realistic only when fellow has a story-rich angle (counterintuitive finding, surprising experiment, narrative arc).",
+    bestFitTags: ["Story-driven", "Senior fellows"]
+  },
+  {
+    name: "Freakonomics Radio",
+    url: "https://freakonomics.com/series/freakonomics-radio/",
+    host: "Stephen Dubner (with Steve Levitt as occasional guest host since Jan 2026)",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "General public (~1M+)",
+    desc: "Long-running social-science storytelling show. Books academics across disciplines. AI and labor topics are frequent. Note: Steve Levitt wrapped up his sister show, People I (Mostly) Admire, in January 2026 and is now occasionally guest-hosting Freakonomics Radio episodes — so a fellow Levitt is interested in could appear here rather than on PIMA.",
+    likelihood: "low",
+    likelihoodLabel: "Low — selective, story-driven",
+    contact: "freakonomics.com/contact · radio@freakonomics.com",
+    cadence: "Weekly · ~45 min",
+    fitNotes: "Best fit for fellows working on AI economics, AI labor, behavioral implications (Brynjolfsson, Autor, Rock, Raymond).",
+    bestFitTags: ["AI & labor", "Economics", "Senior fellows"]
+  },
+  {
+    name: "The Daily (NYT)",
+    url: "https://www.nytimes.com/column/the-daily",
+    host: "Michael Barbaro",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "General public (~5M+)",
+    desc: "NYT's flagship daily news podcast. Books experts when stories require explanation. Very brief researcher appearances; tight editorial format.",
+    likelihood: "low",
+    likelihoodLabel: "Low — needs major news moment",
+    contact: "Via NYT communications · thedaily@nytimes.com",
+    cadence: "Daily · ~25 min",
+    fitNotes: "Realistic only when a fellow's work intersects a major news cycle. Tight 5–10 min interview slots.",
+    bestFitTags: ["News-driven", "Senior fellows"]
+  },
+  {
+    name: "Acquired",
+    url: "https://www.acquired.fm",
+    host: "Ben Gilbert & David Rosenthal",
+    tier: "flagship",
+    category: "tech-business",
+    audienceLabel: "Business-curious general (~500K+)",
+    desc: "Multi-hour deep dives on companies and technologies. Episodes occasionally feature academic researchers as deep-context voices.",
+    likelihood: "low",
+    likelihoodLabel: "Low — episode-bound",
+    contact: "acquired.fm · @AcquiredFM on X",
+    cadence: "Biweekly · 2–5 hr",
+    fitNotes: "Realistic only when an AI company episode could benefit from a fellow's academic context.",
+    bestFitTags: ["AI history", "Tech business"]
+  },
+  {
+    name: "TED Radio Hour",
+    url: "https://www.npr.org/podcasts/510298/ted-radio-hour",
+    host: "Manoush Zomorodi",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "NPR audience (~1M+)",
+    desc: "NPR show built around themed episodes featuring TED talk speakers and other experts. Books academics with strong public-facing ideas.",
+    likelihood: "low",
+    likelihoodLabel: "Low — TED-talk pipeline",
+    contact: "Via NPR · tedradiohour@npr.org",
+    cadence: "Weekly · ~50 min",
+    fitNotes: "Best path is via a TED talk first; thematic episodes occasionally book non-TED academic guests.",
+    bestFitTags: ["Public profile", "Senior fellows"]
+  },
+  {
+    name: "Latent Space",
+    url: "https://www.latent.space",
+    host: "swyx (Shawn Wang) & Alessio Fanelli",
+    tier: "flagship",
+    category: "ai-research",
+    audienceLabel: "AI engineers, builders, founders (~10M+ in 2025)",
+    desc: "The technical AI engineering podcast. Breaks news and exclusive interviews from OpenAI, Anthropic, Gemini, Meta, Sierra. Heavy focus on agents, foundation models, GPU infra.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — open to academics with applied/engineering angle",
+    contact: "latent.space · @swyx and @FanahovaAlessio on X",
+    cadence: "Weekly · ~60–90 min",
+    fitNotes: "Strong fit for fellows whose work bridges research and engineering (Dao, Dettmers, Smidt, Hie, Coley, Albergo). Less ideal for pure-theory or pure-policy work.",
+    bestFitTags: ["Applied AI", "Engineering", "Frontier AI"]
+  },
+  {
+    name: "The Tim Ferriss Show",
+    url: "https://tim.blog/podcast/",
+    host: "Tim Ferriss",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "Massive general productivity / ideas audience (~1M+ per episode)",
+    desc: "Long-form interviews extracting tactics and tools from world-class performers across fields. AI guests are increasingly common.",
+    likelihood: "low",
+    likelihoodLabel: "Low — Ferriss curates personally",
+    contact: "tim.blog/contact (very high volume)",
+    cadence: "Weekly · 2–3 hr",
+    fitNotes: "Realistic only for Senior Fellows with major books, distinctive personal stories, or framework-y intellectual contributions.",
+    bestFitTags: ["Senior fellows", "Public profile"]
+  },
+  {
+    name: "Armchair Expert with Dax Shepard",
+    url: "https://armchairexpertpod.com",
+    host: "Dax Shepard & Monica Padman",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "Mainstream general public (~1M+ per episode)",
+    desc: "Hugely popular show interviewing experts and celebrities about their stories and obsessions. Books academics when work has a strong human-interest narrative.",
+    likelihood: "low",
+    likelihoodLabel: "Low — needs human-story angle",
+    contact: "armchairexpertpod.com (very high volume)",
+    cadence: "Twice weekly · ~2 hr",
+    fitNotes: "Realistic only for Senior Fellows with strong personal narrative or popular-press book. Audience is mainstream, not technical.",
+    bestFitTags: ["Senior fellows", "Public profile", "Mainstream"]
+  },
+  {
+    name: "The Diary of a CEO",
+    url: "https://thediaryofaceo.com",
+    host: "Steven Bartlett",
+    tier: "flagship",
+    category: "tech-business",
+    audienceLabel: "Mainstream global audience (~5M+ per episode)",
+    desc: "Massive global reach. Long-form interviews about business, life, and ideas. Books AI experts when stories are accessible and dramatic.",
+    likelihood: "low",
+    likelihoodLabel: "Low — only for senior, polished communicators",
+    contact: "Via Flight Studio / Bartlett's team (very high volume)",
+    cadence: "Twice weekly · 1.5–3 hr",
+    fitNotes: "Reserved for the most senior, public-facing AI2050 fellows. Bartlett's audience is mainstream global; framing must be accessible.",
+    bestFitTags: ["Senior fellows", "Public profile", "Mainstream"]
+  },
+  {
+    name: "The Rich Roll Podcast",
+    url: "https://www.richroll.com/category/podcast/",
+    host: "Rich Roll",
+    tier: "flagship",
+    category: "ideas",
+    audienceLabel: "Wellness / personal-growth audience (~500K+)",
+    desc: "Long-form conversations on wellness, longevity, spirituality, and personal growth. Books AI guests when work touches on consciousness, ethics, or human flourishing.",
+    likelihood: "low",
+    likelihoodLabel: "Low — needs human-flourishing angle",
+    contact: "richroll.com/contact",
+    cadence: "Weekly · 2–3 hr",
+    fitNotes: "Narrow fit. Realistic only for fellows whose AI work bears on consciousness, well-being, or ethics with broad public framing (Tasioulas, Vold, Hadfield).",
+    bestFitTags: ["Wellness angle", "Senior fellows", "Public profile"]
+  }
+];
+
+// Internal: Schmidt Awards alumni who host or co-host podcasts
+const internalPods = [
+  {
+    name: "The Joy of Why",
+    url: "https://www.quantamagazine.org/tag/the-joy-of-why/",
+    host: "Steven Strogatz & Janna Levin",
+    schmidtAlum: "Steven Strogatz — 2023 Top Prize, Research Scientist Mid-to-Later Career (recognized specifically for this podcast)",
+    audience: "general",
+    audienceLabel: "Math/physics-curious general public (~50K+ per episode)",
+    desc: "Quanta Magazine's flagship interview podcast, distributed via PRX. Strogatz and Levin take turns interviewing leading researchers about the great scientific and mathematical questions of our time. Recent guests include Terence Tao and Frank Wilczek.",
+    likelihood: "high",
+    likelihoodLabel: "Very high — Top Prize winner, podcast is the cited work",
+    contact: "Via Quanta Magazine (magazine@quantamag.org) · Schmidt-staff intro to Strogatz directly is the strongest path",
+    fitNotes: "Best fit for AI2050 Senior Fellows whose work bears on big mathematical or scientific questions, theoretical computing, foundations of intelligence. Format welcomes deep, exploratory conversations.",
+    cadence: "Biweekly · ~45 min",
+    pitchAngle: "Strogatz won the 2023 Top Prize partly *for* this podcast. A Schmidt-staff intro citing the AI2050 / Schmidt Awards shared sponsorship is the highest-leverage move in the entire matrix."
+  },
+  {
+    name: "Complexity (Santa Fe Institute)",
+    url: "https://complexity.simplecast.com",
+    host: "Melanie Mitchell & Abha Eli Phoboo (2024 \"Nature of Intelligence\" season); ongoing show is hosted by various SFI voices",
+    schmidtAlum: "Melanie Mitchell — 2025 Top Prize, Research Scientist Later Career",
+    audience: "research",
+    audienceLabel: "Science-curious public, AI/cognition researchers",
+    desc: "SFI's flagship podcast. The 2024 6-episode \"Nature of Intelligence\" season was co-hosted by Mitchell with Abha Eli Phoboo (then SFI Director of Communications) and featured cognitive scientists, neuroscientists, and AI experts. Also note: Mitchell separately co-leads a 3-year SFI working group with John Krakauer on the nature of intelligence — a research workshop series rather than a podcast, but worth knowing for context.",
+    likelihood: "high",
+    likelihoodLabel: "Very high — direct Schmidt connection",
+    contact: "Via Santa Fe Institute: santafe.edu/about/contact · Melanie Mitchell directly",
+    fitNotes: "Mitchell's intellectual interests overlap heavily with AI2050. Natural fit for fellows working on intelligence, cognition, abstract reasoning, AGI. The Nature of Intelligence season is complete, but a future Mitchell-hosted SFI season is a natural pitch target.",
+    cadence: "Seasonal series · ~45 min",
+    pitchAngle: "Schmidt Sciences sponsors both AI2050 and the Schmidt Awards — a direct intro from Schmidt program staff would be straightforward. Best framing: AI2050 fellows whose work bears on intelligence, cognition, or AGI evaluation could anchor a future Mitchell-led season."
+  },
+  {
+    name: "Opinion Science",
+    url: "https://opinionsciencepodcast.com",
+    host: "Andy Luttrell",
+    schmidtAlum: "Andy Luttrell — 2024 Award, Research Scientist Later Career (recognized specifically for this podcast)",
+    audience: "general",
+    audienceLabel: "Social-science-curious general (~5–15K per episode)",
+    desc: "Social psychologist Andy Luttrell hosts conversations with social scientists and professional communicators about persuasion, polarization, prejudice, and how opinions form and change. Over 100 episodes including special series on science communication and behavioral economics.",
+    likelihood: "high",
+    likelihoodLabel: "Very high — Schmidt awardee, podcast is the cited work",
+    contact: "Via opinionsciencepodcast.com · Schmidt-staff intro to Andy Luttrell directly",
+    fitNotes: "Strong fit for AI2050 fellows whose work touches persuasion, social influence, decision-making, or human-AI interaction (Shi, Yang, Field, Coston, Fazelpour, Vold, Pierson).",
+    cadence: "Weekly · ~60 min",
+    pitchAngle: "Luttrell's 2024 award was specifically for this podcast. A Schmidt-staff intro is straightforward and would land easily."
+  },
+  {
+    name: "Weather Geeks Podcast",
+    url: "https://weather.com/news/podcast",
+    host: "J. Marshall Shepherd",
+    schmidtAlum: "J. Marshall Shepherd — 2024 Top Prize, Research Scientist Later Career (recognized partly for this podcast)",
+    audience: "general",
+    audienceLabel: "Weather/climate-engaged general public via The Weather Channel",
+    desc: "The Weather Channel's interview podcast hosted by University of Georgia atmospheric scientist J. Marshall Shepherd. Episodes cover weather, climate, and atmospheric science with policymakers, scientists, and broadcasters.",
+    likelihood: "high",
+    likelihoodLabel: "High — Top Prize winner, established broadcast platform",
+    contact: "Via The Weather Channel · marshgeo@uga.edu",
+    fitNotes: "Direct fit for AI-for-climate and AI-for-Earth-systems fellows (Rolnick, Donti, Kerner, Wen, Shi). Shepherd is comfortable interviewing both scientists and policymakers, and the Weather Channel platform reaches a broader audience than research-focused shows.",
+    cadence: "Variable · ~30–45 min",
+    pitchAngle: "Pitch a specific AI-for-climate result with policy or societal implications. Shepherd's framing tends to connect technical work to public weather/climate decisions."
+  },
+  {
+    name: "Inside Medicine (Substack + podcast)",
+    url: "https://insidemedicine.substack.com",
+    host: "Jeremy Faust",
+    schmidtAlum: "Jeremy Faust — 2025 Award, Research Scientist Later Career",
+    audience: "general",
+    audienceLabel: "75K+ subscribers; physicians, public-health, evidence-based medicine readers",
+    desc: "Faust is editor-in-chief of MedPage Today and an emergency physician at Brigham and Women's Hospital. Inside Medicine is primarily a Substack newsletter (75K+ subscribers as of 2025) with a regular podcast component at insidemedicine.substack.com/podcast. Faust is also co-host of the medical-education podcast FOAMcast.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — needs strong health-AI angle",
+    contact: "Via insidemedicine.substack.com · jeremyfaust.com",
+    fitNotes: "Good match for AI2050 fellows working on AI in healthcare or biomedicine (Ghassemi, Pierson, Hie, Bunne). Faust's beat is heavily focused on policy and evidence; technical AI work needs a clear public-health framing.",
+    cadence: "Newsletter is multi-weekly; podcast is regular but variable",
+    pitchAngle: "Pitch via shared Schmidt connection. Lead with a specific health-AI study or finding with public-health implications."
+  },
+  {
+    name: "Tecnociencia, el podcast",
+    url: "https://www.adnradio.cl",
+    host: "Andrea Obaid Carrión",
+    schmidtAlum: "Andrea Obaid Carrión — 2023 Top Prize, Science Journalist Freelance",
+    audience: "general",
+    audienceLabel: "Spanish-language Chilean / Latin-American audience",
+    desc: "Weekly Spanish-language science and technology podcast launched September 2025 on Radio ADN's digital platforms (YouTube, Spotify, others). Each ~30-min Tuesday episode covers science, technology, innovation, health, and environment — early episodes have included AI dilemmas, attention disorders, and the impact of screens. Obaid also hosts the \"Tu Nuevo ADN\" radio show on ADN radio (Chile) and \"TXS Health\" on online radio. She founded the production companies Neurona Group and Endorfinas, hosts Chilean TV science series, and is past President of ACHIPEC (Chilean Association of Journalists for Science Communication). Forbes named her one of the 50 most powerful women in Chile in 2024.",
+    likelihood: "high",
+    likelihoodLabel: "High — new podcast, AI-friendly format",
+    contact: "Via neuronagroup.com · ACHIPEC · Radio ADN digital",
+    fitNotes: "Outstanding fit for Spanish-speaking AI2050 fellows or fellows whose work is most relevant to Latin-American audiences. Adelani, Bosselut, and others working on multilingual / global-South AI fit well.",
+    cadence: "Weekly Tuesdays · ~30 min",
+    pitchAngle: "Often-overlooked but high-quality regional reach in Latin America. A Schmidt-staff intro is easy and creates Latin-American visibility no other podcast in the matrix offers. Lead with the AI angle — Obaid has already done episodes on AI dilemmas."
+  },
+  {
+    name: "In Those Genes",
+    url: "https://inthosegenes.com",
+    host: "Janina Jeff",
+    schmidtAlum: "Janina Jeff — 2023 Top Prize, Science Communicator Independent (recognized specifically for this podcast)",
+    audience: "general",
+    audienceLabel: "Black-cultural and genetics-curious general public; ~36K+ listeners and growing",
+    desc: "Hip-hop-inspired podcast that uses genetics to decode the lost histories and futures of African-descended Americans through the lens of Black culture. Jeff is a senior bioinformatics scientist at Illumina and the first African American to earn a PhD in human genetics from Vanderbilt. The 2023 Schmidt Top Prize cited three In Those Genes episodes by name.",
+    likelihood: "high",
+    likelihoodLabel: "High — Top Prize winner, podcast is the cited work",
+    contact: "Via inthosegenes.com · @InThoseGenesPod",
+    fitNotes: "Strong fit for AI2050 fellows whose work touches genetics, biomedical AI affecting underrepresented populations, AI fairness in health, or human genome data. Hie (genomics), Bunne (single-cell biology), Pierson (health equity), Ghassemi (medical AI bias) all fit.",
+    cadence: "Seasonal · ~30–45 min",
+    pitchAngle: "Jeff has won broad recognition (NPR Short Wave, Spotify Sound Up Bootcamp, ASHG Advocacy Award) and won the 2023 Schmidt Top Prize specifically for In Those Genes. Best pitched as: 'a Schmidt Award-winning AI2050 fellow whose work bears on the populations your podcast centers.'"
+  },
+  {
+    name: "Overlooked",
+    url: "https://www.radiogoldproductions.com/overlooked",
+    host: "Golda Arthur",
+    schmidtAlum: "Golda Arthur — 2025 Award, Science Communicator Independent",
+    audience: "general",
+    audienceLabel: "Women's health audience",
+    desc: "Independent women's health podcast from a 20-year audio veteran (BBC, Vox Media). Arthur teaches audio reporting at Columbia.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — narrow scope but high quality",
+    contact: "Via radiogoldproductions.com · @goldaarthur",
+    fitNotes: "Targeted fit for fellows whose AI work directly addresses women's health, reproductive medicine, or gender-related health disparities.",
+    cadence: "Regular · ~45 min",
+    pitchAngle: "Best to identify a specific health-AI fellow with women's-health-relevant work first."
+  },
+  {
+    name: "Howtown",
+    url: "https://www.youtube.com/@Howtown",
+    host: "Joss Fong & Adam Cole",
+    schmidtAlum: "Joss Fong — 2025 Top Award, Science Communicator Independent",
+    audience: "general",
+    audienceLabel: "Evidence-literacy audience on YouTube + audio podcast",
+    desc: "Independent science series co-founded by Fong (formerly head of Vox Video, founding member of Vox's video team) and Adam Cole (formerly NPR's Skunk Bear). Each episode unpacks 'how do experts actually know what they claim to know?' Distributed as both a YouTube series (primary) and an audio podcast (Spotify, Apple Podcasts).",
+    likelihood: "high",
+    likelihoodLabel: "High — methods-focused, loves researchers",
+    contact: "Via youtube.com/@Howtown · jossfong.com",
+    fitNotes: "Excellent fit. Howtown's mission is research-method literacy — perfect for an AI2050 fellow explaining how AI/ML evaluation actually works (or doesn't).",
+    cadence: "Monthly · 15–25 min",
+    pitchAngle: "Pitch a specific 'how do they actually measure X?' angle (e.g., how do AI safety evals work, how is AI capability measured)."
+  },
+  {
+    name: "The Climate Denier's Playbook & Sweatpants (Rollie Williams podcasts)",
+    url: "https://www.climatetownproductions.com",
+    host: "Rollie Williams (with Nicole Conlan on Climate Denier's Playbook)",
+    schmidtAlum: "Rollie Williams — 2025 Top Award, Science Communicator Organizational (award was for the Climate Town YouTube series, not the podcasts; but Williams hosts both)",
+    audience: "general",
+    audienceLabel: "Climate-engaged general public; comedy-friendly tone",
+    desc: "Williams won the 2025 Schmidt Top Award for Climate Town, his comedy-meets-policy YouTube series (~400K+ subs). Climate Town itself is a YouTube channel, not an audio podcast — but Williams hosts two actual podcasts. The Climate Denier's Playbook (Multitude Productions, with Nicole Conlan, second season early 2025) debunks specific climate myths each episode. Sweatpants: A Low-Key Climate Podcast (his solo interview show) features candid conversations with climate scientists, journalists, comedians, and activists.",
+    likelihood: "med",
+    likelihoodLabel: "Medium — only for AI-and-climate fellows",
+    contact: "Via climatetownproductions.com · climatetownsponsorships@gmail.com · Multitude Productions for Climate Denier's Playbook",
+    fitNotes: "Direct fit for fellows working on AI for climate (Rolnick, Donti, Shi, Kerner, Wen). Sweatpants is the better venue for one-on-one fellow interviews; Climate Denier's Playbook is more topical/myth-debunking format.",
+    cadence: "Climate Denier's Playbook: seasonal · Sweatpants: regular interviews",
+    pitchAngle: "Lead with a concrete AI-for-climate result. Comedy-friendly tone wins. Sweatpants is the higher-fit pitch venue for an academic researcher."
+  },
+  {
+    name: "Gastropod",
+    url: "https://gastropod.com",
+    host: "Nicola Twilley & Cynthia Graber",
+    schmidtAlum: "Nicola Twilley — 2025 Award, Science Journalist Freelance",
+    audience: "general",
+    audienceLabel: "Food, science, and history audience",
+    desc: "Long-running food-science podcast on the Vox Media network. Recommended by the NYT and Oprah; one of the most popular independent podcasts.",
+    likelihood: "low",
+    likelihoodLabel: "Low — narrow topical fit",
+    contact: "gastropod.com/contact · nicky@gastropod.com",
+    fitNotes: "Only relevant if an AI2050 fellow's work directly intersects food systems, agriculture, or nutrition (limited overlap).",
+    cadence: "Biweekly · ~45 min",
+    pitchAngle: "Skip unless work clearly bears on food / agriculture / refrigeration / supply chains."
+  }
+];
+
+// AI2050 Fellows
+const fellows = [
+  // 2025 Senior
+  {name:"Alán Aspuru-Guzik", inst:"University of Toronto", year:"2025", level:"senior", areas:["AI for chemistry","Quantum","Materials"]},
+  {name:"Surya Ganguli", inst:"Stanford University", year:"2025", level:"senior", areas:["Theory of deep learning","Neuro-AI"]},
+  {name:"Shirley Ho", inst:"Flatiron Institute & NYU", year:"2025", level:"senior", areas:["AI for cosmology","Foundation models"]},
+  {name:"Sheila McIlraith", inst:"University of Toronto", year:"2025", level:"senior", areas:["Reinforcement learning","Reward specification"]},
+  {name:"Dawn Song", inst:"UC Berkeley", year:"2025", level:"senior", areas:["AI security","Privacy"]},
+  {name:"Philip Torr", inst:"University of Oxford", year:"2025", level:"senior", areas:["Computer vision","AI safety"]},
+  {name:"Luke Zettlemoyer", inst:"University of Washington", year:"2025", level:"senior", areas:["NLP","LLMs"]},
+
+  // 2025 Early Career
+  {name:"David Ifeoluwa Adelani", inst:"Mila Quebec AI Institute", year:"2025", level:"early", areas:["African NLP","Multilingual LLMs"]},
+  {name:"Michael Albergo", inst:"Harvard University", year:"2025", level:"early", areas:["Generative models","Diffusion"]},
+  {name:"Antoine Bosselut", inst:"EPFL", year:"2025", level:"early", areas:["Knowledge in LLMs","Reasoning"]},
+  {name:"Charlotte Bunne", inst:"EPFL", year:"2025", level:"early", areas:["AI for biology","Single-cell"]},
+  {name:"Miles Cranmer", inst:"University of Cambridge", year:"2025", level:"early", areas:["AI for physics","Symbolic regression"]},
+  {name:"Tri Dao", inst:"Princeton University", year:"2025", level:"early", areas:["Efficient training","Architectures"]},
+  {name:"Adam Gleave", inst:"FAR.AI", year:"2025", level:"early", areas:["AI safety","Alignment"]},
+  {name:"Surbhi Goel", inst:"University of Pennsylvania", year:"2025", level:"early", areas:["ML theory","Learning theory"]},
+  {name:"Brian Hie", inst:"Stanford University", year:"2025", level:"early", areas:["AI for biology","Protein design"]},
+  {name:"Natasha Jaques", inst:"University of Washington", year:"2025", level:"early", areas:["Multi-agent RL","Social AI"]},
+  {name:"Hannah Kerner", inst:"Arizona State University", year:"2025", level:"early", areas:["AI for agriculture","Remote sensing"]},
+  {name:"Zongyi Li", inst:"NYU (incoming)", year:"2025", level:"early", areas:["Neural operators","AI for science"]},
+  {name:"Krishna Pillutla", inst:"IIT Madras", year:"2025", level:"early", areas:["Privacy","Generative model evaluation"]},
+  {name:"Lindsey Raymond", inst:"MIT (incoming)", year:"2025", level:"early", areas:["AI & labor","Economics of AI"]},
+  {name:"Martin Schrimpf", inst:"EPFL", year:"2025", level:"early", areas:["Neuro-AI","Brain-inspired models"]},
+  {name:"Weiyan Shi", inst:"Northeastern University", year:"2025", level:"early", areas:["Persuasion","Conversational AI"]},
+  {name:"Tess Smidt", inst:"MIT", year:"2025", level:"early", areas:["Equivariant networks","AI for materials"]},
+  {name:"Melanie Weber", inst:"Harvard University", year:"2025", level:"early", areas:["Geometric ML","Theory"]},
+  {name:"Christian Schroeder de Witt", inst:"University of Oxford", year:"2025", level:"early", areas:["Multi-agent","Cooperative AI"]},
+  {name:"Ellen Zhong", inst:"Princeton University", year:"2025", level:"early", areas:["AI for cryo-EM","Structural biology"]},
+  {name:"Peichen Zhong", inst:"NUS", year:"2025", level:"early", areas:["AI for chemistry","Materials"]},
+
+  // 2024 Senior
+  {name:"David Autor", inst:"MIT", year:"2024", level:"senior", areas:["AI & labor","Economics"]},
+  {name:"Yejin Choi", inst:"Stanford University", year:"2024", level:"senior", areas:["Commonsense","NLP"]},
+  {name:"Carla Gomes", inst:"Cornell University", year:"2024", level:"senior", areas:["AI for sustainability","Computational sustainability"]},
+  {name:"Roger Grosse", inst:"University of Toronto", year:"2024", level:"senior", areas:["AI safety","ML theory"]},
+  {name:"Michael Wooldridge", inst:"University of Oxford", year:"2024", level:"senior", areas:["Multi-agent systems","AI history"]},
+
+  // 2024 Early Career
+  {name:"Sara Beery", inst:"MIT", year:"2024", level:"early", areas:["AI for biodiversity","Computer vision"]},
+  {name:"Sarah Dean", inst:"Cornell University", year:"2024", level:"early", areas:["ML systems","Feedback loops"]},
+  {name:"Tim Dettmers", inst:"Carnegie Mellon University", year:"2024", level:"early", areas:["Efficient inference","Quantization"]},
+  {name:"Simon Du", inst:"University of Washington", year:"2024", level:"early", areas:["ML theory","Optimization"]},
+  {name:"Gabriele Farina", inst:"MIT", year:"2024", level:"early", areas:["Game theory","Multi-agent"]},
+  {name:"Anjalie Field", inst:"Johns Hopkins University", year:"2024", level:"early", areas:["NLP for social science","Bias"]},
+  {name:"Marzyeh Ghassemi", inst:"MIT", year:"2024", level:"early", areas:["Health AI","Fairness"]},
+  {name:"Yoon Kim", inst:"MIT", year:"2024", level:"early", areas:["NLP","Structured prediction"]},
+  {name:"Pang Wei Koh", inst:"University of Washington", year:"2024", level:"early", areas:["Robustness","ML reliability"]},
+  {name:"Aviral Kumar", inst:"Carnegie Mellon University", year:"2024", level:"early", areas:["Reinforcement learning","Offline RL"]},
+  {name:"Raphaël Millière", inst:"University of Oxford", year:"2024", level:"early", areas:["Philosophy of AI","Cognition"]},
+  {name:"Antonio Orvieto", inst:"MPI for Intelligent Systems", year:"2024", level:"early", areas:["Optimization","Theory"]},
+  {name:"Parthe Pandit", inst:"IIT Bombay", year:"2024", level:"early", areas:["Theory","Kernel methods"]},
+  {name:"David Rolnick", inst:"Mila Quebec AI Institute", year:"2024", level:"early", areas:["AI for climate","Climate change"]},
+  {name:"Yuanyuan Shi", inst:"UC San Diego", year:"2024", level:"early", areas:["AI for energy","Power systems"]},
+  {name:"Florian Shkurti", inst:"University of Toronto", year:"2024", level:"early", areas:["Robotics","Field robotics"]},
+  {name:"Bijun Tang", inst:"Nanyang Technological University", year:"2024", level:"early", areas:["AI for materials","2D materials"]},
+  {name:"Ellen Vitercik", inst:"Stanford University", year:"2024", level:"early", areas:["ML theory","Algorithm design"]},
+  {name:"Eric Wong", inst:"University of Pennsylvania", year:"2024", level:"early", areas:["Robustness","Interpretability"]},
+  {name:"Chaowei Xiao", inst:"University of Wisconsin, Madison", year:"2024", level:"early", areas:["AI security","Adversarial ML"]},
+
+  // 2023 Senior
+  {name:"Anima Anandkumar", inst:"Caltech", year:"2023", level:"senior", areas:["AI for science","Tensor methods"]},
+  {name:"Kelly Chibale", inst:"University of Cape Town", year:"2023", level:"senior", areas:["AI for drug discovery","African research"]},
+  {name:"Stephanie Dinkins", inst:"Stony Brook University", year:"2023", level:"senior", areas:["AI & art","AI ethics"]},
+  {name:"Gillian Hadfield", inst:"Johns Hopkins University", year:"2023", level:"senior", areas:["AI governance","Law & AI"]},
+  {name:"Fei-Fei Li", inst:"Stanford University", year:"2023", level:"senior", areas:["Computer vision","Spatial intelligence"]},
+  {name:"Tobias Rees", inst:"Limn", year:"2023", level:"senior", areas:["AI & humanities","Philosophy"]},
+  {name:"Josh Tenenbaum", inst:"MIT", year:"2023", level:"senior", areas:["Cognitive science","Probabilistic programs"]},
+
+  // 2023 Early Career
+  {name:"Amanda Coston", inst:"UC Berkeley", year:"2023", level:"early", areas:["Algorithmic fairness","Causal inference"]},
+  {name:"Jeffrey Ding", inst:"George Washington University", year:"2023", level:"early", areas:["AI policy","US-China AI"]},
+  {name:"Priya Donti", inst:"MIT", year:"2023", level:"early", areas:["AI for climate","Power systems"]},
+  {name:"Linda Eggert", inst:"Stanford University", year:"2023", level:"early", areas:["AI ethics","Philosophy"]},
+  {name:"Chelsea Finn", inst:"Stanford University", year:"2023", level:"early", areas:["Robotics","Meta-learning"]},
+  {name:"Aditya Grover", inst:"UCLA", year:"2023", level:"early", areas:["Generative models","AI for science"]},
+  {name:"Nika Haghtalab", inst:"UC Berkeley", year:"2023", level:"early", areas:["Theory","Multi-agent learning"]},
+  {name:"Dan Hendrycks", inst:"Center for AI Safety", year:"2023", level:"early", areas:["AI safety","X-risk"]},
+  {name:"Atoosa Kasirzadeh", inst:"Carnegie Mellon University", year:"2023", level:"early", areas:["AI ethics","Philosophy"]},
+  {name:"Hima Lakkaraju", inst:"Harvard University", year:"2023", level:"early", areas:["Interpretability","Trustworthy ML"]},
+  {name:"Katarzyna Nowaczyk-Basińska", inst:"University of Cambridge", year:"2023", level:"early", areas:["Death studies","AI & afterlife"]},
+  {name:"Nicolas Papernot", inst:"University of Toronto", year:"2023", level:"early", areas:["Privacy","ML security"]},
+  {name:"Emma Pierson", inst:"UC Berkeley", year:"2023", level:"early", areas:["Health AI","Health disparities"]},
+  {name:"Danish Pruthi", inst:"IISc Bangalore", year:"2023", level:"early", areas:["NLP","Indic languages"]},
+  {name:"Daniel Rock", inst:"University of Pennsylvania", year:"2023", level:"early", areas:["AI & labor","Economics of AI"]},
+  {name:"Jacob Steinhardt", inst:"UC Berkeley", year:"2023", level:"early", areas:["AI safety","Forecasting"]},
+  {name:"Kai Wang", inst:"Georgia Tech", year:"2023", level:"early", areas:["Sustainability","Decision-making"]},
+  {name:"Gege Wen", inst:"Imperial College London", year:"2023", level:"early", areas:["AI for climate","Carbon storage"]},
+  {name:"Haifeng Xu", inst:"University of Chicago", year:"2023", level:"early", areas:["Game theory","Multi-agent"]},
+
+  // 2022 Senior
+  {name:"Erik Brynjolfsson", inst:"Stanford University", year:"2022", level:"senior", areas:["AI & labor","Economics"]},
+  {name:"Percy Liang", inst:"Stanford University", year:"2022", level:"senior", areas:["Foundation models","Evaluation"]},
+  {name:"Daniela Rus", inst:"MIT", year:"2022", level:"senior", areas:["Robotics","Embodied AI"]},
+  {name:"Stuart Russell", inst:"UC Berkeley", year:"2022", level:"senior", areas:["AI safety","Provably beneficial AI"]},
+  {name:"John Tasioulas", inst:"University of Oxford", year:"2022", level:"senior", areas:["AI ethics","Philosophy"]},
+
+  // 2022 Early Career
+  {name:"Gissella Bejarano", inst:"Marist University", year:"2022", level:"early", areas:["Sign-language AI","Indigenous languages"]},
+  {name:"Connor Coley", inst:"MIT", year:"2022", level:"early", areas:["AI for chemistry","Synthesis"]},
+  {name:"Adji Bousso Dieng", inst:"Princeton University", year:"2022", level:"early", areas:["AI for science","Generative models"]},
+  {name:"Sina Fazelpour", inst:"Northeastern University", year:"2022", level:"early", areas:["AI ethics","Values"]},
+  {name:"Dylan Hadfield-Menell", inst:"MIT", year:"2022", level:"early", areas:["Alignment","Reward learning"]},
+  {name:"Sam Kriegman", inst:"Northwestern University", year:"2022", level:"early", areas:["Evolutionary robotics","Embodiment"]},
+  {name:"Jennifer Ngadiuba", inst:"Fermilab", year:"2022", level:"early", areas:["AI for physics","Real-time ML"]},
+  {name:"Aditi Raghunathan", inst:"Carnegie Mellon University", year:"2022", level:"early", areas:["Robustness","Generalization"]},
+  {name:"Elizaveta Semenova", inst:"Imperial College London", year:"2022", level:"early", areas:["Bayesian ML","Public health"]},
+  {name:"Karina Vold", inst:"University of Toronto", year:"2022", level:"early", areas:["AI ethics","Philosophy of mind"]},
+  {name:"Bryan Wilder", inst:"Carnegie Mellon University", year:"2022", level:"early", areas:["AI for social good","Decision-making"]},
+  {name:"Qian Yang", inst:"Cornell University", year:"2022", level:"early", areas:["Human-AI interaction","HCI"]},
+  {name:"John Zerilli", inst:"King's College London", year:"2022", level:"early", areas:["AI ethics","Philosophy"]},
+  {name:"Baobao Zhang", inst:"Syracuse University", year:"2022", level:"early", areas:["AI policy","Public opinion"]},
+  {name:"Huan Zhang", inst:"University of Illinois Urbana-Champaign", year:"2022", level:"early", areas:["Robust ML","Verification"]}
+];
+
+// Curated high-confidence matches (Schmidt-alum podcast → AI2050 fellow pairings)
+const matches = [
+  {
+    podcast: "The Joy of Why",
+    podHost: "Steven Strogatz & Janna Levin",
+    matchTier: "Tier 1 — highest-leverage Schmidt-network venue",
+    fellows: [
+      {name: "Anima Anandkumar", aff: "Caltech · 2023 Senior", reason: "AI for science and tensor methods — Strogatz's mathematical-physics audience would engage deeply."},
+      {name: "Surya Ganguli", aff: "Stanford · 2025 Senior", reason: "Theoretical foundations of deep learning sit precisely in The Joy of Why's wheelhouse — abstract questions, math-rich answers."},
+      {name: "Shirley Ho", aff: "Flatiron Institute & NYU · 2025 Senior", reason: "AI for cosmology and foundation models — Levin (astrophysicist) is the perfect interviewer."},
+      {name: "Alán Aspuru-Guzik", aff: "U Toronto · 2025 Senior", reason: "AI for chemistry, quantum, materials — fundamental-science angle Strogatz gravitates toward."},
+      {name: "Josh Tenenbaum", aff: "MIT · 2023 Senior", reason: "Probabilistic programs and intuitive theories — mathematically rigorous, conceptually accessible."},
+      {name: "Sébastien Bubeck", aff: "OpenAI · 2025 Senior", reason: "Mathematical theory of deep learning. Crisp explainer of 'sparks of AGI' style claims."}
+    ]
+  },
+  {
+    podcast: "Complexity (Santa Fe Institute)",
+    podHost: "Melanie Mitchell",
+    matchTier: "Tier 1 — direct intellectual fit",
+    fellows: [
+      {name: "Josh Tenenbaum", aff: "MIT · 2023 Senior", reason: "Probabilistic programs and intuitive theories — central to Mitchell's intelligence agenda."},
+      {name: "Yejin Choi", aff: "Stanford · 2024 Senior", reason: "Commonsense reasoning is exactly the abstract-reasoning problem Mitchell explores."},
+      {name: "Raphaël Millière", aff: "Oxford · 2024 Early", reason: "Philosophy-of-mind perspectives on LLM cognition; Mitchell's audience would love this."},
+      {name: "Martin Schrimpf", aff: "EPFL · 2025 Early", reason: "Brain-inspired neural models — bridges the human/machine intelligence question."},
+      {name: "Surya Ganguli", aff: "Stanford · 2025 Senior", reason: "Theoretical foundations of intelligence in neural networks."}
+    ]
+  },
+  {
+    podcast: "Opinion Science",
+    podHost: "Andy Luttrell",
+    matchTier: "Tier 1 — psychology of opinion / persuasion fit",
+    fellows: [
+      {name: "Tatsunori Hashimoto", aff: "Stanford · 2023 Early", reason: "Studies how language models shape and reflect opinion — directly in Luttrell's beat."},
+      {name: "Yejin Choi", aff: "Stanford · 2024 Senior", reason: "Common-sense reasoning has a strong psychological-modeling angle that maps to opinion formation."},
+      {name: "Raphaël Millière", aff: "Oxford · 2024 Early", reason: "Philosophy of AI cognition — what it means for AI to 'have an opinion' is on-topic."},
+      {name: "Stephanie Dinkins", aff: "Stony Brook · 2023 Senior", reason: "AI and art / AI ethics — strong fit for an opinion-and-perception lens."}
+    ]
+  },
+  {
+    podcast: "Weather Geeks Podcast",
+    podHost: "J. Marshall Shepherd",
+    matchTier: "Tier 1 — climate / weather / AI-for-Earth fit",
+    fellows: [
+      {name: "Hannah Kerner", aff: "Arizona State · 2025 Early", reason: "AI for agriculture and remote sensing — directly relevant to Shepherd's atmospheric-sciences audience."},
+      {name: "David Rolnick", aff: "Mila · 2024 Early", reason: "Co-founder Climate Change AI — the canonical AI-for-climate guest."},
+      {name: "Yuanyuan Shi", aff: "UC San Diego · 2024 Early", reason: "AI for energy and power systems — concrete climate-resilience angle."},
+      {name: "Gege Wen", aff: "Imperial College London · 2023 Early", reason: "Carbon capture and storage with AI — pairs well with Shepherd's policy-aware framing."}
+    ]
+  },
+  {
+    podcast: "Inside Medicine",
+    podHost: "Jeremy Faust",
+    matchTier: "Tier 2 — health-AI fit",
+    fellows: [
+      {name: "Marzyeh Ghassemi", aff: "MIT · 2024 Early", reason: "Health AI and fairness — Faust's audience cares about both."},
+      {name: "Emma Pierson", aff: "UC Berkeley · 2023 Early", reason: "Health disparities and AI — directly relevant to Inside Medicine's policy beat."},
+      {name: "Brian Hie", aff: "Stanford · 2025 Early", reason: "Protein design and biomedical AI — accessible and newsworthy."},
+      {name: "Charlotte Bunne", aff: "EPFL · 2025 Early", reason: "Single-cell AI for biology — health-adjacent and methodologically novel."}
+    ]
+  },
+  {
+    podcast: "Tecnociencia, el podcast",
+    podHost: "Andrea Obaid Carrión",
+    matchTier: "Tier 1 — Spanish-language / Latin American audience",
+    fellows: [
+      {name: "David Adelani", aff: "Mila · 2025 Early", reason: "Multilingual NLP and African-language AI — strong fit for a global-South audience."},
+      {name: "Antoine Bosselut", aff: "EPFL · 2025 Early", reason: "Language models and multilingual systems — strong fit for non-English-speaking audiences."},
+      {name: "Kelly Chibale", aff: "U Cape Town · 2023 Senior", reason: "AI for drug discovery in African contexts — pairs naturally with Latin American science-comm priorities."},
+      {name: "Sara Beery", aff: "MIT · 2025 Early", reason: "AI for biodiversity and conservation — Latin-American ecological relevance is enormous."}
+    ]
+  },
+  {
+    podcast: "In Those Genes",
+    podHost: "Janina Jeff",
+    matchTier: "Tier 1 — genetics / genomics / underrepresented populations fit",
+    fellows: [
+      {name: "Brian Hie", aff: "Stanford · 2025 Early", reason: "Protein design and genomics ML — Jeff's a senior bioinformatics scientist; the conversation will be substantive."},
+      {name: "Charlotte Bunne", aff: "EPFL · 2025 Early", reason: "Single-cell AI and computational biology — directly intersects Jeff's expertise."},
+      {name: "Emma Pierson", aff: "UC Berkeley · 2023 Early", reason: "Health disparities and AI — Jeff's audience cares deeply about equity in genomic science."},
+      {name: "Marzyeh Ghassemi", aff: "MIT · 2024 Early", reason: "Health AI fairness — natural fit for the show's lens on genetics, identity, and Black culture."}
+    ]
+  },
+  {
+    podcast: "Overlooked",
+    podHost: "Golda Arthur",
+    matchTier: "Tier 2 — women's health / gender-disparities fit",
+    fellows: [
+      {name: "Marzyeh Ghassemi", aff: "MIT · 2024 Early", reason: "Health AI and fairness work has documented gender disparities in clinical AI — a natural Overlooked story."},
+      {name: "Emma Pierson", aff: "UC Berkeley · 2023 Early", reason: "Health disparities research, including gender-related disparities in care — fits Arthur's narrative beat."},
+      {name: "Charlotte Bunne", aff: "EPFL · 2025 Early", reason: "Single-cell biology has direct application to women's-health questions historically under-studied."}
+    ]
+  },
+  {
+    podcast: "Howtown",
+    podHost: "Joss Fong & Adam Cole",
+    matchTier: "Tier 1 — methods literacy fit",
+    fellows: [
+      {name: "Hima Lakkaraju", aff: "Harvard · 2023 Early", reason: "Interpretability methods — perfect for a 'how do we know what AI is doing' episode."},
+      {name: "Percy Liang", aff: "Stanford · 2022 Senior", reason: "AI evaluation and benchmarking — Howtown's exact wheelhouse."},
+      {name: "Pang Wei Koh", aff: "U Washington · 2024 Early", reason: "Robustness evaluation — 'how do they actually test that AI works?'"},
+      {name: "Krishna Pillutla", aff: "IIT Madras · 2025 Early", reason: "Generative model evaluation — methodologically rich, accessible angle."},
+      {name: "Ellen Vitercik", aff: "Stanford · 2024 Early", reason: "ML theory and algorithm design — clear 'how do we know it works?' format fit."}
+    ]
+  },
+  {
+    podcast: "The Climate Denier's Playbook & Sweatpants",
+    podHost: "Rollie Williams",
+    matchTier: "Tier 1 — climate-AI fit",
+    fellows: [
+      {name: "David Rolnick", aff: "Mila · 2024 Early", reason: "Co-founded Climate Change AI; the obvious first guest. Sweatpants is a strong format fit."},
+      {name: "Priya Donti", aff: "MIT · 2023 Early", reason: "Climate Change AI co-founder; accessible communicator on power systems."},
+      {name: "Yuanyuan Shi", aff: "UC San Diego · 2024 Early", reason: "AI for energy and power systems — Williams's audience would engage."},
+      {name: "Hannah Kerner", aff: "Arizona State · 2025 Early", reason: "AI for agriculture and remote sensing — strong climate-adjacent angle."},
+      {name: "Gege Wen", aff: "Imperial · 2023 Early", reason: "Carbon storage with AI — concrete climate solution to discuss."}
+    ]
+  },
+  {
+    podcast: "Gastropod",
+    podHost: "Nicola Twilley & Cynthia Graber",
+    matchTier: "Tier 3 — narrow but real food/agriculture fit",
+    fellows: [
+      {name: "Hannah Kerner", aff: "Arizona State · 2025 Early", reason: "AI for agriculture and remote sensing — direct fit for Gastropod's food-systems beat."},
+      {name: "Sara Beery", aff: "MIT · 2025 Early", reason: "AI for biodiversity and ecological monitoring — touches food-system sustainability angles."}
+    ]
+  }
+];
+
+// =======================================================
+// RENDER
+// =======================================================
+
+const $ = id => document.getElementById(id);
+
+// Update count badges
+$('stat-fellows').textContent = fellows.length;
+$('stat-pods').textContent = externalPods.length;
+$('stat-internal').textContent = internalPods.length;
+$('ct-ext').textContent = externalPods.length;
+$('ct-int').textContent = internalPods.length;
+$('ct-mat').textContent = matches.reduce((s,m) => s + m.fellows.length, 0);
+$('ct-fel').textContent = fellows.length;
+
+const schmidtConnectedCount = externalPods.filter(p => p.schmidtConnection).length;
+$('stat-schmidt').textContent = schmidtConnectedCount;
+
+// Likelihood color helper
+function meterClass(level) { return level === "high" ? "high" : level === "med" ? "med" : "low"; }
+function meterPct(level) { return level === "high" ? 85 : level === "med" ? 55 : 25; }
+
+// Tier label/color helpers
+function tierLabel(t) {
+  return t === 'practice' ? 'Practice' : t === 'midtier' ? 'Mid-tier' : 'Flagship';
+}
+function tierClass(t) {
+  return t === 'practice' ? 'teal' : t === 'midtier' ? 'amber' : 'pink';
+}
+
+// Render external pods
+function renderExternal(filter = "", tier = "", likelihood = "", category = "", schmidt = "") {
+  const grid = $('grid-ext');
+  const filtered = externalPods.filter(p => {
+    const txt = (p.name + p.host + p.audienceLabel + p.desc + (p.bestFitTags || []).join(" ")).toLowerCase();
+    if (filter && !txt.includes(filter.toLowerCase())) return false;
+    if (tier && p.tier !== tier) return false;
+    if (likelihood && p.likelihood !== likelihood) return false;
+    if (category && p.category !== category) return false;
+    if (schmidt === "yes" && !p.schmidtConnection) return false;
+    return true;
+  });
+  grid.innerHTML = filtered.length ? "" : '<div class="empty">No matching podcasts.</div>';
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-header">
+        <div style="flex:1">
+          <div class="card-title">${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.name}<span class="ext-icon">↗</span></a>` : p.name}</div>
+          <div class="card-host">${p.host}</div>
+        </div>
+      </div>
+      <div style="margin: 6px 0 10px;">
+        <span class="tag ${tierClass(p.tier)}">${tierLabel(p.tier)}</span>
+        ${p.schmidtConnection ? '<span class="tag pink" style="margin-left: 4px;">★ Schmidt connection</span>' : ''}
+      </div>
+      <div class="card-desc">${p.desc.slice(0, 130)}${p.desc.length > 130 ? "…" : ""}</div>
+      <div class="meter">
+        <div class="meter-bar"><div class="meter-fill ${meterClass(p.likelihood)}" style="width:${meterPct(p.likelihood)}%"></div></div>
+        <div class="meter-label">${p.likelihoodLabel.split(" — ")[0]}</div>
+      </div>
+      <div class="tags">
+        ${p.bestFitTags.map(t => `<span class="tag">${t}</span>`).join("")}
+      </div>
+      <div class="meta-row">
+        <span><strong>Audience:</strong> ${p.audienceLabel}</span>
+      </div>
+    `;
+    card.onclick = () => openExternalModal(p);
+    grid.appendChild(card);
+  });
+}
+
+// Render internal pods
+function renderInternal() {
+  const grid = $('grid-int');
+  grid.innerHTML = "";
+  internalPods.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-header">
+        <div style="flex:1">
+          <div class="card-title">${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.name}<span class="ext-icon">↗</span></a>` : p.name}</div>
+          <div class="card-host">${p.host}</div>
+        </div>
+      </div>
+      <div style="margin: 6px 0 12px;">
+        <span class="tag pink">★ Schmidt Awards alum</span>
+      </div>
+      <div class="card-desc">${p.desc.slice(0, 140)}${p.desc.length > 140 ? "…" : ""}</div>
+      <div class="meter">
+        <div class="meter-bar"><div class="meter-fill ${meterClass(p.likelihood)}" style="width:${meterPct(p.likelihood)}%"></div></div>
+        <div class="meter-label">${p.likelihoodLabel.split(" — ")[0]}</div>
+      </div>
+      <div class="meta-row">
+        <span><strong>Audience:</strong> ${p.audienceLabel}</span>
+      </div>
+    `;
+    card.onclick = () => openInternalModal(p);
+    grid.appendChild(card);
+  });
+}
+
+// Render matches
+function renderMatches() {
+  const wrap = $('grid-mat');
+  wrap.innerHTML = `<p style="color:var(--text-2); margin-bottom: 18px; font-size: 14px;">High-confidence pairings between Schmidt-alum podcasts and AI2050 fellows. These are ranked by topic fit and likely host receptivity.</p>`;
+  matches.forEach(m => {
+    const block = document.createElement('div');
+    block.className = 'match-card';
+    block.innerHTML = `
+      <div class="match-header">
+        <div class="match-pod">
+          <div class="match-pod-name">${m.podcast}</div>
+          <div class="match-pod-host">Host: ${m.podHost}</div>
+          <div class="match-pod-tag">${m.matchTier}</div>
+        </div>
+      </div>
+      <div class="match-fellows">
+        ${m.fellows.map(f => `
+          <div class="match-fellow">
+            <div>
+              <div class="match-fellow-name">${f.name}</div>
+              <div class="match-fellow-aff">${f.aff}</div>
+            </div>
+            <div class="match-reason">${f.reason}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    wrap.appendChild(block);
+  });
+}
+
+// Render fellows
+function renderFellows(filter = "", cohort = "", level = "") {
+  const grid = $('grid-fel');
+  const filtered = fellows.filter(f => {
+    const txt = (f.name + f.inst + f.areas.join(" ")).toLowerCase();
+    if (filter && !txt.includes(filter.toLowerCase())) return false;
+    if (cohort && f.year !== cohort) return false;
+    if (level && f.level !== level) return false;
+    return true;
+  });
+  grid.innerHTML = filtered.length ? "" : '<div class="empty">No matching fellows.</div>';
+  filtered.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-header">
+        <div style="flex:1">
+          <div class="card-title">${f.name}</div>
+          <div class="card-host">${f.inst}</div>
+        </div>
+        <span class="tag ${f.level === 'senior' ? 'purple' : 'teal'}">${f.year} ${f.level === 'senior' ? 'Senior' : 'Early'}</span>
+      </div>
+      <div class="tags" style="margin-top:8px">
+        ${f.areas.map(a => `<span class="tag">${a}</span>`).join("")}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// Render strategy
+function renderStrategy() {
+  $('grid-strat').innerHTML = `
+    <div class="strategy">
+      <h3>Why this works</h3>
+      <p>Schmidt Sciences funds both AI2050 fellows and the National Academies Eric and Wendy Schmidt Awards for Excellence in Science Communications. The two communities have never been formally connected — but they share a sponsor and are explicitly designed for cross-pollination. A fellow placed on a Schmidt-alum podcast benefits the fellow (audience reach), the host (high-quality guests), and Schmidt Sciences (visible cross-program impact).</p>
+    </div>
+
+    <div class="card" style="margin-bottom: 14px; border-left: 3px solid var(--pink);">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--pink);">★ Schmidt-connected podcasts (highest leverage)</h3>
+      <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 10px;">A comprehensive review of all 96 Eric and Wendy Schmidt Awards for Excellence in Science Communications awardees (2022–2025), verified against primary National Academies sources, identified the following Schmidt-alum-hosted podcasts. Plus: one external podcast (The Quanta Podcast) features Schmidt awardee Jordana Cepelewicz as math editor — flagged with the ★ Schmidt connection badge in the External tab.</p>
+      <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 8px; font-weight: 600;">Schmidt-alum-hosted podcasts (11 active podcasts + 1 connector entry):</p>
+      <ul style="padding-left: 22px; color: var(--text-2); line-height: 1.7;">
+        <li><strong>The Joy of Why</strong> (Quanta) — <strong>Steven Strogatz</strong>, 2023 Top Prize specifically for this podcast. Highest-leverage venue overall.</li>
+        <li><strong>Complexity</strong> (Santa Fe Institute) — <strong>Melanie Mitchell</strong>, 2025 Top Prize. Mitchell co-hosted the 2024 "Nature of Intelligence" season with Abha Eli Phoboo.</li>
+        <li><strong>Opinion Science</strong> — <strong>Andy Luttrell</strong>, 2024 award specifically for this podcast.</li>
+        <li><strong>Weather Geeks Podcast</strong> (The Weather Channel) — <strong>J. Marshall Shepherd</strong>, 2024 Top Prize partly for this podcast.</li>
+        <li><strong>In Those Genes</strong> — <strong>Janina Jeff</strong>, 2023 Top Prize specifically for this podcast.</li>
+        <li><strong>Inside Medicine</strong> (Substack + podcast) — <strong>Jeremy Faust</strong>, 2025 award.</li>
+        <li><strong>Tecnociencia, el podcast</strong> (Spanish-language) — <strong>Andrea Obaid Carrión</strong>, 2023 Top Prize. New podcast launched September 2025 alongside her ongoing Tu Nuevo ADN radio show.</li>
+        <li><strong>Overlooked</strong> — <strong>Golda Arthur</strong>, 2025 award.</li>
+        <li><strong>Howtown</strong> — <strong>Joss Fong</strong>, 2025 Top Prize.</li>
+        <li><strong>The Climate Denier's Playbook & Sweatpants</strong> (Rollie Williams's actual podcasts) — <strong>Rollie Williams</strong>, 2025 Top Prize for Climate Town YouTube. Note: Climate Town itself is a YouTube channel, not a podcast; Williams hosts these two podcasts separately.</li>
+        <li><strong>Gastropod</strong> — <strong>Nicola Twilley</strong>, 2025 award.</li>
+      </ul>
+      <p style="color: var(--text-2); line-height: 1.7; margin-top: 10px; font-style: italic;"><strong>Audit notes (verified against primary sources):</strong> All 96 SciComms awardees across 2022–2025 were reviewed. The list above reflects who currently hosts a podcast where AI2050 fellows could realistically appear as guests. Awardees whose primary work is books, columns, articles, video (YouTube/TikTok), social media, newsletters, or one-off podcast contributions are not listed here. Notable Schmidt awardees who fit that category and were considered but excluded include Chanda Prescod-Weinstein (2022 Top Prize — column at New Scientist, books), Brian Christian (2022 — books on AI alignment), Ben Rein (2023 — Instagram/TikTok creator), Calvin Mackie (2023 — STEM education work), and Britt Wray (2023 Top Prize — currently runs the Unthinkable / Gen Dread newsletter and directs CIRCLE at Stanford Psychiatry; previously hosted BBC and CBC podcasts but not currently hosting). There may also be podcast hosts in adjacent Schmidt programs (Schmidt Science Polymaths, AI in Sci Fellows, etc.) who would require a separate targeted search.</p>
+    </div>
+
+    <div class="card" style="margin-bottom: 14px;">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">The three-tier ladder strategy</h3>
+      <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 12px;">For each AI2050 fellow, plan a sequence across three tiers — practice → mid-tier → flagship. Even senior researchers benefit from one or two practice rounds before going on flagship shows; the format is different from academic talks, and the audience expectations are different too.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px;">
+        <div style="border-left: 3px solid var(--teal); padding: 10px 14px; background: var(--surface);">
+          <strong style="color: var(--teal);">Tier 1 — Practice shows (do first)</strong>
+          <p style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Smaller audiences (~3–25K), academic-friendly hosts, low-stakes setting. Examples: The Gradient, Data Skeptic, Brain Inspired, TalkRL, AXRP, Increments, Learning Bayesian Statistics, New Books Network. Goal: build confidence, learn the format, refine the "5-minute version" of the work.</p>
+        </div>
+        <div style="border-left: 3px solid var(--amber); padding: 10px 14px; background: var(--surface);">
+          <strong style="color: var(--amber);">Tier 2 — Mid-tier specialist shows (do next)</strong>
+          <p style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Specialist or intellectual audiences (~30K–500K). Examples: TWIML, Cognitive Revolution, ML Street Talk, 80,000 Hours, Mindscape, Conversations with Tyler, Ezra Klein, On with Kara Swisher, Big Technology, ChinaTalk, Lawfare. Goal: real audience reach + high-quality intellectual conversation.</p>
+        </div>
+        <div style="border-left: 3px solid var(--pink); padding: 10px 14px; background: var(--surface);">
+          <strong style="color: var(--pink);">Tier 3 — Flagship shows (selectively, for senior fellows)</strong>
+          <p style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Massive reach (~500K+ to millions). Examples: Lex Fridman, Dwarkesh, Hard Fork, Freakonomics, The Daily, Radiolab, TED Radio Hour. Reserved for Senior Fellows with a major news hook, recent book, or distinctive public-facing work. Personal intros via past guests dramatically increase odds.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 14px;">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Recommended sequence for the program</h3>
+      <ol style="padding-left: 22px; color: var(--text-2); line-height: 1.7;">
+        <li><strong>Survey fellows first.</strong> Send a 5-minute opt-in survey: are they interested in podcasts, what's their current "hook" (paper / project / book), and what audiences would best amplify their work?</li>
+        <li><strong>Run a "first podcast" cohort.</strong> Place 8–12 interested fellows on Tier 1 practice shows over 3 months. The Gradient, Data Skeptic, TalkRL, Brain Inspired, AXRP, Increments, New Books Network, and Learning Bayesian Statistics together can absorb a significant cohort.</li>
+        <li><strong>Activate the Schmidt-alum bench in parallel.</strong> Start with Melanie Mitchell (SFI Complexity), Joss Fong (Howtown), and Rollie Williams (Climate Town). A Schmidt-staff intro is much higher leverage than cold pitches.</li>
+        <li><strong>Promote successful Tier 1 fellows to Tier 2.</strong> Once a fellow has 1–2 episodes under their belt, target TWIML, Cognitive Revolution, 80,000 Hours, Mindscape, Your Undivided Attention, ChinaTalk based on topic.</li>
+        <li><strong>Selectively chase Tier 3.</strong> For Senior Fellows with a strong public hook, attempt Lex / Dwarkesh / Hard Fork / Ezra Klein. These should be a small number of high-investment outreach efforts, not bulk pitches.</li>
+        <li><strong>Track and report.</strong> A simple shared spreadsheet (fellow × podcast × tier × status) gives Schmidt Sciences a measurable cross-program-impact metric.</li>
+      </ol>
+    </div>
+
+    <div class="card" style="margin-bottom: 14px;">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">What to ask fellows first</h3>
+      <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 8px;">Before any pitching, send a short opt-in survey to AI2050 fellows asking:</p>
+      <ul style="padding-left: 22px; color: var(--text-2); line-height: 1.7;">
+        <li>Are you interested in podcast appearances? (yes / no / only senior-tier shows)</li>
+        <li>Have you done podcasts before? (none / 1–3 / many) — helps assign tier</li>
+        <li>What's your current "hook" — recent paper, public-facing project, or upcoming release?</li>
+        <li>Which audiences would best amplify your work? (researchers / general public / policy / builders)</li>
+        <li>Existing podcast appearances we should know about?</li>
+        <li>Any podcasts you've personally been wanting to be on?</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Quick wins vs longer plays</h3>
+      <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 6px;"><strong style="color:var(--text)">Quick wins (3 months):</strong> 8–12 placements on Tier 1 practice shows. These shows actively want academic guests and have predictable booking pipelines.</p>
+      <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 6px;"><strong style="color:var(--text)">Medium plays (3–6 months):</strong> Multi-episode partnership with Mitchell/SFI Complexity around an "intelligence" theme; Tier 2 placements on TWIML, Cognitive Revolution, 80,000 Hours, ChinaTalk, Mindscape.</p>
+      <p style="color: var(--text-2); line-height: 1.7;"><strong style="color:var(--text)">Long shots (6–12 months):</strong> Lex Fridman, Dwarkesh, Hard Fork, Ezra Klein placements for the most senior or distinctive Senior Fellows. Build via personal intros, not cold pitches.</p>
+    </div>
+  `;
+}
+
+// Modal handlers
+function openExternalModal(p) {
+  const schmidtBlock = p.schmidtConnection ? `
+    <h3 style="color: var(--pink) !important;">★ Schmidt awardee connection</h3>
+    <p style="background: var(--pink-light); padding: 12px 14px; border-radius: 8px; color: #4B1528;">${p.schmidtConnection}</p>
+  ` : '';
+
+  $('modal-content').innerHTML = `
+    <h2>${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--border-2);">${p.name} <span style="font-size: 14px; color: var(--text-2);">↗</span></a>` : p.name}</h2>
+    <p style="color: var(--text-2); margin-bottom: 8px;">${p.host}</p>
+    <div class="tags" style="margin: 8px 0;">
+      <span class="tag ${tierClass(p.tier)}">${tierLabel(p.tier)} · ${p.category.replace('-', ' / ')}</span>
+      <span class="tag ${p.likelihood === 'high' ? 'teal' : p.likelihood === 'med' ? 'amber' : 'coral'}">${p.likelihoodLabel}</span>
+      ${p.schmidtConnection ? '<span class="tag pink">★ Schmidt connection</span>' : ''}
+    </div>
+
+    ${schmidtBlock}
+
+    <h3>About</h3>
+    <p>${p.desc}</p>
+
+    <h3>Audience</h3>
+    <p>${p.audienceLabel}</p>
+
+    <h3>Cadence</h3>
+    <p>${p.cadence}</p>
+
+    <h3>Fit notes for AI2050 fellows</h3>
+    <p>${p.fitNotes}</p>
+
+    <h3>Best-fit topics</h3>
+    <div class="tags">${p.bestFitTags.map(t => `<span class="tag purple">${t}</span>`).join("")}</div>
+
+    <h3>Website &amp; contact</h3>
+    <p>${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" style="color: var(--accent); word-break: break-all;">${p.url}</a><br>` : ''}${p.contact}</p>
+  `;
+  $('modal-bg').classList.add('open');
+}
+
+function openInternalModal(p) {
+  $('modal-content').innerHTML = `
+    <h2>${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--border-2);">${p.name} <span style="font-size: 14px; color: var(--text-2);">↗</span></a>` : p.name}</h2>
+    <p style="color: var(--text-2); margin-bottom: 6px;">${p.host}</p>
+    <div class="tags" style="margin: 8px 0;">
+      <span class="tag pink">★ ${p.schmidtAlum}</span>
+    </div>
+
+    <h3>About</h3>
+    <p>${p.desc}</p>
+
+    <h3>Audience</h3>
+    <p>${p.audienceLabel}</p>
+
+    <h3>Likelihood</h3>
+    <p>${p.likelihoodLabel}</p>
+
+    <h3>Fit notes for AI2050 fellows</h3>
+    <p>${p.fitNotes}</p>
+
+    <h3>Pitch angle</h3>
+    <p>${p.pitchAngle}</p>
+
+    <h3>Cadence</h3>
+    <p>${p.cadence}</p>
+
+    <h3>Website &amp; contact</h3>
+    <p>${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" style="color: var(--accent); word-break: break-all;">${p.url}</a><br>` : ''}${p.contact}</p>
+  `;
+  $('modal-bg').classList.add('open');
+}
+
+function closeModal() { $('modal-bg').classList.remove('open'); }
+$('modal-bg').onclick = () => closeModal();
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const which = tab.dataset.tab;
+    ['ext','int','mat','fel','strat'].forEach(k => {
+      $('grid-' + k).style.display = (which === ({ext:'ext', internal:'int', matches:'mat', fellows:'fel', strategy:'strat'}[which])) ? '' : 'none';
+    });
+    $('grid-ext').style.display = which === 'external' ? 'grid' : 'none';
+    $('grid-int').style.display = which === 'internal' ? 'grid' : 'none';
+    $('grid-mat').style.display = which === 'matches' ? 'block' : 'none';
+    $('grid-fel').style.display = which === 'fellows' ? 'grid' : 'none';
+    $('grid-strat').style.display = which === 'strategy' ? 'block' : 'none';
+
+    $('filterbar-ext').style.display = which === 'external' ? 'flex' : 'none';
+    $('filterbar-fellows').style.display = which === 'fellows' ? 'flex' : 'none';
+  };
+});
+
+// Filters
+const refreshExt = () => renderExternal($('search-ext').value, $('filter-tier').value, $('filter-likelihood').value, $('filter-category').value, $('filter-schmidt').value);
+$('search-ext').oninput = refreshExt;
+$('filter-tier').onchange = refreshExt;
+$('filter-likelihood').onchange = refreshExt;
+$('filter-category').onchange = refreshExt;
+$('filter-schmidt').onchange = refreshExt;
+
+$('search-fel').oninput = e => renderFellows(e.target.value, $('filter-cohort').value, $('filter-level').value);
+$('filter-cohort').onchange = () => renderFellows($('search-fel').value, $('filter-cohort').value, $('filter-level').value);
+$('filter-level').onchange = () => renderFellows($('search-fel').value, $('filter-cohort').value, $('filter-level').value);
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Initial render
+renderExternal();
+renderInternal();
+renderMatches();
+renderFellows();
+renderStrategy();
+</script>
