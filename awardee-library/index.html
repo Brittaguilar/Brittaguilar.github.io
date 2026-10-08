@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=d268092c-3fcc-4133-8d49-c202d7eafedb
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SciComms Awardee Library</title>
+<meta name="description" content="Books written by recipients of the Schmidt Awards for Excellence in Science Communications.">
+<style>
+  :root{
+    --ink:#1B2430; --ink-2:#242F3D; --paper:#F4EFE4; --paper-bright:#FBF8F1;
+    --gold:#C9A24B; --gold-soft:#E3CD8F; --slate:#9AA5B8;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--serif);
+       -webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 72px}
+  header.masthead{text-align:center;padding:52px 0 0}
+  .eyebrow{font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+           color:var(--gold-soft);margin:0 0 14px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,40px);letter-spacing:.4px;
+     color:var(--paper-bright);margin:0}
+  .title-rule{width:64px;height:2px;background:var(--gold);margin:18px auto 0;opacity:.85}
+  .blurb{font-family:var(--sans);font-size:12.5px;color:var(--slate);margin:16px auto 0;max-width:52ch;line-height:1.6}
+  .controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:26px 0 8px}
+  .controls label{font-family:var(--sans);font-size:12.5px;color:var(--paper)}
+  select{background:rgba(201,162,75,.15);color:var(--paper);border:1px solid rgba(201,162,75,.45);
+         border-radius:6px;font-family:var(--sans);font-size:12.5px;padding:5px 10px;cursor:pointer}
+  select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .count{font-family:var(--sans);font-size:11.5px;color:var(--slate);text-align:center;margin:4px 0 0;
+         font-variant-numeric:tabular-nums}
+  .section-divider{display:flex;align-items:center;gap:16px;margin:46px 0 22px}
+  .section-divider .rule{flex:1;height:1px;background:rgba(244,239,228,.16)}
+  .section-label{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+                 color:var(--gold-soft);white-space:nowrap}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:30px 22px}
+  .card{text-decoration:none;color:inherit;display:block}
+  /* the [hidden] attribute must beat .card's display:block, or filtering silently does nothing */
+  .card[hidden],.shelf[hidden]{display:none!important}
+  .cover-frame{position:relative;aspect-ratio:2/3;border-radius:3px;overflow:hidden;background:var(--ink-2);
+    box-shadow:inset 0 1px 0 0 rgba(255,255,255,.06),0 14px 24px -10px rgba(0,0,0,.55),0 2px 4px 0 rgba(0,0,0,.4);
+    transition:transform .22s ease, box-shadow .22s ease}
+  .fallback{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:16px 12px;text-align:center;background:linear-gradient(160deg,#25313f,#1c2734);gap:7px}
+  .fallback-rule{width:26px;height:2px;background:var(--gold);opacity:.8}
+  .fallback-title{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--paper-bright);line-height:1.3}
+  .fallback-author{font-family:var(--sans);font-size:9.5px;color:var(--gold-soft);line-height:1.3}
+  .fallback-note{font-family:var(--sans);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-top:2px}
+  .cover-frame img{width:100%;height:100%;object-fit:cover;display:block}
+  .order-tag{position:absolute;left:0;right:0;bottom:0;background:var(--gold);color:var(--ink);
+    font-family:var(--sans);font-size:10px;letter-spacing:.03em;text-align:center;padding:5px 4px;
+    transform:translateY(100%);transition:transform .22s ease}
+  .card:hover .cover-frame,.card:focus-visible .cover-frame{transform:translateY(-4px);
+    box-shadow:inset 0 1px 0 0 rgba(255,255,255,.08),0 20px 30px -10px rgba(0,0,0,.65),0 3px 6px 0 rgba(0,0,0,.45)}
+  .card:hover .order-tag,.card:focus-visible .order-tag{transform:translateY(0)}
+  .card:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:4px}
+  .caption{text-align:center;margin-top:11px}
+  .book-title{font-family:var(--serif);font-size:12.5px;font-weight:600;color:#F6F2E7;line-height:1.35}
+  .book-author{font-family:var(--sans);font-size:10.5px;letter-spacing:.02em;color:var(--gold-soft);margin-top:3px}
+  .book-year{font-family:var(--sans);font-size:9.5px;color:var(--slate);margin-top:2px}
+  footer{border-top:1px solid rgba(244,239,228,.14);margin-top:56px;padding-top:20px;text-align:center}
+  footer p{font-family:var(--sans);font-size:11px;color:var(--slate);margin:0 0 6px;line-height:1.6}
+  @media (max-width:520px){
+    .grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:24px 16px}
+    header.masthead{padding-top:34px}
+    .order-tag{transform:translateY(0)}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Schmidt Science Communications Awards</p>
+    <h1>SciComms Awardee Library</h1>
+    <div class="title-rule"></div>
+    <p class="blurb">Books written by recipients of the Schmidt Awards for Excellence in Science Communications.</p>
+    <div class="controls">
+      <label for="yearFilter">Show books from:</label>
+      <select id="yearFilter">
+        <option value="0">All years</option>
+        <option value="2020">2020 and later</option>
+        <option value="2022">2022 and later</option>
+        <option value="2024">2024 and later</option>
+      </select>
+    </div>
+    <p class="count" id="count"></p>
+  </header>
+    <section class="shelf" data-shelf="space">
+      <div class="section-divider"><span class="rule"></span><span class="section-label">Space &amp; Cosmos</span><span class="rule"></span></div>
+      <div class="grid">
+      <a class="card" href="https://www.sarahscoles.com/making-contact.html" target="_blank" rel="noopener noreferrer" data-year="2017">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9781681774411-L.jpg" alt="Making Contact cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Making Contact</div>
+          <div class="book-author">Sarah Scoles</div>
+          <div class="book-year">2017</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/they-are-already-here-ufo-culture-and-why-we-see-saucers-sarah-scoles/832f0012a9441502" target="_blank" rel="noopener noreferrer" data-year="2020">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9781643133058-L.jpg" alt="They Are Already Here cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">They Are Already Here</div>
+          <div class="book-author">Sarah Scoles</div>
+          <div class="book-year">2020</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/the-disordered-cosmos-a-journey-into-dark-matter-spacetime-and-dreams-deferred-chanda-prescod-weinstein/14887308" target="_blank" rel="noopener noreferrer" data-year="2021">
+        <div class="cover-frame">
+          <img src="https://www.hachettebookgroup.com/wp-content/uploads/2020/07/9781541724709-1.jpg" alt="The Disordered Cosmos cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Disordered Cosmos</div>
+          <div class="book-author">Chanda Prescod-Weinstein</div>
+          <div class="book-year">Mar 2021</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.barnesandnoble.com/w/astronomical-mindfulness-christopher-g-de-pree/1139756414" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9780063041325_p0.jpg" alt="Astronomical Mindfulness cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Astronomical Mindfulness</div>
+          <div class="book-author">Christopher G. De Pree and Sarah Scoles</div>
+          <div class="book-year">2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/our-moon-how-earth-s-celestial-companion-transformed-the-planet-guided-evolution-and-made-us-who-we-are-rebecca-boyle/969b6a40ad3a5562" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://images.penguinrandomhouse.com/cover/9780593129722" alt="Our Moon cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Our Moon</div>
+          <div class="book-author">Rebecca Boyle</div>
+          <div class="book-year">Jan 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/painting-the-cosmos-how-art-and-science-intersect-to-reveal-the-secrets-of-the-universe-nia-imara/21574745" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <img src="https://benbellabooks.com/wp-content/uploads/2024/08/painting-the-cosmos.jpg" alt="Painting the Cosmos cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Painting the Cosmos</div>
+          <div class="book-author">Nia Imara</div>
+          <div class="book-year">Feb 2025</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Weird+Universe+Erika+Hamden" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <img src="https://images-us.bookshop.org/ingram/9781684817283.jpg" alt="Weird Universe cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Weird Universe</div>
+          <div class="book-author">Erika Hamden</div>
+          <div class="book-year">2025</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/the-edge-of-space-time-particles-poetry-and-the-cosmic-dream-boogie-chanda-prescod-weinstein/695fbf177a5a2971" target="_blank" rel="noopener noreferrer" data-year="2026">
+        <div class="cover-frame">
+          <img src="https://images.penguinrandomhouse.com/cover/9780593701683" alt="The Edge of Space-Time cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Edge of Space-Time</div>
+          <div class="book-author">Chanda Prescod-Weinstein</div>
+          <div class="book-year">Apr 2026</div>
+        </div>
+      </a>
+      </div>
+    </section>
+    <section class="shelf" data-shelf="mind">
+      <div class="section-divider"><span class="rule"></span><span class="section-label">Mind, Math &amp; AI</span><span class="rule"></span></div>
+      <div class="grid">
+      <a class="card" href="https://openlibrary.org/search?q=Analogy-Making+as+Perception+Melanie+Mitchell" target="_blank" rel="noopener noreferrer" data-year="1993">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/2341850-L.jpg" alt="Analogy-Making as Perception cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Analogy-Making as Perception</div>
+          <div class="book-author">Melanie Mitchell</div>
+          <div class="book-year">1993</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Nonlinear+Dynamics+and+Chaos+Strogatz" target="_blank" rel="noopener noreferrer" data-year="1994">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/135126-L.jpg" alt="Nonlinear Dynamics and Chaos cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Nonlinear Dynamics and Chaos</div>
+          <div class="book-author">Steven Strogatz</div>
+          <div class="book-year">1994</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=An+Introduction+to+Genetic+Algorithms+Mitchell" target="_blank" rel="noopener noreferrer" data-year="1996">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/150291-L.jpg" alt="An Introduction to Genetic Algorithms cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">An Introduction to Genetic Algorithms</div>
+          <div class="book-author">Melanie Mitchell</div>
+          <div class="book-year">1996</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+Grasshopper+King+Ellenberg" target="_blank" rel="noopener noreferrer" data-year="2003">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/8310751-L.jpg" alt="The Grasshopper King cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Grasshopper King</div>
+          <div class="book-author">Jordan Ellenberg</div>
+          <div class="book-year">2003</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/books/sync-the-emerging-science-of-spontaneous-order/9780786868445" target="_blank" rel="noopener noreferrer" data-year="2003">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9780786868445-L.jpg" alt="Sync cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Sync</div>
+          <div class="book-author">Steven Strogatz</div>
+          <div class="book-year">2003</div>
+        </div>
+      </a>
+      <a class="card" href="https://press.princeton.edu/books/paperback/9780691150383/the-calculus-of-friendship" target="_blank" rel="noopener noreferrer" data-year="2009">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9780691150383-L.jpg" alt="The Calculus of Friendship cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Calculus of Friendship</div>
+          <div class="book-author">Steven Strogatz</div>
+          <div class="book-year">2009</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.barnesandnoble.com/w/complexity-melanie-mitchell/1117028990" target="_blank" rel="noopener noreferrer" data-year="2009">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9780199798100_p0.jpg" alt="Complexity: A Guided Tour cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Complexity: A Guided Tour</div>
+          <div class="book-author">Melanie Mitchell</div>
+          <div class="book-year">2009</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/the-most-human-human-what-talking-with-computers-teaches-us-about-what-it-means-to-be-alive-brian-christian/58bf62434ac1f6b6" target="_blank" rel="noopener noreferrer" data-year="2011">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9780307476708-L.jpg" alt="The Most Human Human cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Most Human Human</div>
+          <div class="book-author">Brian Christian</div>
+          <div class="book-year">2011</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/the-joy-of-x-a-guided-tour-of-math-from-one-to-infinity-steven-strogatz/18467887" target="_blank" rel="noopener noreferrer" data-year="2012">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9780544105850_p0.jpg" alt="The Joy of x cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Joy of x</div>
+          <div class="book-author">Steven Strogatz</div>
+          <div class="book-year">2012</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=How+Not+to+Be+Wrong+Ellenberg" target="_blank" rel="noopener noreferrer" data-year="2014">
+        <div class="cover-frame">
+          <img src="https://images-us.bookshop.org/ingram/9780143127536.jpg" alt="How Not to Be Wrong cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">How Not to Be Wrong</div>
+          <div class="book-author">Jordan Ellenberg</div>
+          <div class="book-year">2014</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/algorithms-to-live-by-the-computer-science-of-human-decisions-brian-christian/dc7c4ac3d84798ff" target="_blank" rel="noopener noreferrer" data-year="2016">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9781627790369-L.jpg" alt="Algorithms to Live By cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Algorithms to Live By</div>
+          <div class="book-author">Brian Christian</div>
+          <div class="book-year">2016</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/infinite-powers-how-calculus-reveals-the-secrets-of-the-universe-steven-strogatz/18467894" target="_blank" rel="noopener noreferrer" data-year="2019">
+        <div class="cover-frame">
+          <img src="https://images.squarespace-cdn.com/content/v1/5436e695e4b07f1e91b30155/1679923210967-BK62V07DS855YB1NUGI5/infinite-powers-nyt-bestseller.png" alt="Infinite Powers cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Infinite Powers</div>
+          <div class="book-author">Steven Strogatz</div>
+          <div class="book-year">2019</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/artificial-intelligence-a-guide-for-thinking-humans-melanie-mitchell/10357873" target="_blank" rel="noopener noreferrer" data-year="2019">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9781250404855_p0.jpg" alt="Artificial Intelligence: A Guide for Thinking Humans cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Artificial Intelligence: A Guide for Thinking Humans</div>
+          <div class="book-author">Melanie Mitchell</div>
+          <div class="book-year">2019</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/the-alignment-problem-machine-learning-and-human-values-brian-christian/c9c8fc954a2f3865" target="_blank" rel="noopener noreferrer" data-year="2020">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9780393635829_p0.jpg" alt="The Alignment Problem cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Alignment Problem</div>
+          <div class="book-author">Brian Christian</div>
+          <div class="book-year">2020</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Shape+Jordan+Ellenberg" target="_blank" rel="noopener noreferrer" data-year="2021">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/10827887-L.jpg" alt="Shape cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Shape</div>
+          <div class="book-author">Jordan Ellenberg</div>
+          <div class="book-year">2021</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.press.jhu.edu/books/title/12813/math-drag" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9781421448749_p0.jpg" alt="Math in Drag cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Math in Drag</div>
+          <div class="book-author">Kyne Santos</div>
+          <div class="book-year">Mar 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/why-brains-need-friends-the-neuroscience-of-social-connection-ben-rein-phd/5e22fd2c89748189" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <img src="https://images.penguinrandomhouse.com/cover/9780593850848" alt="Why Brains Need Friends cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Why Brains Need Friends</div>
+          <div class="book-author">Ben Rein</div>
+          <div class="book-year">Oct 2025</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Psychology+of+Attitudes+and+Attitude+Change" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">The Psychology of Attitudes and Attitude Change</div><div class="fallback-author">Maio, Haddock, Verplanken and Andrew Luttrell</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Psychology of Attitudes and Attitude Change</div>
+          <div class="book-author">Maio, Haddock, Verplanken and Andrew Luttrell</div>
+          <div class="book-year">2025</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Human-Computer+Interaction+and+US+Law" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Human-Computer Interaction and U.S. Law</div><div class="fallback-author">Casey Fiesler, with Lazar, Wentz and Kushalnagar</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Human-Computer Interaction and U.S. Law</div>
+          <div class="book-author">Casey Fiesler, with Lazar, Wentz and Kushalnagar</div>
+          <div class="book-year">2025</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.hachettebookgroup.com/titles/steven-strogatz-2/big-math/9781668659335/" target="_blank" rel="noopener noreferrer" data-year="2026">
+        <div class="cover-frame">
+          <img src="https://www.hachettebookgroup.com/wp-content/uploads/2026/03/9781668659335.jpg" alt="Big Math cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Big Math</div>
+          <div class="book-author">Steven Strogatz</div>
+          <div class="book-year">Nov 2026</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Social+Psychology+Aronson+Lewis" target="_blank" rel="noopener noreferrer" data-year="2026">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Social Psychology</div><div class="fallback-author">Aronson, Wilson, Sommers, Page-Gould and Neil Lewis Jr</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Social Psychology</div>
+          <div class="book-author">Aronson, Wilson, Sommers, Page-Gould and Neil Lewis Jr</div>
+          <div class="book-year">2026</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+Prediction+Revolution+Huckins" target="_blank" rel="noopener noreferrer" data-year="2026">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">The Prediction Revolution</div><div class="fallback-author">Grace Huckins</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Prediction Revolution</div>
+          <div class="book-author">Grace Huckins</div>
+          <div class="book-year">2026</div>
+        </div>
+      </a>
+      </div>
+    </section>
+    <section class="shelf" data-shelf="planet">
+      <div class="section-divider"><span class="rule"></span><span class="section-label">Planet, Health &amp; Society</span><span class="rule"></span></div>
+      <div class="grid">
+      <a class="card" href="https://openlibrary.org/search?q=Vovo+esta+com+cancer+Dahis" target="_blank" rel="noopener noreferrer" data-year="0">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Vovô está com câncer: E agora?</div><div class="fallback-author">Daniel Dahis, with Cristina Ruas</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Vovô está com câncer: E agora?</div>
+          <div class="book-author">Daniel Dahis, with Cristina Ruas</div>
+          <div class="book-year">Year unconfirmed</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Gene+Wars+Charles+Piller" target="_blank" rel="noopener noreferrer" data-year="1988">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Gene Wars</div><div class="fallback-author">Charles Piller</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Gene Wars</div>
+          <div class="book-author">Charles Piller</div>
+          <div class="book-year">1988</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+Fail-Safe+Society+Charles+Piller" target="_blank" rel="noopener noreferrer" data-year="1991">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/325096-L.jpg" alt="The Fail-Safe Society cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Fail-Safe Society</div>
+          <div class="book-author">Charles Piller</div>
+          <div class="book-year">1991</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.amazon.com/View-Roof-Lessons-Life-Business/dp/0975481037" target="_blank" rel="noopener noreferrer" data-year="2005">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9780975481035-L.jpg" alt="A View from the Roof cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">A View from the Roof</div>
+          <div class="book-author">Calvin Mackie</div>
+          <div class="book-year">2005</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Letters+to+a+Bullied+Girl" target="_blank" rel="noopener noreferrer" data-year="2008">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/8360796-L.jpg" alt="Letters to a Bullied Girl cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Letters to a Bullied Girl</div>
+          <div class="book-author">Olivia Gardner, with Emily Buder and Sarah Buder</div>
+          <div class="book-year">2008</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=La+intemperie+Dobrich" target="_blank" rel="noopener noreferrer" data-year="2009">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">La intemperie</div><div class="fallback-author">Miguel Dobrich</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">La intemperie</div>
+          <div class="book-author">Miguel Dobrich</div>
+          <div class="book-year">2009</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/a/106434/9781851689651" target="_blank" rel="noopener noreferrer" data-year="2012">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9781851689651-L.jpg" alt="Radio Congo cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Radio Congo</div>
+          <div class="book-author">Ben Rawlence</div>
+          <div class="book-year">2012</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.channelzro.com/product-page/grandma-s-hands-cherished-moments-of-faith-and-wisdom" target="_blank" rel="noopener noreferrer" data-year="2012">
+        <div class="cover-frame">
+          <img src="https://static.wixstatic.com/media/20f3e2_1a3902896fbc4072bcbc9825007bee97~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="Grandma&#x27;s Hands cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Grandma&#x27;s Hands</div>
+          <div class="book-author">Calvin Mackie</div>
+          <div class="book-year">2012</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Inheritance+Moalem+LaPlante" target="_blank" rel="noopener noreferrer" data-year="2014">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/10280631-L.jpg" alt="Inheritance cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Inheritance</div>
+          <div class="book-author">Sharon Moalem with Matthew D. LaPlante</div>
+          <div class="book-year">2014</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/books/city-of-thorns-nine-lives-in-the-world-s-largest-refugee-camp/9781250118738" target="_blank" rel="noopener noreferrer" data-year="2016">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/isbn/9781250118738-L.jpg" alt="City of Thorns cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">City of Thorns</div>
+          <div class="book-author">Ben Rawlence</div>
+          <div class="book-year">2016</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Tecnociencia+Obaid" target="_blank" rel="noopener noreferrer" data-year="2016">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Tecnociencia: 30 rutas de turismo científico en Chile</div><div class="fallback-author">Andrea Obaid Carrión</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Tecnociencia: 30 rutas de turismo científico en Chile</div>
+          <div class="book-author">Andrea Obaid Carrión</div>
+          <div class="book-year">2016</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Rise+of+the+Necrofauna+Britt+Wray" target="_blank" rel="noopener noreferrer" data-year="2017">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/8803335-L.jpg" alt="Rise of the Necrofauna cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Rise of the Necrofauna</div>
+          <div class="book-author">Britt Wray</div>
+          <div class="book-year">2017</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+Longevity+Plan+Day+LaPlante" target="_blank" rel="noopener noreferrer" data-year="2017">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/8814550-L.jpg" alt="The Longevity Plan cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Longevity Plan</div>
+          <div class="book-author">John D. Day and Jane Ann Day with Matthew LaPlante</div>
+          <div class="book-year">2017</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Tecnociencia+parte+2+Obaid" target="_blank" rel="noopener noreferrer" data-year="2018">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Tecnociencia, parte 2</div><div class="fallback-author">Andrea Obaid Carrión</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Tecnociencia, parte 2</div>
+          <div class="book-author">Andrea Obaid Carrión</div>
+          <div class="book-year">2018</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Superlative+Biology+of+Extremes+LaPlante" target="_blank" rel="noopener noreferrer" data-year="2019">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/14850938-L.jpg" alt="Superlative cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Superlative</div>
+          <div class="book-author">Matthew LaPlante</div>
+          <div class="book-year">2019</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Lifespan+Sinclair+LaPlante" target="_blank" rel="noopener noreferrer" data-year="2019">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/8780421-L.jpg" alt="Lifespan cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Lifespan</div>
+          <div class="book-author">David A. Sinclair with Matthew D. LaPlante</div>
+          <div class="book-year">2019</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=40+Days+40+Nights+Shepherd" target="_blank" rel="noopener noreferrer" data-year="2020">
+        <div class="cover-frame">
+          <img src="https://images-us.bookshop.org/ingram/9798640443790.jpg" alt="40 Days 40 Nights cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">40 Days 40 Nights</div>
+          <div class="book-author">Ayana Shepherd and Marshall Shepherd</div>
+          <div class="book-year">2020</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+Race+Awakening+of+2020+Shepherd" target="_blank" rel="noopener noreferrer" data-year="2020">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">The Race Awakening of 2020</div><div class="fallback-author">Marshall Shepherd</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Race Awakening of 2020</div>
+          <div class="book-author">Marshall Shepherd</div>
+          <div class="book-year">2020</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Until+Proven+Safe+Twilley+Manaugh" target="_blank" rel="noopener noreferrer" data-year="2021">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/11486767-L.jpg" alt="Until Proven Safe cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Until Proven Safe</div>
+          <div class="book-author">Geoff Manaugh and Nicola Twilley</div>
+          <div class="book-year">2021</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+Plant+Hunter+Cassandra+Quave" target="_blank" rel="noopener noreferrer" data-year="2021">
+        <div class="cover-frame">
+          <img src="https://images-us.bookshop.org/ingram/9781984879134.jpg" alt="The Plant Hunter cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Plant Hunter</div>
+          <div class="book-author">Cassandra Quave</div>
+          <div class="book-year">2021</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+AFib+Cure+Day+Bunch+LaPlante" target="_blank" rel="noopener noreferrer" data-year="2021">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">The AFib Cure</div><div class="fallback-author">John D. Day and T. Jared Bunch with Matthew D. LaPlante</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The AFib Cure</div>
+          <div class="book-author">John D. Day and T. Jared Bunch with Matthew D. LaPlante</div>
+          <div class="book-year">2021</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/the-treeline-the-last-forest-and-the-future-of-life-on-earth-ben-rawlence/2c867ec44e6bf852" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://cdn.penguin.co.uk/dam-assets/books/9781529112504/9781529112504-jacket-large.jpg" alt="The Treeline cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Treeline</div>
+          <div class="book-author">Ben Rawlence</div>
+          <div class="book-year">Jan 2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Water+Always+Wins+Erica+Gies" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/13141052-L.jpg" alt="Water Always Wins cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Water Always Wins</div>
+          <div class="book-author">Erica Gies</div>
+          <div class="book-year">2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Generation+Dread+Britt+Wray" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/12433378-L.jpg" alt="Generation Dread cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Generation Dread</div>
+          <div class="book-author">Britt Wray</div>
+          <div class="book-year">2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Plastics+Walker-Franklin+Jambeck" target="_blank" rel="noopener noreferrer" data-year="2023">
+        <div class="cover-frame">
+          <img src="https://images-us.bookshop.org/ingram/9780262547017.jpg" alt="Plastics cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Plastics</div>
+          <div class="book-author">Imari Walker-Franklin, with Jenna Jambeck</div>
+          <div class="book-year">2023</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Invisible+Wonders+Anand+Varma" target="_blank" rel="noopener noreferrer" data-year="2023">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">National Geographic Invisible Wonders</div><div class="fallback-author">Anand Varma</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">National Geographic Invisible Wonders</div>
+          <div class="book-author">Anand Varma</div>
+          <div class="book-year">2023</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Cocina+LAB+Obaid" target="_blank" rel="noopener noreferrer" data-year="2023">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Cocina LAB</div><div class="fallback-author">Andrea Obaid Carrión, with Alejandro Roth</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Cocina LAB</div>
+          <div class="book-author">Andrea Obaid Carrión, with Alejandro Roth</div>
+          <div class="book-year">2023</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/countdown-the-blinding-future-of-nuclear-weapons-sarah-scoles/20276601" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9781645030058_p0.jpg" alt="Countdown cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Countdown</div>
+          <div class="book-author">Sarah Scoles</div>
+          <div class="book-year">Feb 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/frostbite-how-refrigeration-changed-our-food-our-planet-and-ourselves-nicola-twilley/20644494" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://images.penguinrandomhouse.com/cover/9780735223288" alt="Frostbite cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Frostbite</div>
+          <div class="book-author">Nicola Twilley</div>
+          <div class="book-year">Jun 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/sharks-don-t-sink-adventures-of-a-rogue-shark-scientist-jasmin-graham/e2fe6be2fab61c26" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://images.penguinrandomhouse.com/cover/9780593685273" alt="Sharks Don&#x27;t Sink cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Sharks Don&#x27;t Sink</div>
+          <div class="book-author">Jasmin Graham</div>
+          <div class="book-year">Jul 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.barnesandnoble.com/w/humpback-highway-vanessa-pirotta/1144870544" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://cdn.shopify.com/s/files/1/0674/5433/7265/files/9781742237978_p0.jpg" alt="Humpback Highway cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Humpback Highway</div>
+          <div class="book-author">Vanessa Pirotta</div>
+          <div class="book-year">Apr 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://bookshop.org/p/books/doctored-fraud-arrogance-and-tragedy-in-the-quest-to-cure-alzheimer-s-charles-piller/21534137" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <img src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781668031254/doctored-9781668031254_hr.jpg" alt="Doctored cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Doctored</div>
+          <div class="book-author">Charles Piller</div>
+          <div class="book-year">Feb 2025</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.penguin.co.uk/books/461562/think-like-a-forest-by-rawlence-ben/9781787335257" target="_blank" rel="noopener noreferrer" data-year="2026">
+        <div class="cover-frame">
+          <img src="https://cdn.penguin.co.uk/dam-assets/books/9781787335257/9781787335257-jacket-large.jpg" alt="Think Like a Forest cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Think Like a Forest</div>
+          <div class="book-author">Ben Rawlence</div>
+          <div class="book-year">Apr 2026</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=The+River+in+the+Sea+Rawlence" target="_blank" rel="noopener noreferrer" data-year="2027">
+        <div class="cover-frame">
+          <img src="https://images-us.bookshop.org/ingram/9781787335523.jpg" alt="The River in the Sea cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The River in the Sea</div>
+          <div class="book-author">Ben Rawlence</div>
+          <div class="book-year">2027</div>
+        </div>
+      </a>
+      </div>
+    </section>
+    <section class="shelf" data-shelf="kids">
+      <div class="section-divider"><span class="rule"></span><span class="section-label">Children's Books</span><span class="rule"></span></div>
+      <div class="grid">
+      <a class="card" href="https://openlibrary.org/search?q=Dr+Fred+Weather+Watch+Bortz+Shepherd" target="_blank" rel="noopener noreferrer" data-year="2000">
+        <div class="cover-frame">
+          <img src="https://covers.openlibrary.org/b/id/12104849-L.jpg" alt="Dr. Fred&#x27;s Weather Watch cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Dr. Fred&#x27;s Weather Watch</div>
+          <div class="book-author">Fred Bortz and Marshall Shepherd</div>
+          <div class="book-year">2000</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.planetadelibros.cl/libro-el-universo-segun-carlota-1-asteroides-y-estrellas-fugaces/337668" target="_blank" rel="noopener noreferrer" data-year="2021">
+        <div class="cover-frame">
+          <img src="https://pdlibroschl.cdnstatics2.com/usuaris/libros/thumbs/910e8583-809b-49f9-8819-f108c8e3f110/d_1200_1200/portada_el-universo-segun-carlota_teresa-paneque_202106151511.webp" alt="El Universo Según Carlota 1 cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">El Universo Según Carlota 1</div>
+          <div class="book-author">Teresa Paneque Carreño</div>
+          <div class="book-year">Jul 2021</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.penguinrandomhouse.com/books/651965/no-boundaries-by-gabby-salazar-and-clare-fieseler/" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://images.penguinrandomhouse.com/cover/9781426371769" alt="No Boundaries cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">No Boundaries</div>
+          <div class="book-author">Gabby Salazar and Clare Fieseler</div>
+          <div class="book-year">Feb 2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.publishing.csiro.au/book/8029/" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://www.publishing.csiro.au/covers-high/8029.jpg" alt="The Voyage of Whale and Calf cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">The Voyage of Whale and Calf</div>
+          <div class="book-author">Vanessa Pirotta</div>
+          <div class="book-year">Apr 2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.planetadelibros.cl/libro-el-universo-segun-carlota-2-agujeros-negros-y-explosiones-estelares/350074" target="_blank" rel="noopener noreferrer" data-year="2022">
+        <div class="cover-frame">
+          <img src="https://pdlibroschl.cdnstatics2.com/usuaris/libros/thumbs/89435819-c994-4347-8f86-f1a196ea0ce1/d_1200_1200/portada_el-universo-segun-carlota_teresa-paneque_202202111806.webp" alt="El Universo Según Carlota 2 cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">El Universo Según Carlota 2</div>
+          <div class="book-author">Teresa Paneque Carreño</div>
+          <div class="book-year">Mar 2022</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.planetadelibros.cl/libro-el-universo-segun-carlota-3-vida-extraterrestre-y-exoplanetas/374244" target="_blank" rel="noopener noreferrer" data-year="2023">
+        <div class="cover-frame">
+          <img src="https://pdlibroschl.cdnstatics2.com/usuaris/libros/thumbs/59abce89-0087-48c1-bb34-133fe19a277e/d_1200_1200/portada_el-universo-segun-carlota-vida-extraterrestre-y-exoplanetas_teresa-paneque_202302131428.webp" alt="El Universo Según Carlota 3 cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">El Universo Según Carlota 3</div>
+          <div class="book-author">Teresa Paneque Carreño</div>
+          <div class="book-year">Mar 2023</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.publishing.csiro.au/book/8104/" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://www.publishing.csiro.au/covers-high/8104.jpg" alt="Oceans at Night cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Oceans at Night</div>
+          <div class="book-author">Vanessa Pirotta</div>
+          <div class="book-year">Jun 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.planetadelibros.cl/libro-el-universo-segun-carlota-4-galaxias-lejanas-y-materia-oscura/408704" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <img src="https://pdlibroschl.cdnstatics2.com/usuaris/libros/thumbs/20e1b6bd-7168-496f-add6-b6a16c73cb96/d_1200_1200/portada_el-universo-segun-carlota-4-galaxias-lejanas-y-materia-oscura_teresa-paneque_202409041647.webp" alt="El Universo Según Carlota 4 cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">El Universo Según Carlota 4</div>
+          <div class="book-author">Teresa Paneque Carreño</div>
+          <div class="book-year">Oct 2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://openlibrary.org/search?q=Abecedario+astronomico+Paneque" target="_blank" rel="noopener noreferrer" data-year="2024">
+        <div class="cover-frame">
+          <div class="fallback"><div class="fallback-rule"></div><div class="fallback-title">Abecedario astronómico</div><div class="fallback-author">Teresa Paneque Carreño</div><div class="fallback-note">No cover on file</div></div>
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">Abecedario astronómico</div>
+          <div class="book-author">Teresa Paneque Carreño</div>
+          <div class="book-year">2024</div>
+        </div>
+      </a>
+      <a class="card" href="https://www.planetadelibros.cl/libro-el-universo-segun-carlota-5-inicio-y-final-del-cosmos/428312" target="_blank" rel="noopener noreferrer" data-year="2025">
+        <div class="cover-frame">
+          <img src="https://pdlibroschl.cdnstatics2.com/usuaris/libros/thumbs/53fe33fe-69b2-480f-9293-8f769f6ce826/d_1200_1200/portada_el-universo-segun-carlota-cosmos-en-expansion-y-materia-oscura_teresa-paneque_202508061655.webp" alt="El Universo Según Carlota 5 cover" loading="lazy" referrerpolicy="no-referrer">
+          <div class="order-tag">View book &#8594;</div>
+        </div>
+        <div class="caption">
+          <div class="book-title">El Universo Según Carlota 5</div>
+          <div class="book-author">Teresa Paneque Carreño</div>
+          <div class="book-year">Sep 2025</div>
+        </div>
+      </a>
+      </div>
+    </section>
+  <footer>
+    <p>Compiled from the Book Index column of the SciComms Awards Program people table. Awardees only; every cover verified against the book it belongs to.</p>
+    <p>Covers are served from publisher sites, Bookshop.org and the Open Library cover API.</p>
+  </footer>
+</div>
+<script>
+  (function () {
+    var sel = document.getElementById('yearFilter');
+    var countEl = document.getElementById('count');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+    var shelves = Array.prototype.slice.call(document.querySelectorAll('.shelf'));
+
+    function apply() {
+      var min = parseInt(sel.value, 10) || 0;
+      var shown = 0;
+      var authors = Object.create(null);
+
+      cards.forEach(function (card) {
+        var year = parseInt(card.getAttribute('data-year'), 10);
+        var visible = !isNaN(year) && year >= min;
+        card.hidden = !visible;
+        if (visible) {
+          shown++;
+          authors[card.querySelector('.book-author').textContent] = true;
+        }
+      });
+
+      shelves.forEach(function (shelf) {
+        var any = shelf.querySelector('.card:not([hidden])');
+        shelf.hidden = !any;
+      });
+
+      countEl.textContent = shown + (shown === 1 ? ' book' : ' books');
+    }
+
+    sel.addEventListener('change', apply);
+    apply();
+  })();
+</script>
+</body>
+</html>
