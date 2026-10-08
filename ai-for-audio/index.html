@@ -1,0 +1,1623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=c853f0b2-2599-4bb4-b074-1cdfb45eb6c4
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AI for Audio Journalists</title>
+  <meta name="description" content="A practical guide to using AI in audio journalism: how the models work, working through tape and documents, production management, guardrails, documented newsroom cases and copyable prompts. Verified September 2026.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235646CC'/%3E%3Crect x='12.5' y='6' width='7' height='12' rx='3.5' fill='%23fff'/%3E%3Cpath d='M9 15a7 7 0 0 0 14 0' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 22v4' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AI for Audio Journalists">
+  <meta property="og:description" content="A practical guide to using AI in audio journalism: how the models work, working through tape and documents, production management, guardrails, documented newsroom cases and copyable prompts. Verified September 2026.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+  <style>
+    :root{
+      color-scheme: light dark;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    html{ -webkit-text-size-adjust: 100%; }
+    body{ margin: 0; }
+    img{ max-width: 100%; }
+    [hidden]{ display: none !important; }
+  </style>
+  <style>
+  :root{
+    --bg:#EDF0F2; --surface:#F8FAFB; --surface-2:#E4E9EC; --line:#C7D1D7; --line-soft:#DBE2E6;
+    --text:#131C22; --text-2:#4B5A64;
+    --accent:#AE5D08; --accent-soft:#F7E4C8; --accent-line:#E0B579;
+    --teal:#0B605C; --teal-soft:#D6E9E7;
+    --danger:#992819; --danger-soft:#F7DCD6;
+    --ok:#2C6A31; --ok-soft:#DCEBDC;
+    --shadow:0 1px 2px rgba(19,28,34,.06), 0 6px 18px -12px rgba(19,28,34,.30);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D141A; --surface:#151F26; --surface-2:#1D2B34; --line:#2B3B46; --line-soft:#213039;
+      --text:#E3EAEF; --text-2:#9BADB8;
+      --accent:#F0A83F; --accent-soft:#3A2910; --accent-line:#6B4C1C;
+      --teal:#55C4BB; --teal-soft:#0F2E2C;
+      --danger:#F08573; --danger-soft:#3A1913;
+      --ok:#83C489; --ok-soft:#17301A;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -14px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D141A; --surface:#151F26; --surface-2:#1D2B34; --line:#2B3B46; --line-soft:#213039;
+    --text:#E3EAEF; --text-2:#9BADB8;
+    --accent:#F0A83F; --accent-soft:#3A2910; --accent-line:#6B4C1C;
+    --teal:#55C4BB; --teal-soft:#0F2E2C;
+    --danger:#F08573; --danger-soft:#3A1913;
+    --ok:#83C489; --ok-soft:#17301A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -14px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:"Newsreader",Georgia,"Times New Roman",serif;
+    font-size:17px; line-height:1.62; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;text-wrap:balance;margin:0;line-height:1.12;letter-spacing:-.015em}
+  .mono,code,kbd{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  a{color:var(--accent);text-underline-offset:2px;text-decoration-thickness:1px}
+  a:hover{text-decoration-thickness:2px}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  
+  /* ---------- shell ---------- */
+  .wrap{max-width:940px;margin:0 auto;padding-inline:20px}
+  header.masthead{border-bottom:1px solid var(--line);background:var(--surface)}
+  .masthead .wrap{padding-block:26px 0}
+  .kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+  h1{font-size:clamp(30px,6vw,46px);font-weight:800;margin:10px 0 8px}
+  .standfirst{font-size:clamp(16px,2.4vw,19px);color:var(--text-2);max-width:62ch;margin:0 0 20px}
+  
+  /* ---------- tabs ---------- */
+  .tabrail{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 22px;margin:0}
+  .tab{
+    appearance:none;border:1px solid var(--line);background:var(--surface);
+    color:var(--text-2);font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:13.5px;
+    padding:8px 15px;cursor:pointer;white-space:nowrap;border-radius:999px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:color .15s,background .15s,border-color .15s
+  }
+  .tab:hover{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+  .tab[aria-selected="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .tab[aria-selected="true"] .tnum{opacity:.65}
+  .tnum{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);font-weight:600;opacity:.85}
+  
+  main .wrap{padding-block:34px 60px}
+  .lede{font-size:19px;color:var(--text);max-width:64ch;margin:0 0 4px}
+  h2.panel-h{font-size:clamp(22px,4vw,30px);font-weight:800;margin:0 0 10px}
+  h3{font-size:19px;font-weight:700;margin:34px 0 10px}
+  h4{font-size:15px;font-weight:700;margin:0 0 6px;font-family:"Bricolage Grotesque",sans-serif}
+  p{max-width:66ch;margin:0 0 14px}
+  ul,ol{max-width:66ch}
+  li{margin-bottom:7px}
+  hr.rule{border:none;border-top:1px solid var(--line-soft);margin:34px 0}
+  
+  /* ---------- components ---------- */
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:22px;height:3px;border-radius:2px;background:var(--accent);flex:none}
+  
+  .steps{list-style:none;padding:0;counter-reset:step;margin:14px 0 0;max-width:68ch}
+  .steps>li{counter-increment:step;position:relative;padding-left:66px;margin-bottom:20px}
+  .steps>li::before{
+    content:"00:" counter(step,decimal-leading-zero);
+    position:absolute;left:0;top:3px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);
+    padding:2px 6px;border-radius:4px;letter-spacing:.01em
+  }
+  .steps h4{margin-bottom:3px}
+  .steps p{margin-bottom:6px;font-size:16px}
+  
+  figure{margin:26px 0;padding:0}
+  figure .figbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
+  figure svg{display:block;max-width:100%;height:auto;margin:0 auto;color:var(--text)}
+  @media (max-width:660px){figure svg{min-width:620px}}
+  figcaption{font-size:13.5px;color:var(--text-2);margin-top:9px;max-width:70ch;line-height:1.5}
+  
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 16px;margin:20px 0;max-width:66ch}
+  .note.warn{border-color:var(--danger)}
+  .note.good{border-color:var(--ok)}
+  .note.info{border-color:var(--teal)}
+  .note h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .note.warn h4{color:var(--danger)} .note.good h4{color:var(--ok)} .note.info h4{color:var(--teal)}
+  .note p{margin-bottom:0;font-size:16px}
+  
+  .grid{display:grid;gap:14px;margin:18px 0}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+  
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 17px;box-shadow:var(--shadow)}
+  .card p{font-size:15px;margin-bottom:0;color:var(--text-2)}
+  .card p + p{margin-top:8px}
+  .card .src{font-family:"IBM Plex Mono",monospace;font-size:11.5px;display:block;margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft)}
+  .card .who{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:15.5px;margin-bottom:2px;display:block}
+  .card .meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-2);display:block;margin-bottom:9px}
+  .card .scale{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);font-weight:600;display:block;margin-bottom:8px}
+  
+  table{border-collapse:collapse;width:100%;font-size:14.5px;font-family:"IBM Plex Mono",monospace}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:18px 0;background:var(--surface)}
+  th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  th{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--text-2);font-weight:600;background:var(--surface-2)}
+  tr:last-child td{border-bottom:none}
+  td strong{font-weight:600}
+  
+  .prompt{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin:14px 0;overflow:hidden}
+  .prompt-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .prompt-head h4{font-size:14px;margin:0}
+  .prompt pre{margin:0;padding:14px;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.62;white-space:pre-wrap;word-break:break-word;color:var(--text)}
+  .copy{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--text-2);font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:5px;cursor:pointer;flex:none}
+  .copy:hover{color:var(--accent);border-color:var(--accent-line)}
+  .copy.done{color:var(--ok);border-color:var(--ok)}
+  
+  .anat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px 0;margin:20px 0;font-family:"IBM Plex Mono",monospace;font-size:13.5px;line-height:1.6}
+  .anat-row{display:grid;grid-template-columns:118px 1fr;gap:14px;padding:9px 16px;align-items:start}
+  .anat-row + .anat-row{border-top:1px dashed var(--line-soft)}
+  .anat-lab{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+  @media (max-width:560px){.anat-row{grid-template-columns:1fr;gap:3px}}
+  
+  .pillrow{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px}
+  .pill{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text-2)}
+  .pill.no{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+  .pill.yes{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+  
+  .reflist{list-style:none;padding:0;margin:10px 0 0;max-width:70ch}
+  .reflist li{padding-left:18px;position:relative;font-size:15px;margin-bottom:9px}
+  .reflist li::before{content:"→";position:absolute;left:0;color:var(--accent);font-family:"IBM Plex Mono",monospace;font-size:13px}
+  .reflist .why{color:var(--text-2);font-size:14px}
+  
+  footer{border-top:1px solid var(--line);background:var(--surface);margin-top:0}
+  footer .wrap{padding-block:22px 30px}
+  svg .c-accent{fill:var(--accent)}
+  svg .s-accent{stroke:var(--accent)}
+  svg .c-danger{fill:var(--danger)}
+  svg .s-danger{stroke:var(--danger)}
+  svg .c-ok{fill:var(--ok)}
+  svg .s-ok{stroke:var(--ok)}
+  footer p{font-size:13.5px;color:var(--text-2);max-width:72ch;margin-bottom:8px}
+  
+  /* ---------- added in the restructure ---------- */
+  h3, .card, .prompt{scroll-margin-top:18px}
+  
+  .toc{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:16px 0 30px;padding:13px 15px;border:1px solid var(--line-soft);border-radius:9px;background:var(--surface)}
+  .toc-lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);margin-right:3px}
+  .toc a{font-family:"IBM Plex Mono",monospace;font-size:12px;text-decoration:none;color:var(--text-2);border:1px solid var(--line);padding:4px 10px;border-radius:999px;transition:color .15s,border-color .15s,background .15s}
+  .toc a:hover{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+  
+  .stamp{display:inline-flex;gap:9px;align-items:baseline;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);padding:5px 11px;border-radius:5px;margin:18px 0 6px}
+  .stamp b{font-weight:600}
+  .stamp a{color:var(--accent)}
+  
+  .note.wex{border-color:var(--accent)}
+  .note.wex h4{color:var(--accent)}
+  
+  .jump{font-family:"IBM Plex Mono",monospace;font-size:12px;text-decoration:none;border-bottom:1px dashed var(--accent-line);white-space:nowrap}
+  .jump:hover{border-bottom-style:solid}
+  .evlink{font-family:"IBM Plex Mono",monospace;font-size:11px;display:inline-block;margin-top:10px;text-decoration:none;border-bottom:1px dashed var(--accent-line)}
+  .card .evlink{margin-top:11px}
+  
+  .fork .card{border-left:3px solid var(--accent)}
+  .fork .who{color:var(--accent)}
+  
+  .flash{animation:flash 1.6s ease-out 1}
+  @keyframes flash{0%,55%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 3px transparent}}
+  
+  .backto{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--text-2);margin:-4px 0 18px}
+  .backto a{text-decoration:none;border-bottom:1px dashed var(--accent-line)}
+  
+  .statstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px;margin:20px 0 10px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:9px;padding:13px 14px}
+  .stat .v{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:25px;line-height:1.05;color:var(--text);letter-spacing:-.02em}
+  .stat .u{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-top:5px;display:block}
+  .stat .w{font-size:13.5px;color:var(--text-2);margin-top:7px;display:block;line-height:1.35}
+  .chartwrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
+  @media (max-width:660px){.chartwrap svg{min-width:600px}}
+  .chartlegend{display:flex;flex-wrap:wrap;gap:16px;margin:12px 2px 0;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--text-2)}
+  .chartlegend span{display:inline-flex;align-items:center;gap:7px}
+  .chartlegend i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+  .evgroup{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);margin:34px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  
+  
+  /* ---------- chart series tokens ---------- */
+  :root{--k1:#A96A00;--k2:#2160A8;--k3:#9B2F86}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--k1:#C68519;--k2:#4C91D6;--k3:#C96BB4}}
+  :root[data-theme="dark"]{--k1:#C68519;--k2:#4C91D6;--k3:#C96BB4}
+  svg .k1{fill:var(--k1)} svg .k2{fill:var(--k2)} svg .k3{fill:var(--k3)}
+  svg .ring{stroke:var(--surface);stroke-width:2}
+  svg .grid{stroke:currentColor;opacity:.16}
+  svg .axtext{fill:currentColor;opacity:.62}
+  svg .valtext{fill:currentColor;opacity:.9}
+  
+  /* ---------- per-section color system ---------- */
+  .sec0{--accent:#5646CC;--accent-soft:#EBE9F9;--accent-line:#B8B1EA}
+  .sec1{--accent:#0091A8;--accent-soft:#E0F2F5;--accent-line:#94D1DA}
+  .sec2{--accent:#A96A00;--accent-soft:#F5EDE0;--accent-line:#DBC094}
+  .sec3{--accent:#9B2F86;--accent-soft:#F3E6F0;--accent-line:#D5A8CC}
+  .sec4{--accent:#A82C17;--accent-soft:#F5E6E3;--accent-line:#DAA69E}
+  .sec5{--accent:#2160A8;--accent-soft:#E4ECF5;--accent-line:#A2BCDA}
+  .sec6{--accent:#2F7D4F;--accent-soft:#E6EFEA;--accent-line:#A8C8B5}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){}
+    :root:not([data-theme="light"]) .sec0{--accent:#8B80EB;--accent-soft:#21253B;--accent-line:#47467A}
+    :root:not([data-theme="light"]) .sec1{--accent:#29A6BD;--accent-soft:#112B34;--accent-line:#1A5765}
+    :root:not([data-theme="light"]) .sec2{--accent:#C68519;--accent-soft:#2B261A;--accent-line:#62481A}
+    :root:not([data-theme="light"]) .sec3{--accent:#C96BB4;--accent-soft:#2B2233;--accent-line:#633C61}
+    :root:not([data-theme="light"]) .sec4{--accent:#DE6A43;--accent-soft:#2E2221;--accent-line:#6D3C2D}
+    :root:not([data-theme="light"]) .sec5{--accent:#4C91D6;--accent-soft:#172838;--accent-line:#2A4E70}
+    :root:not([data-theme="light"]) .sec6{--accent:#3FA569;--accent-soft:#152B27;--accent-line:#24573E}
+  }
+  :root[data-theme="dark"] .sec0{--accent:#8B80EB;--accent-soft:#21253B;--accent-line:#47467A}
+  :root[data-theme="dark"] .sec1{--accent:#29A6BD;--accent-soft:#112B34;--accent-line:#1A5765}
+  :root[data-theme="dark"] .sec2{--accent:#C68519;--accent-soft:#2B261A;--accent-line:#62481A}
+  :root[data-theme="dark"] .sec3{--accent:#C96BB4;--accent-soft:#2B2233;--accent-line:#633C61}
+  :root[data-theme="dark"] .sec4{--accent:#DE6A43;--accent-soft:#2E2221;--accent-line:#6D3C2D}
+  :root[data-theme="dark"] .sec5{--accent:#4C91D6;--accent-soft:#172838;--accent-line:#2A4E70}
+  :root[data-theme="dark"] .sec6{--accent:#3FA569;--accent-soft:#152B27;--accent-line:#24573E}
+  </style>
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap">
+    <p class="kicker"><span class="dot"></span> A working guide · verified September 2026</p>
+    <h1>AI for Audio Journalists</h1>
+    <p class="standfirst">A practical guide for people who make audio: what these tools actually are, what they are useful for, what newsrooms have already tried, and where it goes wrong. Claude is used for the worked examples, but almost everything here applies to any of them.</p>
+    <div class="tabrail" role="tablist" aria-label="Sections">
+      <button class="tab sec0" role="tab" id="t-primer" aria-controls="p-primer" aria-selected="true"><span class="tnum">00</span> How AI works</button>
+      <button class="tab sec1" role="tab" id="t-start" aria-controls="p-start" aria-selected="false"><span class="tnum">01</span> Start here</button>
+      <button class="tab sec2" role="tab" id="t-work" aria-controls="p-work" aria-selected="false"><span class="tnum">02</span> Tape &amp; documents</button>
+      <button class="tab sec3" role="tab" id="t-prod" aria-controls="p-prod" aria-selected="false"><span class="tnum">03</span> Running the show</button>
+      <button class="tab sec4" role="tab" id="t-guard" aria-controls="p-guard" aria-selected="false"><span class="tnum">04</span> Guardrails</button>
+      <button class="tab sec5" role="tab" id="t-evidence" aria-controls="p-evidence" aria-selected="false"><span class="tnum">05</span> The evidence</button>
+      <button class="tab sec6" role="tab" id="t-prompts" aria-controls="p-prompts" aria-selected="false"><span class="tnum">06</span> Prompts</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<!-- ============ 00 ============ -->
+<section class="sec0" id="p-primer" role="tabpanel" aria-labelledby="t-primer" data-toc>
+  <span class="eyebrow">00 — How AI works</span>
+  <h2 class="panel-h">A prediction machine, not a library</h2>
+  <p class="lede">You can do excellent work with these tools without touching the mathematics underneath. What is worth having is an accurate working model of what the thing is doing, because that is what lets you predict where it will be reliable and where it will fail quietly. This page builds that model, and the reading at the end takes it further.</p>
+
+  <h3>How it builds an answer, one word at a time</h3>
+  <p>A large language model reads everything in front of it. Then it produces a ranked list of the words that might come next. It picks one from near the top of that list and adds it to the end.</p>
+  <p>Then it reads the whole thing again, including the word it just added, and picks the next one. That is the entire mechanism at the point where you use it.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 820 300" role="img" aria-label="The model reads the text so far, produces ranked probabilities for the next word, picks one, appends it, and repeats the whole process for every word.">
+        <defs>
+          <marker id="arP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <rect x="12" y="44" width="214" height="66" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="119" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">"the tide turns and</text>
+        <text x="119" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">the boat just ___"</text>
+        <text x="119" y="30" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.2" fill="currentColor" opacity=".7">EVERYTHING SO FAR</text>
+
+        <line x1="230" y1="77" x2="256" y2="77" stroke="currentColor" stroke-width="1.5" marker-end="url(#arP)"/>
+
+        <rect x="260" y="46" width="112" height="62" rx="8" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="316" y="82" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" class="c-accent">the model</text>
+
+        <line x1="376" y1="77" x2="404" y2="77" stroke="currentColor" stroke-width="1.5" marker-end="url(#arP)"/>
+
+        <text x="414" y="30" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.2" fill="currentColor" opacity=".7">WHAT COMES NEXT, RANKED</text>
+
+        <text x="414" y="52" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">swings</text>
+        <rect x="502" y="41" width="200" height="14" rx="3" class="c-accent"/>
+        <text x="712" y="52" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">31%</text>
+
+        <text x="414" y="82" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">sits</text>
+        <rect x="502" y="71" width="77" height="14" rx="3" fill="currentColor" opacity=".45"/>
+        <text x="712" y="82" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">12%</text>
+
+        <text x="414" y="112" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">stops</text>
+        <rect x="502" y="101" width="58" height="14" rx="3" fill="currentColor" opacity=".45"/>
+        <text x="712" y="112" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">9%</text>
+
+        <text x="414" y="142" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">goes</text>
+        <rect x="502" y="131" width="45" height="14" rx="3" fill="currentColor" opacity=".45"/>
+        <text x="712" y="142" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">7%</text>
+
+        <text x="414" y="172" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">lurches</text>
+        <rect x="502" y="161" width="32" height="14" rx="3" fill="currentColor" opacity=".45"/>
+        <text x="712" y="172" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">5%</text>
+
+        <path d="M600,190 L600,242 L119,242 L119,116" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arP)"/>
+        <text x="410" y="266" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" class="c-accent">pick one · add it to the end · run the whole thing again</text>
+        <text x="410" y="286" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">once for every word it writes you</text>
+      </svg>
+    </div>
+    <figcaption>Two things follow from this. The model writes forward one word at a time, so it has no outline it can go back and revise. And it does not always take the top-ranked word — it picks from among the likely ones. That is why asking the same question twice gives you two different answers.</figcaption>
+  </figure>
+
+  <div class="note info">
+    <h4>It reads chunks of text, not words</h4>
+    <p>It sees <em>tokens</em>. A token is a chunk of text: sometimes a whole word, sometimes part of one. "Woods Hole" might arrive as three separate chunks. Because the model never sees individual letters, it can be surprisingly bad at counting them or spelling a word backward, while being fluent about everything else. You can watch text get chopped up at <a href="https://tiktokenizer.vercel.app/">Tiktokenizer</a>.</p>
+  </div>
+
+  <h3>Training it and using it are separate things</h3>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 800 268" role="img" aria-label="Training happened once before you arrived and produced a frozen model; every time you press send, that same frozen model reads your prompt and generates a fresh answer. Nothing you type changes the model.">
+        <defs>
+          <marker id="arP2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <text x="190" y="26" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" fill="currentColor" opacity=".7">ONCE, BEFORE YOU ARRIVED</text>
+        <rect x="40" y="40" width="300" height="38" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="190" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">an enormous amount of text</text>
+        <line x1="190" y1="80" x2="190" y2="98" stroke="currentColor" stroke-width="1.4" marker-end="url(#arP2)"/>
+        <rect x="40" y="102" width="300" height="38" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="190" y="126" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">months of training · one time</text>
+        <line x1="190" y1="142" x2="190" y2="160" stroke="currentColor" stroke-width="1.4" marker-end="url(#arP2)"/>
+        <rect x="40" y="164" width="300" height="38" rx="7" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="190" y="188" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" class="c-accent">a frozen set of numbers</text>
+
+        <line x1="400" y1="16" x2="400" y2="214" stroke="currentColor" stroke-width="1" stroke-dasharray="5 6" opacity=".55"/>
+
+        <text x="610" y="26" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" fill="currentColor" opacity=".7">EVERY TIME YOU PRESS SEND</text>
+        <rect x="460" y="40" width="300" height="38" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="610" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">your prompt, files, chat so far</text>
+        <line x1="610" y1="80" x2="610" y2="98" stroke="currentColor" stroke-width="1.4" marker-end="url(#arP2)"/>
+        <rect x="460" y="102" width="300" height="38" rx="7" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="610" y="126" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" class="c-accent">that same frozen set of numbers</text>
+        <line x1="610" y1="142" x2="610" y2="160" stroke="currentColor" stroke-width="1.4" marker-end="url(#arP2)"/>
+        <rect x="460" y="164" width="300" height="38" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="610" y="188" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">an answer, built fresh</text>
+
+        <text x="400" y="240" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" fill="currentColor">nothing crosses the dotted line</text>
+        <text x="400" y="258" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">what you type in a chat does not teach the model anything</text>
+      </svg>
+    </div>
+    <figcaption>Three things follow. It does not learn from you as you work. It starts each conversation from nothing, unless something feeds the earlier text back in — which is all a workspace or Project does. And it looks nothing up on its own: it sees what you give it, plus whatever web search fetches when you turn that on.</figcaption>
+  </figure>
+
+  <div class="note warn">
+    <h4>But your conversations may still be stored</h4>
+    <p>Your conversation does not change the model <em>while you are working</em>. But it may be stored, and it may be used to train some <em>future</em> version. That is a separate question, and on most consumer plans it is a setting you control. It is a privacy question rather than a mechanism one, so <a href="#" class="jump" data-goto="4">tab 04</a> covers it.</p>
+  </div>
+
+  <h3>Where the answer comes from: your material, or its training</h3>
+  <p>An answer can come from either of two places. They are not equally reliable, and learning to tell them apart is the most useful thing on this page.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 800 292" role="img" aria-label="Material you supply sits in the context window and can be quoted and checked; training is a compressed impression with no sources or dates, which the model can only approximate.">
+        <text x="20" y="26" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" class="c-accent">ON THE DESK — WHAT YOU GAVE IT</text>
+        <rect x="14" y="38" width="444" height="196" rx="9" class="s-accent" stroke-width="2" fill="currentColor" fill-opacity=".04"/>
+        <text x="38" y="70" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">· the transcript you pasted</text>
+        <text x="38" y="96" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">· the files in the Project</text>
+        <text x="38" y="122" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">· your instructions</text>
+        <text x="38" y="148" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">· this conversation so far</text>
+        <text x="38" y="174" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">· web results, if search is on</text>
+        <line x1="38" y1="190" x2="434" y2="190" stroke="currentColor" stroke-width="1" opacity=".3"/>
+        <text x="38" y="214" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" class="c-accent">it can quote this. you can check it.</text>
+
+        <text x="490" y="26" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" fill="currentColor" opacity=".7">IN THE WEIGHTS — WHAT IT ABSORBED</text>
+        <rect x="484" y="38" width="302" height="196" rx="9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="6 5" opacity=".8"/>
+        <text x="506" y="70" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor" opacity=".75">· a compressed impression</text>
+        <text x="518" y="88" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor" opacity=".75">of a great deal of text</text>
+        <text x="506" y="116" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor" opacity=".75">· no sources attached</text>
+        <text x="506" y="142" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor" opacity=".75">· no reliable dates</text>
+        <text x="506" y="168" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor" opacity=".75">· gaps filled by plausibility</text>
+        <line x1="506" y1="190" x2="764" y2="190" stroke="currentColor" stroke-width="1" opacity=".3"/>
+        <text x="506" y="214" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" fill="currentColor" opacity=".8">it can only approximate this.</text>
+
+        <text x="400" y="272" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" fill="currentColor">the more of your answer comes from the left box, the better this tool gets</text>
+      </svg>
+    </div>
+    <figcaption>This is why every workflow in the rest of this guide starts by handing the model your material. "Summarize this transcript" works, because the transcript is right there. "What did that fisher say in her 2019 interview" does not work — but you will still get an answer, and it will sound exactly as confident.</figcaption>
+  </figure>
+
+  <h3>Why it makes things up</h3>
+  <p>It is not broken, and it is not lying. It is doing the one thing it does, which is producing the most plausible next words. A citation that looks right is easier to produce than one that is right, so that is often what you get. There are two good explanations for this, and they fit together rather than competing.</p>
+  <div class="grid g2">
+    <div class="card">
+      <span class="who">The mechanism</span>
+      <p>Anthropic's interpretability team found that saying "I don't know" is the model's default. Something has to switch that default off: an internal signal meaning roughly "I recognize this name." Sometimes the signal fires for a name the model knows nothing about. The refusal turns off, and the model "proceeds to confabulate: to generate a plausible — but unfortunately untrue — response."</p>
+      <span class="src"><a href="https://www.anthropic.com/research/tracing-thoughts-language-model">Tracing the thoughts of a large language model</a></span>
+    </div>
+    <div class="card">
+      <span class="who">The incentive</span>
+      <p>OpenAI's argument is about incentives. The tests used to score these models give credit for a confident guess and nothing for "I don't know" — the same way a multiple-choice exam rewards a student who never leaves a blank. So guessing gets trained in. Worth noting that this is a lab writing about its own product category.</p>
+      <span class="src"><a href="https://openai.com/index/why-language-models-hallucinate/">Why language models hallucinate</a></span>
+    </div>
+  </div>
+  <p>Both point to the same fix. Saying in the prompt that "not in the material" is an acceptable answer changes what counts as a good answer, and the model responds to that. Every prompt in <a href="#" class="jump" data-goto="6">tab 06</a> carries some version of that line.</p>
+
+  <h3>Four things to remember</h3>
+  <ol class="steps">
+    <li><h4>It works better with the material in front of it</h4><p>Give it the document rather than relying on what it might remember. Every time.</p></li>
+    <li><h4>A confident tone tells you nothing</h4><p>It sounds exactly as sure when it is inventing as when it is right. There is no tell in the prose, so the writing itself will not warn you.</p></li>
+    <li><h4>Exact words are checkable; summaries are not</h4><p>A verbatim quote is something you can go and find in the source. A summary is something you have to take on trust.</p></li>
+    <li><h4>Running it twice is a cheap test</h4><p>Ask the same question again in a fresh chat. If the two answers disagree, the first one was less solid than it sounded.</p></li>
+  </ol>
+
+  <h3>Where to learn more</h3>
+  <p>This page is a working model, not the real mechanism. These five go a level deeper, roughly in order of effort. The first two are the quickest route to seeing the mechanism for yourself.</p>
+  <ul class="reflist">
+    <li><a href="https://poloclub.github.io/transformer-explainer/">Transformer Explainer</a> <span class="why">— Georgia Tech. Runs a real model in your browser: type a sentence and watch the ranked next-word probabilities. Ten minutes, and it makes the diagram above concrete</span></li>
+    <li><a href="https://www.youtube.com/watch?v=LPZh9BOjkQs">Large language models explained briefly</a> <span class="why">— 3Blue1Brown, 9 minutes. The best short video; no math on screen</span></li>
+    <li><a href="https://cset.georgetown.edu/article/the-surprising-power-of-next-word-prediction-large-language-models-explained-part-1/">The surprising power of next-word prediction</a> <span class="why">— Georgetown's CSET, written for policymakers. Non-commercial, mechanism-first, about 12 minutes</span></li>
+    <li><a href="https://www.understandingai.org/p/large-language-models-explained-with">LLMs explained with a minimum of math and jargon</a> <span class="why">— Timothy B. Lee, a journalist writing for non-programmers. Long but clear. Written in 2023, so the mechanism holds but the examples are a generation old</span></li>
+    <li><a href="https://ig.ft.com/generative-ai/">Generative AI exists because of the transformer</a> <span class="why">— the Financial Times's visual explainer, widely rated the best of its kind. From 2023, and FT interactives are usually outside the paywall</span></li>
+  </ul>
+</section>
+
+
+<!-- ============ 01 ============ -->
+<section class="sec1" id="p-start" role="tabpanel" aria-labelledby="t-start" data-toc hidden>
+  <span class="eyebrow">01 — Start here</span>
+  <h2 class="panel-h">Getting set up</h2>
+  <p class="lede">The practical constraints are the part that is least written about: what these tools will accept, what they cost, and how to set one up so you are not re-explaining your show every time you open it. That is this tab.</p>
+
+  <h3>What it can read, and what it can't</h3>
+  <p>These tools read text, documents and images. None of the mainstream chat assistants will take a WAV, an MP3 or a video file and listen to it for you.</p>
+  <p>So every audio workflow in this guide starts the same way. You transcribe the tape somewhere else first, then give the model the transcript.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 790 300" role="img" aria-label="Documents and images go straight into Claude; audio and video files are rejected and must be transcribed first, with the transcript going in as text.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="c-accent"/>
+          </marker>
+        </defs>
+
+        <rect x="14" y="34" width="196" height="70" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="112" y="60" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="currentColor">Documents &amp; images</text>
+        <text x="112" y="79" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".7">PDF · DOCX · TXT · CSV</text>
+        <text x="112" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".7">XLSX · JSON · PNG · JPEG</text>
+
+        <line x1="214" y1="69" x2="592" y2="69" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="400" y="59" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".75">upload or paste</text>
+
+        <rect x="600" y="76" width="176" height="76" rx="8" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="688" y="110" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="17" font-weight="700" class="c-accent">the model</text>
+        <text x="688" y="130" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" class="c-accent" opacity=".85">reads text + images</text>
+
+        <rect x="14" y="196" width="196" height="70" rx="8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="112" y="222" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="currentColor">Audio &amp; video</text>
+        <text x="112" y="241" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".7">WAV · MP3 · M4A</text>
+        <text x="112" y="256" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".7">MP4 · MOV</text>
+
+        <path d="M214,196 C 330,180 360,150 470,124" fill="none" class="s-danger" stroke-width="1.5" stroke-dasharray="4 5"/>
+        <line x1="330" y1="146" x2="352" y2="168" class="s-danger" stroke-width="2.5"/>
+        <line x1="352" y1="146" x2="330" y2="168" class="s-danger" stroke-width="2.5"/>
+        <text x="341" y="132" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="c-danger">no direct upload</text>
+
+        <line x1="214" y1="246" x2="336" y2="246" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <rect x="344" y="202" width="212" height="82" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="450" y="228" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" fill="currentColor">Transcribe first</text>
+        <text x="450" y="249" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">Descript · Otter</text>
+        <text x="450" y="266" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">Whisper · Trint</text>
+
+        <path d="M560,240 C 640,236 660,200 686,160" fill="none" class="s-accent" stroke-width="1.8" marker-end="url(#arA)"/>
+        <text x="604" y="196" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11" class="c-accent">.txt / .docx</text>
+      </svg>
+    </div>
+    <figcaption>The only route from tape to the model runs through a transcription tool. Anthropic's own example workflow does exactly this: a separate speech-to-text service first, then the resulting text to the model.</figcaption>
+  </figure>
+
+  <h3>Choosing a tool</h3>
+  <p>The mechanism in tab 00 is the same across Claude, ChatGPT, Gemini and the open models you can run on your own machine. The differences that matter for this work are mundane and worth checking before you commit a workflow to one of them.</p>
+  <ul>
+    <li><strong>What it will accept.</strong> How many files per conversation, how large, and how many pages of PDF. This decides whether your actual transcripts fit.</li>
+    <li><strong>How much it can hold at once.</strong> A 70-minute transcript is perhaps 12,000 words. A records dump is not. Ask how much text the tool can consider in one go.</li>
+    <li><strong>Whether your conversations train the model by default</strong>, and whether you can turn that off. On consumer plans this is usually a setting; on business plans it is usually off already.</li>
+    <li><strong>Whether a persistent workspace exists.</strong> Claude calls these Projects. Other tools have their own version. Without one, you re-explain your show in every conversation.</li>
+    <li><strong>Whether it can be run locally.</strong> For material that could put someone at risk, a model on your own machine is the answer, and open models are good enough for transcript work now. <a href="#" class="jump" data-goto="5" data-anchor="ev-uvalde">ProPublica did this for Uvalde →</a></li>
+  </ul>
+  <p>Everything below uses Claude for the concrete steps, because a worked example is more useful than a survey. The moves transfer.</p>
+
+  <h3>Do you need to pay?</h3>
+  <p>For occasional use, no. For anything involving a large transcript, a document pile, or a workspace you return to weekly, the free tiers will frustrate you — not because of a hard wall, but because the amount you can do in a sitting is smaller and the amount of material you can load at once is smaller.</p>
+
+  <div class="stamp"><b>Claude pricing</b> · verified Sept. 19, 2026 · varies by region · <a href="https://claude.com/pricing">check before relying on it</a></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Plan</th><th>Price</th><th>What it changes for this work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Free</strong></td><td>$0</td><td>Chat, web search, file uploads, five Projects. Enough to work through this guide and log one interview</td></tr>
+        <tr><td><strong>Pro</strong></td><td>$17/mo billed annually, $20 monthly</td><td>More usage per sitting, larger Project knowledge bases with automatic retrieval, and Research mode. The plan most one-person shops want</td></tr>
+        <tr><td><strong>Max</strong></td><td>From $100/mo</td><td>Five or twenty times the Pro allowance. Worth it only if you are working through document piles regularly</td></tr>
+        <tr><td><strong>Team</strong></td><td>$20/seat/mo billed annually</td><td>Shared workspace, and no model training on your content by default — which is the reason a newsroom would choose it</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Anthropic does not publish a message count for any plan, so nobody can tell you how many questions you get. Usage limits reset on a rolling five-hour window, with a weekly cap on top.</p>
+
+  <h3>Where to start, by size of shop</h3>
+  <div class="grid g3 fork">
+    <div class="card">
+      <span class="who">One person</span>
+      <p>Tape logging on a piece you are already making is the natural first move. Free tier, one Project, one real interview. The payoff is hours, and the limits show up fast.</p>
+      <p>The document material can wait until you have a records story, and the policy work until you publish something with AI in the process.</p>
+    </div>
+    <div class="card">
+      <span class="who">Small team or station</span>
+      <p>The policy is the better starting point here, not the tool. Agreeing what may be pasted in and what must be disclosed, before anyone builds a habit, takes an afternoon and prevents a retrofit later.</p>
+      <p>After that, one person piloting tape logging and writing up what happened will teach the room more than five people experimenting quietly.</p>
+    </div>
+    <div class="card">
+      <span class="who">Network or newsroom</span>
+      <p>The binding constraint here is confidentiality, not capability. Business plans where training is off by default are worth looking at, as are self-hosted models for anything sensitive.</p>
+      <p>The boring shared thing — a monitoring pipeline over the audio your beat reporters cannot listen to — is where every documented newsroom win has come from.</p>
+    </div>
+  </div>
+
+  <h3>Your first hour</h3>
+  <ol class="steps">
+    <li>
+      <h4>Privacy settings, before anything gets pasted</h4>
+      <p>In Claude the setting lives under Settings, then Privacy. With the option that lets your conversations improve the model turned off, your chats are kept until you delete them rather than held for up to five years in training pipelines. For anything sensitive, an Incognito chat is worth using on top of that — those are never used to improve the model.</p>
+    </li>
+    <li>
+      <h4>A workspace for one real show</h4>
+      <p>Real material shows you the limits faster than a test case does, so the show you are working on this week is the better choice. In Claude this is a Project: a folder holding its own chats, its own uploaded files and its own standing instructions, so you never re-explain the show.</p>
+    </li>
+    <li>
+      <h4>Your standards, in the instructions</h4>
+      <p>Two paragraphs covers it: how you name things, what the show sounds like, and one explicit line — <em>never invent a quote; if a quote is not word for word in the material I gave you, say so.</em> <a href="#" class="jump" data-goto="6" data-anchor="pr-instructions">Use the instructions prompt →</a></p>
+    </li>
+    <li>
+      <h4>Three things you already have</h4>
+      <p>A finished script you are proud of, your style guide, and one transcript. That is the whole setup — nothing else is needed to start.</p>
+    </li>
+    <li>
+      <h4>The kind of question you'd give a sharp intern</h4>
+      <p>"Here is 90 minutes of tape. Log it in two-minute chunks with a one-line summary of each, and flag the six moments where her voice changes." Then go and listen to those six moments. <a href="#" class="jump" data-goto="6" data-anchor="pr-tapelog">Use the tape-log prompt →</a></p>
+    </li>
+  </ol>
+
+  <h3>What a good prompt looks like</h3>
+  <p>What separates a useless answer from a useful one is nearly always specificity. Say what the <em>material</em> is. Say what <em>job</em> you want done. Say what <em>shape</em> the answer should come back in.</p>
+
+  <div class="anat">
+    <div class="anat-row"><span class="anat-lab">Role</span><span>You are an experienced radio producer logging tape for a 22-minute narrative feature.</span></div>
+    <div class="anat-row"><span class="anat-lab">Material</span><span>The attached file is a Whisper transcript of a 71-minute interview with a commercial fisher in New Bedford. Timecodes are approximate.</span></div>
+    <div class="anat-row"><span class="anat-lab">Job</span><span>Build me a tape log. Flag every passage where she describes a specific event with a date, and every passage with strong scene-setting sound described in the room.</span></div>
+    <div class="anat-row"><span class="anat-lab">Constraint</span><span>Quote verbatim from the transcript only. If you are unsure whether something is a direct quote, mark it UNCERTAIN rather than guessing.</span></div>
+    <div class="anat-row"><span class="anat-lab">Output</span><span>A table: timecode · topic · verbatim pull quote · why it matters · confidence.</span></div>
+  </div>
+
+  <div class="note info">
+    <h4>Why the constraint line matters</h4>
+    <p>Telling the model it is allowed to say "I don't know" cuts down on invention. ProPublica writes that permission into its prompts as standard practice.</p>
+  </div>
+
+  <h3>File and size limits, using Claude as the example</h3>
+  <p>Every tool has a version of this table and the numbers differ. These are Claude's, and they are the kind of fact that goes stale fastest.</p>
+  <div class="stamp"><b>Verified Sept. 19, 2026</b> · <a href="https://support.claude.com/en/articles/8241126-upload-files-to-claude">check the current figures</a></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Thing</th><th>Limit</th></tr></thead>
+      <tbody>
+        <tr><td>Files per chat</td><td>20</td></tr>
+        <tr><td>File size in a chat</td><td>500 MB</td></tr>
+        <tr><td>File size in a Project</td><td>30 MB each, unlimited count — the total has to fit what the model can hold</td></tr>
+        <tr><td>PDF pages</td><td>1,000 maximum. Under 100 pages Claude reads the <strong>images</strong> as well as the text; over 100, text only</td></tr>
+        <tr><td>Spreadsheets</td><td>CSV works directly. XLSX needs code execution switched on in settings</td></tr>
+        <tr><td>How much it holds at once</td><td>200K, 500K or 1M tokens depending on the model, on paid plans — very roughly 150,000 to 750,000 words. Long chats get summarized automatically</td></tr>
+        <tr><td>Audio and video</td><td>Not supported. Transcribe first</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="reflist">
+    <li><a href="https://support.claude.com/en/articles/8241126-upload-files-to-claude">Upload files to Claude</a> <span class="why">— the authoritative list of file types and limits</span></li>
+    <li><a href="https://support.claude.com/en/articles/9517075-what-are-projects">What are Projects</a> <span class="why">— and how knowledge scales on paid plans</span></li>
+    <li><a href="https://claude.com/pricing">Claude pricing</a> <span class="why">— the numbers in the table above, current and by region</span></li>
+    <li><a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data">How long Anthropic stores your data</a> <span class="why">— read this before your first sensitive chat</span></li>
+  </ul>
+</section>
+
+
+<!-- ============ 02 ============ -->
+<section class="sec2" id="p-work" role="tabpanel" aria-labelledby="t-work" data-toc hidden>
+  <span class="eyebrow">02 — Tape and documents</span>
+  <h2 class="panel-h">Sorting the pile, not interpreting it</h2>
+  <p class="lede">Seventy minutes of tape and seven hundred pages of records are the same problem wearing different clothes: more material than you can read, and the part that matters buried in it. The move is the same for both, and so is the rule that makes it publishable.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 800 300" role="img" aria-label="A funnel narrowing from everything you have, through a machine classification pass, to a flagged subset that a human reads in full before anything is published.">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <polygon points="60,40 560,112 560,188 60,260" fill="currentColor" opacity=".08"/>
+        <polygon points="60,40 560,112 560,188 60,260" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="226" y1="64" x2="226" y2="236" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity=".55"/>
+        <line x1="393" y1="88" x2="393" y2="212" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity=".55"/>
+
+        <text x="143" y="144" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="currentColor">EVERYTHING</text>
+        <text x="143" y="162" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">the dump, the FOIA</text>
+        <text x="143" y="177" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">return, 40 hrs of tape</text>
+
+        <text x="310" y="146" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" class="c-accent">MACHINE PASS</text>
+        <text x="310" y="164" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">classify · extract</text>
+        <text x="310" y="179" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">cite the source line</text>
+
+        <text x="476" y="148" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="currentColor">FLAGGED</text>
+        <text x="476" y="166" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">a readable pile</text>
+
+        <line x1="566" y1="150" x2="604" y2="150" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar3)"/>
+        <rect x="612" y="112" width="176" height="76" rx="8" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="700" y="142" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" class="c-accent">You read 100%</text>
+        <text x="700" y="162" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" class="c-accent" opacity=".85">of what comes out</text>
+        <text x="700" y="177" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" class="c-accent" opacity=".85">the narrow end</text>
+
+        <text x="400" y="286" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".7">nothing in here is a finding until a person has confirmed it against the source</text>
+      </svg>
+    </div>
+    <figcaption>The Wall Street Journal's data desk puts it plainly: "We're trying to sort the pile so the most relevant stuff is right at the top." <a href="#" class="jump" data-goto="5" data-anchor="ev-wsj">Kerr County, 2026 →</a></figcaption>
+  </figure>
+
+  <p>Every newsroom that has published a methodology note describes this same division of labor, in nearly the same words. The machine ranks and routes the material. The person reads all of what the machine hands over. Nothing in the middle counts as a finding.</p>
+
+  <h3>The same move, four orders of magnitude apart</h3>
+  <p>These are the pile sizes newsrooms have actually worked through with this method. The units are not comparable to each other — that is rather the point. The technique does not change between the smallest and the largest.</p>
+  <div class="statstrip">
+    <div class="stat"><span class="v">3,400</span><span class="u">grant descriptions</span><span class="w">ProPublica</span></div>
+    <div class="stat"><span class="v">10,000</span><span class="u">documents</span><span class="w">New York Times, SEC</span></div>
+    <div class="stat"><span class="v">600,000</span><span class="u">words</span><span class="w">Minnesota Star Tribune</span></div>
+    <div class="stat"><span class="v">1.5M</span><span class="u">pages</span><span class="w">California Reporting Project</span></div>
+    <div class="stat"><span class="v">3M</span><span class="u">pages</span><span class="w">New York Times, Epstein files</span></div>
+  </div>
+  <p>The smallest of these is one afternoon's work for one reporter. <a href="#" class="jump" data-goto="5">All five are in the evidence tab →</a></p>
+
+  <h3>Six techniques that work at any size</h3>
+  <div class="grid g2">
+    <div class="card">
+      <span class="who">A citation with every extraction</span>
+      <p>"Which of these mention X" is the weaker version of this question. The stronger one asks for the <strong>exact sentence</strong> that made it flag each document. Without that there is nothing to check against, and you are trusting a summary of something you have not read.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-propublica">ProPublica, 3,400 grants →</a>
+    </div>
+    <div class="card">
+      <span class="who">Hand classification first, AI as the second pass</span>
+      <p>Read and classify by hand first. Only then run a model over the same pile, as a second pass to catch your own mistakes. If you plan to publish a number, this is the most defensible way to get there.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-nyt-sec">New York Times, 10,000 SEC documents →</a>
+    </div>
+    <div class="card">
+      <span class="who">Room to say "I don't know"</span>
+      <p>Writing that permission into the prompt, along with two or three confirmed examples of what you are looking for, gives it something to calibrate against. An answer that flags its own uncertainty is worth more than a confident one you cannot test.</p>
+    </div>
+    <div class="card">
+      <span class="who">A definition that sharpens each pass</span>
+      <p>Your first definition of what counts as interesting will be wrong. Run it, read what comes back, sharpen the definition, run it again. Three passes beats one careful one.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-itromso">iTromsø, hospital records →</a>
+    </div>
+    <div class="card">
+      <span class="who">Cross-referencing for what is missing</span>
+      <p>Compare what you were given against a separate source that says what should exist. The gaps are the story, and each one becomes your next records request.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-crp">California Reporting Project →</a>
+    </div>
+    <div class="card">
+      <span class="who">Sensitive material kept in-house</span>
+      <p>If the documents could put someone at risk, run an open model on your own machine instead of pasting into a consumer chatbot. The material never leaves the newsroom.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-uvalde">ProPublica, Uvalde recordings →</a>
+    </div>
+  </div>
+
+  <h3>Logging an interview, step by step</h3>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 880 250" role="img" aria-label="Pipeline from field recording through transcription, transcript file and Claude to a tape log, with a return loop requiring every quote to be checked against the original audio.">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar2r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="c-danger"/>
+          </marker>
+        </defs>
+
+        <rect x="12" y="44" width="142" height="62" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="83" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="currentColor">Field tape</text>
+        <text x="83" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">71 min · .wav</text>
+
+        <line x1="158" y1="75" x2="188" y2="75" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <rect x="192" y="44" width="142" height="62" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="263" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="currentColor">Transcription</text>
+        <text x="263" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">Descript · Whisper</text>
+
+        <line x1="338" y1="75" x2="368" y2="75" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <rect x="372" y="44" width="142" height="62" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="443" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="currentColor">Transcript</text>
+        <text x="443" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">.txt in a Project</text>
+
+        <line x1="518" y1="75" x2="548" y2="75" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <rect x="552" y="40" width="142" height="70" rx="8" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="623" y="70" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700" class="c-accent">the model</text>
+        <text x="623" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" class="c-accent" opacity=".85">log · select · cluster</text>
+
+        <line x1="698" y1="75" x2="728" y2="75" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <rect x="732" y="44" width="136" height="62" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="800" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="currentColor">Tape log</text>
+        <text x="800" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".7">+ selects</text>
+
+        <path d="M800,110 L800,178 L83,178 L83,110" fill="none" class="s-danger" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#ar2r)"/>
+        <rect x="286" y="164" width="308" height="28" rx="6" fill="none" stroke="none"/>
+        <text x="440" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" class="c-danger">listen back before you quote anything</text>
+        <text x="440" y="216" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" class="c-danger" opacity=".8">this loop is not optional</text>
+      </svg>
+    </div>
+    <figcaption>The return arrow carries the whole ethical weight of this workflow. WFYI in Indianapolis has a name for the rule: "person-first… person-last." A person does the interview. The machine transcribes it. A person then checks every quote against the audio.</figcaption>
+  </figure>
+
+  <div class="note warn">
+    <h4>Why quotes need checking against the audio</h4>
+    <p>Whisper is the speech-to-text engine behind most do-it-yourself transcription setups, and behind the BBC's own Sounds subtitle trial. It sometimes <strong>fabricates sentences nobody said</strong>, most often in silences and other stretches of non-speech audio. If one of those inventions is sitting in your transcript, the model will read it as real and quote it straight back to you, and nothing on the page will look wrong. <a href="https://arxiv.org/html/2501.11378v1">The study on non-speech-induced hallucinations</a> · <a href="https://cnti.org/reports/ai-transcription-and-translation-in-journalism/">CNTI's briefing on the risk</a></p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h4>Transcribing with timecodes on</h4>
+      <p>Whatever tool you use, timestamps and speaker labels are worth turning on at export. The speaker labels will be unreliable, and results get worse with strong regional accents — newsrooms running this at scale report both problems.</p>
+    </li>
+    <li>
+      <h4>The transcript goes into the show's workspace</h4>
+      <p>Not a fresh chat. Inside the workspace it sits alongside your style guide and your standards line, so you do not have to restate either.</p>
+    </li>
+    <li>
+      <h4>A log, not a summary</h4>
+      <p>A summary throws away exactly what you need, which is the words and where to find them. A table with five columns keeps it: timecode, topic, verbatim quote, why it earns space, and how confident the model is. <a href="#" class="jump" data-goto="6" data-anchor="pr-tapelog">Use the tape-log prompt →</a></p>
+    </li>
+    <li>
+      <h4>A second question the transcript can answer and you can't</h4>
+      <p>Things like: "Where does she contradict what she said earlier?" Or "list every mention of a date or a dollar figure." Across several interviews at once: "In these six transcripts, who describes the same night differently?" <a href="#" class="jump" data-goto="6" data-anchor="pr-contradictions">Use the contradictions prompt →</a></p>
+    </li>
+    <li>
+      <h4>Checking every select against the audio</h4>
+      <p>Timecode by timecode, there are two things to check. First, that the words on the page are what was actually said. Second, that the delivery matches what the text led you to expect. The second one is the check only you can do.</p>
+    </li>
+    <li>
+      <h4>Structure, once the selects are verified</h4>
+      <p>Once your selects are verified, the model is a reasonable sounding board on running order and act breaks. Nobody has documented doing this well yet, so treat it as an experiment. <a href="#" class="jump" data-goto="6" data-anchor="pr-selects">Use the selects prompt →</a></p>
+    </li>
+  </ol>
+
+  <h3>Working through documents, step by step</h3>
+  <ol class="steps">
+    <li>
+      <h4>A workspace for the story</h4>
+      <p>Documents added as workspace knowledge, rather than as chat attachments, stay visible to every conversation in the workspace. One detail worth knowing: for PDFs under 100 pages Claude reads the images as well as the text, which matters for scanned records and handwriting.</p>
+    </li>
+    <li>
+      <h4>A map of the corpus, before any real question</h4>
+      <p>Asking what is in the set — document types, date range, recurring names, anything obviously missing — confirms it read what you think it read, before you rely on it. <a href="#" class="jump" data-goto="6" data-anchor="pr-map">Use the corpus-map prompt →</a></p>
+    </li>
+    <li>
+      <h4>Two sentences on what you are looking for</h4>
+      <p>Those two sentences become the definition you hand the model, with a couple of examples alongside. Vague criteria produce vague flags, and the difference is hard to spot after the fact.</p>
+    </li>
+    <li>
+      <h4>A table, with a source in every row</h4>
+      <p>One row per hit: document name, page, verbatim quote, why it matched, and confidence. A row with no quote you can go and find is not worth reading. <a href="#" class="jump" data-goto="6" data-anchor="pr-flag">Use the forced-citation prompt →</a></p>
+    </li>
+    <li>
+      <h4>The original, for every row you keep</h4>
+      <p>Every one, not a sample. This is the step that every Pulitzer AI disclosure describes, and the one that makes the work publishable.</p>
+    </li>
+    <li>
+      <h4>The timeline, once the rows are verified</h4>
+      <p>Once the rows are verified, you can safely ask for a chronology built from them. The inputs are now yours rather than the model's, so the output is checkable against your own work. <a href="#" class="jump" data-goto="6" data-anchor="pr-chronology">Use the chronology prompt →</a></p>
+    </li>
+  </ol>
+
+  <div class="note info">
+    <h4>A useful way to picture the work</h4>
+    <p>The New York Times's internal tool, Cheatsheet, is just a spreadsheet. Each <strong>row</strong> is a document or a transcript. Each <strong>column</strong> is one small job for the model: extract the quotes, classify it, translate it, summarize it, search the web about it. Columns can feed into each other. You can build a crude version in any spreadsheet today, and the Times says it plans to open-source the real one.</p>
+  </div>
+
+  <h3>Other uses for a pile of transcripts</h3>
+  <div class="grid g3">
+    <div class="card">
+      <h4>Finding one moment in forty hours</h4>
+      <p>Axios's Ina Fried uses AI transcription to locate a segment of a recording she remembers but cannot find: "The results may be imperfect, but they're still a game changer."</p>
+    </div>
+    <div class="card">
+      <h4>Monitoring a beat's audio</h4>
+      <p>Transcribe the shows nobody has time to listen to, then summarize what they had in common. Treated as a tip line, never as a source.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-nyt-podcasts">New York Times, 80 podcasts a night →</a>
+    </div>
+    <div class="card">
+      <h4>Public meetings you cannot staff</h4>
+      <p>Transcribe council and school-board audio into something searchable, with keyword alerts to whoever covers that beat.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-michigan">Michigan Radio →</a>
+    </div>
+    <div class="card">
+      <h4>Making an archive searchable</h4>
+      <p>A rough AI first pass, then human correction line by line. The best-documented pattern for opening up an archive nobody can afford to transcribe by hand.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-aapb">American Archive of Public Broadcasting →</a>
+    </div>
+    <div class="card">
+      <h4>Rough translation, then a human</h4>
+      <p>The Guardian names audio transcription and document analysis among its acceptable limited uses, with significant use needing a senior duty editor's approval. WBEZ allows a first-pass Spanish translation, as long as a person checks it before it goes out.</p>
+    </div>
+    <div class="card">
+      <h4>Subtitles and accessibility</h4>
+      <p>Machine-generated subtitles with editorial review before publication — a straightforward win, and the one use almost every policy permits.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-bbc">BBC Sounds →</a>
+    </div>
+  </div>
+
+  <ul class="reflist">
+    <li><a href="https://www.propublica.org/article/using-ai-responsibly-for-reporting">ProPublica: how we use AI responsibly in reporting</a> <span class="why">— the single best methodology note to copy, with its actual prompt structure</span></li>
+    <li><a href="https://www.poynter.org/reporting-editing/2026/ai-newsrooms-local-indianapolis-media/">"Person-first, person-last" at WFYI</a> <span class="why">— what verification discipline looks like in a small shop</span></li>
+    <li><a href="https://www.ire.org/2025/12/06/inside-the-new-york-timess-a-i-toolkit/">Inside the New York Times's AI toolkit</a> <span class="why">— Cheatsheet, Echo and Stet, explained by the people who built them</span></li>
+    <li><a href="https://www.niemanlab.org/2025/03/local-newsrooms-are-using-ai-to-listen-in-on-public-meetings/">Local newsrooms listening in on public meetings</a> <span class="why">— including the failure modes: speaker ID, dialect, verification load</span></li>
+    <li><a href="https://generative-ai-newsroom.com/wrangling-messy-documents-with-coding-agents-196b9b8e8959">Wrangling messy documents with coding agents</a> <span class="why">— for scanned PDFs with no text layer; includes the sample-and-gold-standard method</span></li>
+  </ul>
+</section>
+
+<!-- ============ 03 ============ -->
+<section class="sec3" id="p-prod" role="tabpanel" aria-labelledby="t-prod" data-toc hidden>
+  <span class="eyebrow">03 — Running the show</span>
+  <h2 class="panel-h">The work that isn't journalism</h2>
+  <p class="lede">Pitch piles, guest research, show notes, chapter markers, the grant report nobody wants to write. None of it is journalism, and all of it eats the week. It is also the lowest-risk place to start, because nothing here goes to air.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 780 300" role="img" aria-label="A Project holds persistent knowledge and instructions; every chat inside it — tape logging, pitch triage, guest research — starts already knowing all of it.">
+        <defs>
+          <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="c-accent"/>
+          </marker>
+        </defs>
+
+        <rect x="14" y="26" width="318" height="250" rx="10" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="30" y="50" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" letter-spacing="1.4" class="c-accent">PROJECT — ONE PER SHOW</text>
+
+        <rect x="32" y="62" width="282" height="118" rx="7" fill="currentColor" opacity=".05"/>
+        <rect x="32" y="62" width="282" height="118" rx="7" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <text x="46" y="82" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.1" fill="currentColor" opacity=".7">KNOWLEDGE · PERSISTS</text>
+        <text x="46" y="103" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">style guide</text>
+        <text x="46" y="122" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">show bible + format doc</text>
+        <text x="46" y="141" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">last six scripts</text>
+        <text x="46" y="160" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">standards memo</text>
+
+        <rect x="32" y="192" width="282" height="66" rx="7" fill="currentColor" opacity=".05"/>
+        <rect x="32" y="192" width="282" height="66" rx="7" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <text x="46" y="212" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.1" fill="currentColor" opacity=".7">INSTRUCTIONS</text>
+        <text x="46" y="233" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">voice · naming · never invent</text>
+        <text x="46" y="250" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">a quote · flag uncertainty</text>
+
+        <path d="M334,150 C 400,150 404,66 464,66" fill="none" class="s-accent" stroke-width="1.6" marker-end="url(#ar4)"/>
+        <path d="M334,150 C 400,150 404,150 464,150" fill="none" class="s-accent" stroke-width="1.6" marker-end="url(#ar4)"/>
+        <path d="M334,150 C 400,150 404,234 464,234" fill="none" class="s-accent" stroke-width="1.6" marker-end="url(#ar4)"/>
+
+        <rect x="470" y="42" width="296" height="48" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="488" y="72" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">chat · Ep. 112 tape log</text>
+
+        <rect x="470" y="126" width="296" height="48" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="488" y="156" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">chat · pitch triage, this week</text>
+
+        <rect x="470" y="210" width="296" height="48" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="488" y="240" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">chat · guest research + fact list</text>
+
+        <text x="398" y="290" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".7">every chat starts already knowing all of it — you never re-explain the show</text>
+      </svg>
+    </div>
+    <figcaption>This is the reason to set up a workspace instead of starting fresh chats each time. You write your standards once, and they apply to the pitch triage and the tape log alike.</figcaption>
+  </figure>
+
+  <h3>Setting up a show workspace</h3>
+  <ol class="steps">
+    <li>
+      <h4>What a new producer would need on day one</h4>
+      <p>Your format doc, your style guide, three scripts that represent the show at its best, and your standards memo. Together that is the show bible. The model now has it in every conversation, without you pasting anything again.</p>
+    </li>
+    <li>
+      <h4>Instructions written in the second person</h4>
+      <p>"You are working on <em>[show]</em>, a 28-minute narrative feature for public radio. Sentences are short. We do not use the word 'delve'. Never invent a quote or a fact; if the answer is not in the material, say so." <a href="#" class="jump" data-goto="6" data-anchor="pr-instructions">Use the instructions prompt →</a></p>
+    </li>
+    <li>
+      <h4>Recurring chores as their own chats</h4>
+      <p>Keep one chat for pitch triage and go back to it every week. Keep another for show notes. Each one builds up a sense of how you like the answer, which a fresh chat would lose.</p>
+    </li>
+    <li>
+      <h4>Connectors, only where they earn it</h4>
+      <p>Connectors for Google Drive, Gmail and Calendar are available on all Claude plans. When you connect one, the model gets the same level of access you have. So connect a single folder rather than your whole working life.</p>
+    </li>
+  </ol>
+
+  <h3>Chores worth handing over</h3>
+  <div class="grid g3">
+    <div class="card">
+      <span class="who">Pitch triage</span>
+      <p>Sort incoming tips and pitches against what the show actually makes, with a person reviewing every stage.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-wfmz">WFMZ, Allentown →</a>
+    </div>
+    <div class="card">
+      <span class="who">Show notes &amp; chapter markers</span>
+      <p>Work from the verified tape log, not the raw transcript. Ask for chapters with timecodes, plus a 40-word episode description written in the show's voice.</p>
+      <a class="evlink" href="#" data-goto="6" data-anchor="pr-shownotes">Use the show-notes prompt →</a>
+    </div>
+    <div class="card">
+      <span class="who">Guest research</span>
+      <p>With web search turned on, every claim comes back with a citation you can click. Those citations are worth checking before the pre-interview.</p>
+      <a class="evlink" href="#" data-goto="6" data-anchor="pr-brief">Use the pre-interview prompt →</a>
+    </div>
+    <div class="card">
+      <span class="who">Beat monitoring</span>
+      <p>Keyword alerts across meeting transcripts, so you hear about the thing you could not staff.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-michigan">Michigan Radio →</a>
+    </div>
+    <div class="card">
+      <span class="who">Records requests</span>
+      <p>Load the relevant statute and your templates, and have it draft the appeal when a request is refused. A person reviews and sends.</p>
+      <a class="evlink" href="#" data-goto="5" data-anchor="ev-vg">Verdens Gang, Norway →</a>
+    </div>
+    <div class="card">
+      <span class="who">The funder report</span>
+      <p>Given the grant agreement, your episode list and your numbers, it will draft against the deliverables you promised. You will want to rewrite it afterward, because it will read like a grant report.</p>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <h4>Where production support ends</h4>
+    <p>Everything above is production support: it helps you do the work, but it is not the work. The moment the output is <em>editorial content going to air</em>, the rules in <a href="#" class="jump" data-goto="4">tab 04</a> apply. Most published newsroom policies simply prohibit that.</p>
+  </div>
+
+  <ul class="reflist">
+    <li><a href="https://www.niemanlab.org/2023/10/the-ap-announces-five-ai-tools-to-help-local-newsrooms-with-tasks-like-transcription-and-sorting-pitches/">AP's five local-newsroom AI tools</a> <span class="why">— built with named stations, three of them open source</span></li>
+    <li><a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities">How connectors work</a> <span class="why">— the model inherits your own permissions in the connected service; read that part first</span></li>
+    <li><a href="https://support.claude.com/en/articles/11088861-use-research-on-claude">Research mode</a> <span class="why">— multi-step web research with citations, on paid plans</span></li>
+  </ul>
+</section>
+
+
+<!-- ============ 04 ============ -->
+<section class="sec4" id="p-guard" role="tabpanel" aria-labelledby="t-guard" data-toc hidden>
+  <span class="eyebrow">04 — Guardrails</span>
+  <h2 class="panel-h">What not to paste, and what to tell your audience</h2>
+  <p class="lede">A chatbot account is a company holding your notes. Treat the text box the way you would treat a phone call on a line you do not control.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 800 352" role="img" aria-label="Decision flow: if pasting something could burn a source or break a promise, stop; if it is unpublished, privileged or someone else's work, get editor sign-off; otherwise proceed and still verify the output.">
+        <defs>
+          <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <rect x="268" y="10" width="264" height="40" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="400" y="35" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">about to paste something in</text>
+        <line x1="400" y1="52" x2="400" y2="70" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+
+        <polygon points="400,76 556,114 400,152 244,114" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="400" y="110" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">could this burn a source, or</text>
+        <text x="400" y="127" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">break a promise you made?</text>
+
+        <line x1="558" y1="114" x2="612" y2="114" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+        <text x="585" y="105" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">yes</text>
+        <rect x="618" y="84" width="174" height="62" rx="7" fill="none" class="s-danger" stroke-width="2"/>
+        <text x="705" y="106" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" class="c-danger">STOP</text>
+        <text x="705" y="123" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" class="c-danger">redact, paraphrase, or use</text>
+        <text x="705" y="137" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" class="c-danger">an approved in-house tool</text>
+
+        <line x1="400" y1="154" x2="400" y2="180" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+        <text x="418" y="172" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">no</text>
+
+        <polygon points="400,186 556,224 400,262 244,224" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="400" y="220" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">unpublished, privileged, or</text>
+        <text x="400" y="237" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">somebody else's work?</text>
+
+        <line x1="558" y1="224" x2="612" y2="224" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+        <text x="585" y="215" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">yes</text>
+        <rect x="618" y="198" width="174" height="52" rx="7" fill="none" class="s-accent" stroke-width="2"/>
+        <text x="705" y="220" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" class="c-accent">EDITOR SIGN-OFF</text>
+        <text x="705" y="237" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" class="c-accent">before anything goes in</text>
+
+        <line x1="400" y1="264" x2="400" y2="290" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+        <text x="418" y="282" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">no</text>
+
+        <rect x="266" y="296" width="268" height="46" rx="7" fill="none" class="s-ok" stroke-width="2"/>
+        <text x="400" y="317" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" class="c-ok">GO AHEAD</text>
+        <text x="400" y="333" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" class="c-ok">and still verify every output</text>
+      </svg>
+    </div>
+    <figcaption>Poynter's starter-kit policy template turns the same test into a flat rule. Never enter identifying information about a source, an audience member or your own staff into a generative AI tool.</figcaption>
+  </figure>
+
+  <h3>What you should never paste in</h3>
+  <div class="pillrow">
+    <span class="pill no">source identities</span>
+    <span class="pill no">off-the-record material</span>
+    <span class="pill no">unpublished sensitive documents</span>
+    <span class="pill no">legally privileged material</span>
+    <span class="pill no">contracts &amp; correspondence</span>
+    <span class="pill no">anything you promised to protect indefinitely</span>
+  </div>
+  <p>The Freedom of the Press Foundation's rule is the clearest one: do not submit anything you would not want the company to see, or would not want exposed. There are two concrete reasons behind it. The company can access what you send, and a court can compel it to hand that over. And depending on your settings, what you send may be used to train the model.</p>
+
+  <h3>How long your data is kept</h3>
+  <p>Every tool answers this differently, and the answer changes. Claude's, as an example: on the consumer plans — Free, Pro and Max — you choose whether your conversations are used to improve the model. Decline, and chats are kept until you delete them. Accept, and your data may also be held for up to five years in training pipelines. A chat you delete leaves your history right away, and back-end storage within 30 days.</p>
+  <p>Two caveats. Conversations that automated safety systems flag are kept for <strong>up to two years whatever you chose</strong>. And no consumer plan can get a zero-retention arrangement; those are for approved enterprise customers only.</p>
+  <div class="stamp"><b>Verified Sept. 19, 2026</b> · retention policies change · <a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data">check the current terms</a></div>
+
+  <div class="note warn">
+    <h4>Deletion promises can be overridden by a court</h4>
+    <p>In 2025 a court ordered OpenAI to preserve <em>all</em> ChatGPT output data indefinitely. That included deleted chats, which would normally have gone within 30 days, across Free, Plus, Pro and Team accounts. The order ended in September 2025, but everything captured in that window is still under legal hold. A company's retention policy is a policy, not a guarantee. <a href="https://openai.com/index/response-to-nyt-data-demands/">OpenAI's own account</a></p>
+  </div>
+
+  <h3>Disclosure: what newsrooms have published</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Who</th><th>The rule</th></tr></thead>
+      <tbody>
+        <tr><td>Chicago Public Media / WBEZ</td><td>Tell the audience when a human voice is represented synthetically, when content wasn't human-reviewed, and whenever AI played a significant role. <strong>Bans</strong> replicating any journalist's or real person's voice</td></tr>
+        <tr><td>Associated Press</td><td>No generative AI may add or subtract elements in photo, video <strong>or audio</strong>. All output is "unvetted source material"</td></tr>
+        <tr><td>The Guardian</td><td>GenAI may be used "carefully and responsibly." Any <strong>significant</strong> use must be approved by the relevant senior duty editor and "clearly signalled to the user." Alt text, document analysis and <strong>audio transcription</strong> are the cited examples of acceptable limited use</td></tr>
+        <tr><td>BBC</td><td>Nothing publishes until a journalist reviews it; an on-page "How we used AI" label</td></tr>
+        <tr><td>ACMA (Australia)</td><td>From July 1, 2026, commercial radio must tell listeners when a synthetic voice hosts a scheduled program or news broadcast</td></tr>
+        <tr><td>EU AI Act, Art. 50(4)</td><td>From Aug. 2, 2026, deepfake audio must be disclosed. The editorial-review carve-out covers AI-assisted <strong>text</strong>, not synthetic audio</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What has gone wrong so far</h3>
+  <figure>
+    <div class="chartwrap">
+      <svg viewBox="0 0 700 214" role="img" aria-label="Of more than 3,000 AI assistant responses about news tested by the EBU and BBC, 45 percent had at least one significant issue, 31 percent had serious sourcing problems and 20 percent had major accuracy errors.">
+        <line class="grid" x1="236" y1="28" x2="236" y2="176"/>
+        <line class="grid" x1="341" y1="28" x2="341" y2="176"/>
+        <line class="grid" x1="446" y1="28" x2="446" y2="176"/>
+        <line class="grid" x1="551" y1="28" x2="551" y2="176"/>
+        <line class="grid" x1="656" y1="28" x2="656" y2="176"/>
+
+        <text x="222" y="55" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" class="valtext">At least one significant issue</text>
+        <path class="c-accent" d="M236,38 H421 a4,4 0 0 1 4,4 V56 a4,4 0 0 1 -4,4 H236 Z"/>
+        <text x="437" y="55" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" class="valtext">45%</text>
+
+        <text x="222" y="107" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" class="valtext">Serious sourcing problems</text>
+        <path class="c-accent" d="M236,90 H362 a4,4 0 0 1 4,4 V108 a4,4 0 0 1 -4,4 H236 Z"/>
+        <text x="378" y="107" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" class="valtext">31%</text>
+
+        <text x="222" y="159" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" class="valtext">Major accuracy errors</text>
+        <path class="c-accent" d="M236,142 H316 a4,4 0 0 1 4,4 V160 a4,4 0 0 1 -4,4 H236 Z"/>
+        <text x="332" y="159" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" class="valtext">20%</text>
+
+        <text x="236" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">0%</text>
+        <text x="341" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">25%</text>
+        <text x="446" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">50%</text>
+        <text x="551" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">75%</text>
+        <text x="656" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">100%</text>
+      </svg>
+    </div>
+    <figcaption>Share of AI assistant answers about news carrying each kind of problem. 3,000+ responses from four assistants, tested by 22 public broadcasters across 18 countries, October 2025. The worst single assistant was Gemini, at 76%. <a href="https://www.ebu.ch/news/2025/10/ai-s-systemic-distortion-of-news-is-consistent-across-languages-and-territories-international-study-by-public-service-broadcaste">EBU and BBC</a></figcaption>
+  </figure>
+  <div class="grid g2">
+    <div class="card">
+      <span class="who">The Washington Post's AI podcasts</span>
+      <span class="meta">December 2025 · audio</span>
+      <p>The Post launched personalized audio briefings read by synthetic hosts. Within 48 hours its own staff had documented misattributed and <strong>fabricated quotes</strong>, mispronounced reporters' names, and inserted commentary that presented a source's statement as the Post's own position.</p>
+      <span class="src"><a href="https://www.semafor.com/article/12/11/2025/washington-posts-ai-generated-podcasts-rife-with-errors-fictional-quotes">Semafor</a> · <a href="https://www.npr.org/2025/12/13/nx-s1-5641047/washington-posts-ai-podcast">NPR</a></span>
+    </div>
+    <div class="card">
+      <span class="who">CADA's secret AI host</span>
+      <span class="meta">April 2025 · radio</span>
+      <p>A Sydney commercial station ran an AI-generated host across a four-hour weekday show for roughly six months without telling listeners. The technology was not the scandal. Not saying so was.</p>
+      <span class="src">Reported by the Australian press, April 2025 — second-hand here; verify against an Australian primary source before citing</span>
+    </div>
+    <div class="card">
+      <span class="who">AI assistants misreporting the news</span>
+      <span class="meta">October 2025 · systemic</span>
+      <p>The largest test of its kind, charted above. The finding that matters for audio: these are the same systems being wired into voice assistants and smart speakers, where a listener gets one answer and no citations to check.</p>
+      <span class="src"><a href="https://www.ebu.ch/news/2025/10/ai-s-systemic-distortion-of-news-is-consistent-across-languages-and-territories-international-study-by-public-service-broadcaste">EBU</a></span>
+    </div>
+    <div class="card">
+      <span class="who">Books that don't exist</span>
+      <span class="meta">May 2025 · print</span>
+      <p>A syndicated summer insert ran in the Chicago Sun-Times and the Philadelphia Inquirer recommending books that do not exist, attributed to authors who do. The freelancer who wrote it: "I just kind of republished this list that [an AI program] spit out."</p>
+      <span class="src"><a href="https://chicago.suntimes.com/news/2025/05/20/syndicated-content-sunday-print-sun-times-ai-misinformation">Chicago Sun-Times</a></span>
+    </div>
+  </div>
+
+  <h3>Writing your own policy</h3>
+  <ol class="steps">
+    <li><h4>Poynter's template as the starting point</h4><p>It already contains the clauses on sources, disclosure, verification and voice likeness. You are editing a draft rather than writing one.</p></li>
+    <li><h4>WBEZ's audio clauses, worth taking word for word</h4><p>It is the most audio-specific policy any public radio organization has published. It covers text-to-speech, translation and voice cloning explicitly, which most policies do not.</p></li>
+    <li><h4>One disclosure line, decided in advance</h4><p>Write the sentence you would put in a show description or read on air. Do it now, so it is not being drafted under deadline pressure.</p></li>
+    <li><h4>Settings checked against the policy</h4><p>A policy about protecting confidential material only holds if the training setting is actually switched off.</p></li>
+  </ol>
+
+  <ul class="reflist">
+    <li><a href="https://freedom.press/digisec/blog/using-ai-safely-as-a-journalist-stand-alone-ai-tools/">Freedom of the Press Foundation: using AI safely as a journalist</a> <span class="why">— the best single security read for this</span></li>
+    <li><a href="https://www.wbez.org/ai-policy">Chicago Public Media's AI policy</a> <span class="why">— the public-radio benchmark, updated February 2026</span></li>
+    <li><a href="https://www.poynter.org/ai-ethics-journalism/ai-ethics-guidelines/">Poynter's AI ethics starter kit</a> <span class="why">— a template you can fill in and adopt</span></li>
+    <li><a href="https://rsf.org/en/paris-charter-ai-and-journalism">The Paris Charter on AI and Journalism</a> <span class="why">— for the principle on separating captured reality from synthesis</span></li>
+    <li><a href="https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training">Is my data used for model training?</a> <span class="why">— Anthropic's own answer, including Incognito chats</span></li>
+  </ul>
+</section>
+
+
+<!-- ============ 05 ============ -->
+<section class="sec5" id="p-evidence" role="tabpanel" aria-labelledby="t-evidence" data-toc hidden>
+  <span class="eyebrow">05 — The evidence</span>
+  <h2 class="panel-h">What has actually been done, and what hasn't</h2>
+  <p class="lede">Every case here was either published by the newsroom itself or reported by a journalism research organization. Where a newsroom described what its people did by hand, that part is included. It is usually the more useful half. The techniques in the other tabs link back to these.</p>
+
+  <figure>
+    <div class="chartwrap">
+      <svg viewBox="0 0 780 240" role="img" aria-label="Each documented case plotted by date across three categories. Thirteen of the sixteen cases fall in the last two years; only three predate late 2024, and none predates October 2023.">
+        <line class="grid" x1="118.0" y1="44" x2="118.0" y2="202"/>
+        <text x="118.0" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">2023</text>
+        <line class="grid" x1="275.5" y1="44" x2="275.5" y2="202"/>
+        <text x="275.5" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">2024</text>
+        <line class="grid" x1="433.0" y1="44" x2="433.0" y2="202"/>
+        <text x="433.0" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">2025</text>
+        <line class="grid" x1="590.5" y1="44" x2="590.5" y2="202"/>
+        <text x="590.5" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" class="axtext">2026</text>
+        <text x="104" y="74" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11.5" class="valtext">Audio</text>
+        <text x="104" y="129" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11.5" class="valtext">Documents</text>
+        <text x="104" y="184" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11.5" class="valtext">Production</text>
+        <circle class="k1 ring" cx="262.4" cy="70" r="5.5"><title>Michigan Radio, Dec 2023</title></circle>
+        <circle class="k1 ring" cx="380.5" cy="70" r="5.5"><title>BBC Sounds, Sept 2024</title></circle>
+        <circle class="k1 ring" cx="459.2" cy="70" r="5.5"><title>Chalkbeat, Mar 2025</title></circle>
+        <circle class="k1 ring" cx="603.6" cy="70" r="5.5"><title>NYT podcast monitoring, Feb 2026</title></circle>
+        <circle class="k1 ring" cx="643.0" cy="70" r="5.5"><title>AAPB FixIt+, May 2026</title></circle>
+        <circle class="k2 ring" cx="262.4" cy="125" r="5.5"><title>ProPublica / Uvalde, Dec 2023</title></circle>
+        <circle class="k2 ring" cx="446.1" cy="125" r="5.5"><title>ProPublica / NSF grants, Feb 2025</title></circle>
+        <circle class="k2 ring" cx="511.8" cy="125" r="5.5"><title>WSJ / Kerr County, Jul 2025</title></circle>
+        <circle class="k2 ring" cx="524.9" cy="117" r="5.5"><title>Minnesota Star Tribune, Aug 2025</title></circle>
+        <circle class="k2 ring" cx="524.9" cy="133" r="5.5"><title>iTromso, Aug 2025</title></circle>
+        <circle class="k2 ring" cx="538.0" cy="125" r="5.5"><title>AP / China surveillance, Sept 2025</title></circle>
+        <circle class="k2 ring" cx="577.4" cy="125" r="5.5"><title>NYT / SEC, Dec 2025</title></circle>
+        <circle class="k2 ring" cx="590.5" cy="125" r="5.5"><title>California Reporting Project, Jan 2026</title></circle>
+        <circle class="k2 ring" cx="603.6" cy="125" r="5.5"><title>NYT / Epstein files, Feb 2026</title></circle>
+        <circle class="k3 ring" cx="236.1" cy="180" r="5.5"><title>WFMZ Allentown, Oct 2023</title></circle>
+        <circle class="k3 ring" cx="524.9" cy="180" r="5.5"><title>Verdens Gang, Aug 2025</title></circle>
+      </svg>
+    </div>
+    <div class="chartlegend">
+      <span><i style="background:var(--k1)"></i> Audio &amp; broadcast</span>
+      <span><i style="background:var(--k2)"></i> Documents &amp; investigation</span>
+      <span><i style="background:var(--k3)"></i> Production &amp; admin</span>
+    </div>
+    <figcaption>One dot per case below, placed at the date the work was published or described; hover a dot for the name. Nothing here predates October 2023, thirteen of the sixteen fall in the last two years, and the document work clusters hard in 2025&ndash;26. This is a field about two years old, which is worth remembering before treating any of it as settled practice.</figcaption>
+  </figure>
+
+  <p class="evgroup">Audio and broadcast</p>
+  <div class="grid g2">
+    <div class="card" id="ev-nyt-podcasts">
+      <span class="who">The New York Times</span>
+      <span class="meta">Feb 2026 · podcast monitoring</span>
+      <span class="scale">~80 podcasts, nightly</span>
+      <p>The system downloads a hand-picked list of shows, transcribes them, summarizes each one, then emails about 40 reporters a single summary of the talking points they had in common, at 8am. It fed coverage of the Epstein-files backlash and the Sydney Sweeney ad story. Reporters always go back to the source audio before using anything.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2026/02/how-the-new-york-times-uses-a-custom-ai-tool-to-track-the-manosphere/">Nieman Lab</a></span>
+    </div>
+    <div class="card" id="ev-michigan">
+      <span class="who">Michigan Radio (WUOM)</span>
+      <span class="meta">Dec 2023 · public meetings</span>
+      <span class="scale">~2,000 transcripts · 100+ bodies</span>
+      <p>Reporter Dustin Dwyer built a pipeline that transcribes local government meeting audio into a searchable database, with timestamped links back to the audio and keyword email alerts. His own verdict on the AI summaries: "inconsistent." The transferable lesson is his framing — spend the effort structuring the dataset, so whatever tool comes next can be pointed at it.</p>
+      <span class="src"><a href="https://current.org/2023/12/michigan-radio-project-points-to-future-of-ai-use-in-newsrooms/">Current</a></span>
+    </div>
+    <div class="card" id="ev-chalkbeat">
+      <span class="who">Chalkbeat</span>
+      <span class="meta">Mar 2025 · meeting audio</span>
+      <span class="scale">~80 school districts · 8 bureaus</span>
+      <p>Runs keyword alerts across transcribed school-board meetings using a vendor tool, LocalLens. One reporter found a source for a story about LGBTQ+ students from a single alert. Reported failure modes worth knowing: poor speaker identification, trouble with regional accents, and everything still needing independent verification.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2025/03/local-newsrooms-are-using-ai-to-listen-in-on-public-meetings/">Nieman Lab</a></span>
+    </div>
+    <div class="card" id="ev-bbc">
+      <span class="who">BBC Sounds</span>
+      <span class="meta">Sept 2024 · accessibility</span>
+      <span class="scale">~27,000 hours/month of output</span>
+      <p>A three-month trial generating subtitles and transcripts with Whisper across five shows, with editorial staff reviewing and editing every one before publication. Reviewed afterward on accuracy and cost.</p>
+      <span class="src"><a href="https://www.ibc.org/artificial-intelligence/news/bbc-trials-generative-ai-subtitles-on-bbc-sounds/20456">IBC</a></span>
+    </div>
+    <div class="card" id="ev-aapb">
+      <span class="who">American Archive of Public Broadcasting</span>
+      <span class="meta">May 2026 · archives</span>
+      <span class="scale">100+ collections, 1960s–2010s</span>
+      <p>GBH and the Library of Congress generate a first-pass transcript of historic public radio and TV. Volunteers correct it line by line while listening, and a transcript only counts as complete once other volunteers agree. It is the best existing model for AI drafting plus human correction at scale.</p>
+      <span class="src"><a href="https://www.nextgov.com/artificial-intelligence/2026/05/how-library-congress-using-both-ai-and-volunteers-unlock-public-broadcasting-history/413742/">Nextgov</a></span>
+    </div>
+  </div>
+
+  <p class="evgroup">Documents and investigation</p>
+  <div class="grid g2">
+    <div class="card" id="ev-propublica">
+      <span class="who">ProPublica</span>
+      <span class="meta">Feb 2025 · forced citations</span>
+      <span class="scale">3,400+ NSF grants</span>
+      <p>Sen. Cruz's office had flagged the grants as advancing "neo-Marxist class warfare." ProPublica fed each description to a model, with a prompt demanding structured fields <em>and the exact wording that justified every flag</em>. Staff then manually reviewed the grants the model came up blank on, plus many others including every one named in the story, confirmed every published detail, and called everyone named. The finding: the dragnet had swept up grants with no DEI content in them at all.</p>
+      <span class="src"><a href="https://www.propublica.org/article/using-ai-responsibly-for-reporting">ProPublica methodology</a></span>
+    </div>
+    <div class="card" id="ev-nyt-sec">
+      <span class="who">The New York Times</span>
+      <span class="meta">Dec 2025 · Pulitzer, Investigative</span>
+      <span class="scale">10,000+ documents · 700+ cases</span>
+      <p>Reporters read and classified every SEC news release, enforcement action and federal court case by hand, over several months. Only then did they run a model across the same pile — as a second reviewer, to catch human classification errors. The result quantified the SEC's retreat from crypto enforcement.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2026/08/a-record-breaking-eight-pulitzer-awardees-disclosed-ai-use-this-year/">Nieman Lab</a> · the Times's own note, Dec. 14, 2025, is paywalled</span>
+    </div>
+    <div class="card" id="ev-nyt-epstein">
+      <span class="who">The New York Times</span>
+      <span class="meta">Feb 2026 · document dump</span>
+      <span class="scale">~3 million pages</span>
+      <p>The DOJ released the Epstein files through a portal with no usable search. The Times scanned all of it into an internal tool with proper search and AI-assisted tagging, pulling text out of images, audio and video along the way. Editors were explicit about the limit: "AI cannot determine newsworthiness."</p>
+      <span class="src"><a href="https://lab.imedd.org/en/from-ai-tools-to-prince-andrews-arrest-how-newsrooms-are-digging-into-the-jeffrey-epstein-files/">iMEdD Lab, comparing five newsrooms</a></span>
+    </div>
+    <div class="card" id="ev-wsj">
+      <span class="who">The Wall Street Journal</span>
+      <span class="meta">2026 · Pulitzer finalist</span>
+      <span class="scale">every Kerr County meeting record</span>
+      <p>A scraper pulled every meeting minute, agenda and transcript off the county website. An internal tool summarized and ranked them so reporters could find what mattered. Reporters then read every flagged document in full. The story: officials had pushed for a better flood-warning system years before the July 2025 floods.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2026/08/a-record-breaking-eight-pulitzer-awardees-disclosed-ai-use-this-year/">Nieman Lab on the Pulitzer disclosures</a></span>
+    </div>
+    <div class="card" id="ev-startribune">
+      <span class="who">Minnesota Star Tribune</span>
+      <span class="meta">Aug 2025 · Pulitzer, Breaking News</span>
+      <span class="scale">600,000+ words</span>
+      <p>The Annunciation shooter's journals were written in Faux Cyrillic. AI did the first-pass transliteration and picked out which of the hundreds of pages mattered. Two Russian-language academics then reviewed the flagged passages, and reporters verified every quote. The profile ran four days after the attack.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2026/08/a-record-breaking-eight-pulitzer-awardees-disclosed-ai-use-this-year/">Nieman Lab</a></span>
+    </div>
+    <div class="card" id="ev-ap">
+      <span class="who">Associated Press</span>
+      <span class="meta">Sept 2025 · Pulitzer, International</span>
+      <span class="scale">tens of thousands of emails</span>
+      <p>Leaked emails, databases and procurement records from Chinese surveillance contractors, searched and grouped with the help of language models. Every document the tools surfaced was reviewed by hand. AP's disclosure is the sentence to copy: the tools "did not replace the reporting or verification process."</p>
+      <span class="src"><a href="https://www.niemanlab.org/2026/08/a-record-breaking-eight-pulitzer-awardees-disclosed-ai-use-this-year/">Nieman Lab</a></span>
+    </div>
+    <div class="card" id="ev-itromso">
+      <span class="who">iTromsø</span>
+      <span class="meta">Aug 2025 · small newsroom</span>
+      <span class="scale">thousands of pages</span>
+      <p>A small Norwegian paper broke a hospital records release into chunks, queried it for anomalies, and refined its definition of "newsworthy" on each pass. It found a doctor who had spent four seconds reviewing an X-ray. The story won Norway's Data-SKUP award, and the paper estimates it avoided more than three months of manual work.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2025/08/the-good-the-bad-and-the-completely-made-up-newsrooms-on-wrestling-accurate-answers-out-of-ai/">Nieman Lab</a></span>
+    </div>
+    <div class="card" id="ev-crp">
+      <span class="who">California Reporting Project</span>
+      <span class="meta">Jan 2026 · public records</span>
+      <span class="scale">~700 agencies · 1.5m pages</span>
+      <p>KQED, 40 other newsrooms and UC Berkeley. AI summarizes files, pulls out incident dates, classifies case types and groups loose documents into coherent cases. People review every case flagged as misconduct. The system also cross-references against state data to find records that agencies never produced — which generates the next round of requests.</p>
+      <span class="src"><a href="https://current.org/2026/01/how-ai-assisted-workflows-are-unlocking-california-police-records/">Current</a></span>
+    </div>
+    <div class="card" id="ev-uvalde">
+      <span class="who">ProPublica &amp; The Texas Tribune</span>
+      <span class="meta">Dec 2023 · self-hosted</span>
+      <span class="scale">hundreds of hours of unreleased tape</span>
+      <p>Unreleased state investigation audio and video from the 2022 Uvalde shooting, transcribed and classified using open-source models run on ProPublica's own machines — so the material never left the newsroom's control. Published with FRONTLINE in December 2023. The reference case for anything that could put a person at risk.</p>
+      <span class="src"><a href="https://www.propublica.org/article/using-ai-responsibly-for-reporting">ProPublica methodology</a></span>
+    </div>
+  </div>
+
+  <p class="evgroup">Production and admin</p>
+  <div class="grid g2">
+    <div class="card" id="ev-wfmz">
+      <span class="who">WFMZ-TV, Allentown</span>
+      <span class="meta">Oct 2023 · pitch triage</span>
+      <span class="scale">one of five AP-funded tools</span>
+      <p>Sorts community news tips and pitches into a coverage planner. Built with the Associated Press's local-news AI program, with human moderation at every stage; three of the five tools were open-sourced. This is the only documented newsroom case of AI pitch triage.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2023/10/the-ap-announces-five-ai-tools-to-help-local-newsrooms-with-tasks-like-transcription-and-sorting-pitches/">Nieman Lab</a></span>
+    </div>
+    <div class="card" id="ev-vg">
+      <span class="who">Verdens Gang, Norway</span>
+      <span class="meta">Aug 2025 · records requests</span>
+      <span class="scale">100+ appeals drafted</span>
+      <p>Loaded the full Norwegian freedom-of-information statute plus 75 Press Association templates into a bot that drafts rebuttals when a records request is refused. People review and send every one. Saves roughly half a day per appeal.</p>
+      <span class="src"><a href="https://www.niemanlab.org/2025/08/the-good-the-bad-and-the-completely-made-up-newsrooms-on-wrestling-accurate-answers-out-of-ai/">Nieman Lab</a></span>
+    </div>
+  </div>
+
+  <h3>What nobody has documented</h3>
+  <p>This list is the honest other half of the gallery above. Each of these is a gap we looked for and did not find, as of September 2026.</p>
+  <ul class="reflist">
+    <li><strong>Script structure.</strong> <span class="why">No documented case of a named producer using a language model for act breaks, cold opens or running order in journalistic audio. Vendors claim it constantly. No newsroom has written up how it went. If you try it, you are ahead of the evidence.</span></li>
+    <li><strong>A mechanism explainer for journalists.</strong> <span class="why">Poynter, Nieman Lab, the Reuters Institute, RJI and JournalismAI all publish on AI ethics, policy and tools. None of them explains how the models work. Tab 00 exists because that gap does.</span></li>
+    <li><strong>An audio-journalism customer story.</strong> <span class="why">Neither Anthropic nor OpenAI has published one for any audio-journalism organization.</span></li>
+    <li><strong>Anything from Transom.</strong> <span class="why">Transom has published nothing on AI. The Transom 25 program was about method rather than tools, which is consistent with that.</span></li>
+    <li><strong>Public-radio policies beyond one.</strong> <span class="why">No published AI policy found for PRX, Radiotopia, KQED or New York Public Radio. NPR's guidelines exist internally but are not public — the URL that circulates for them returns a 404. Chicago Public Media's is the benchmark by default.</span></li>
+    <li><strong>Two items on this page are second-hand.</strong> <span class="why">The CADA AI-host story was broken by the Australian press and could not be verified against a primary source here. The New York Times methodology notes are paywalled, so they are described through IRE, Nieman Lab and iMEdD Lab.</span></li>
+  </ul>
+</section>
+
+
+<!-- ============ 06 ============ -->
+<section class="sec6" id="p-prompts" role="tabpanel" aria-labelledby="t-prompts" data-toc hidden>
+  <span class="eyebrow">06 — Prompts</span>
+  <h2 class="panel-h">Starting points, not finished prompts</h2>
+  <p class="lede">Each of these assumes your material is already attached, or sitting in a workspace. They are worth editing before use — a prompt written in your show's own vocabulary works better than a generic one. Every one of them carries a line giving the model permission to say it doesn't know.</p>
+
+  <h3>For logging tape</h3>
+
+  <div id="pr-tapelog"><div class="prompt">
+    <div class="prompt-head"><h4>Tape log with confidence flags</h4><button class="copy" type="button">Copy</button></div>
+    <pre>You are an experienced radio producer logging tape for a narrative feature.
+
+The attached file is a machine transcript of a [LENGTH] interview with [WHO, ONE LINE OF CONTEXT]. Timecodes are approximate and the transcription may contain errors.
+
+Build a tape log as a table with these columns:
+timecode | topic | verbatim quote | why it earns space | confidence
+
+Rules:
+- Quote verbatim from the transcript only. Never smooth, trim or paraphrase inside quotation marks.
+- If you are not certain a passage is a direct quote, mark confidence LOW and say why.
+- Flag separately any passage where the speaker describes a specific event with a date, place or figure.
+- Do not summarize the interview. I want the log.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="1">01 · Start here</a> and <a href="#" data-goto="2">02 · Tape and documents</a></p>
+
+  <div id="pr-selects"><div class="prompt">
+    <div class="prompt-head"><h4>Selects for a specific length</h4><button class="copy" type="button">Copy</button></div>
+    <pre>From this transcript, propose the strongest 4 minutes of tape for a [LENGTH] piece about [SUBJECT].
+
+For each select give me: in-point and out-point timecodes, the verbatim text, its running time estimate at normal speech, and one sentence on what it does for the story that nothing else does.
+
+Rank them. Then tell me which two you would cut first if I needed to lose 90 seconds, and why.
+
+If two selects make the same point, say so rather than offering both.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="2">02 · Tape and documents</a></p>
+
+  <div id="pr-contradictions"><div class="prompt">
+    <div class="prompt-head"><h4>Contradictions across several interviews</h4><button class="copy" type="button">Copy</button></div>
+    <pre>These [N] transcripts are interviews with different people about [EVENT].
+
+Find every place where two or more accounts disagree on a fact: a time, a sequence, who was present, who said what, a number.
+
+For each disagreement give me: the fact in dispute, each speaker's verbatim words with their timecode, and how material the difference is.
+
+Do not resolve the disagreements or guess who is right. List them.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="2">02 · Tape and documents</a></p>
+
+  <h3>For documents</h3>
+
+  <div id="pr-map"><div class="prompt">
+    <div class="prompt-head"><h4>Map the corpus before you question it</h4><button class="copy" type="button">Copy</button></div>
+    <pre>Before I ask you anything substantive about these documents, describe what you actually have.
+
+List: document types and roughly how many of each, the date range, the recurring names and organizations, the apparent gaps (missing dates, referenced attachments that are not here, redactions), and anything unreadable.
+
+Be specific about what you cannot read. That matters more to me than what you can.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="2">02 · Tape and documents</a></p>
+
+  <div id="pr-flag"><div class="prompt">
+    <div class="prompt-head"><h4>Flag with a forced citation</h4><button class="copy" type="button">Copy</button></div>
+    <pre>Go through these documents and find every instance of [YOUR CRITERION, IN TWO SENTENCES].
+
+Here are two confirmed examples of what I mean: [EXAMPLE 1]. [EXAMPLE 2].
+
+Return one row per hit: document name | page or section | the verbatim sentence that justifies the flag | why it matched | confidence high/medium/low.
+
+You must include the verbatim sentence. If you cannot locate one, do not include the row.
+
+If you are unsure whether something qualifies, include it and mark it LOW rather than deciding for me. If you find nothing, say so — do not pad the list.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="2">02 · Tape and documents</a></p>
+
+  <div id="pr-chronology"><div class="prompt">
+    <div class="prompt-head"><h4>Chronology from verified items</h4><button class="copy" type="button">Copy</button></div>
+    <pre>Here are [N] items I have independently verified. Build a chronology.
+
+Columns: date | what happened | source document | who was involved | what is still unknown at this point in the timeline.
+
+Where two items conflict on a date, show both rows and mark the conflict. Do not interpolate events that are not in the material.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="2">02 · Tape and documents</a></p>
+
+  <h3>For running the show</h3>
+
+  <div id="pr-instructions"><div class="prompt">
+    <div class="prompt-head"><h4>Project instructions for a show</h4><button class="copy" type="button">Copy</button></div>
+    <pre>You are working on [SHOW], a [LENGTH] [FORMAT] for [AUDIENCE].
+
+Voice: [TWO SENTENCES — sentence length, register, what the show never does].
+Never use: [YOUR BANNED WORDS].
+Names and style: [HOW YOU HANDLE TITLES, PLACES, PRONUNCIATION NOTES].
+
+Standards, non-negotiable:
+- Never invent a quote, a name, a date or a source. If something is not in the material I have given you, say "not in the material."
+- When you are uncertain, say so in the answer rather than hedging in the prose.
+- Anything you produce is a draft for a human to verify, not output.
+- If I ask you for something that would breach these, tell me.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="1">01 · Start here</a> and <a href="#" data-goto="3">03 · Running the show</a></p>
+
+  <div id="pr-pitch"><div class="prompt">
+    <div class="prompt-head"><h4>Pitch triage</h4><button class="copy" type="button">Copy</button></div>
+    <pre>Here are [N] pitches. Sort them against what this show actually makes — you have the format doc and past scripts.
+
+For each: one-line summary | closest past episode | what is missing before this could be commissioned | reporting lift, low/medium/high.
+
+Then group them: obvious yes, needs a conversation, wrong show. Put anything you are unsure about in "needs a conversation" rather than guessing.
+
+Do not rewrite the pitches. Do not be encouraging.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="3">03 · Running the show</a></p>
+
+  <div id="pr-shownotes"><div class="prompt">
+    <div class="prompt-head"><h4>Show notes and chapters from a verified log</h4><button class="copy" type="button">Copy</button></div>
+    <pre>Using the attached verified tape log — not the raw transcript — write:
+
+1. Chapter markers with timecodes, each title under six words, in the show's voice.
+2. A 40-word episode description.
+3. A 240-word show-notes block with the guest's title and affiliation as they appear in the log, and any resources mentioned on tape.
+
+Every name, title and figure must come from the log. Flag anything you had to leave blank.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="3">03 · Running the show</a></p>
+
+  <div id="pr-brief"><div class="prompt">
+    <div class="prompt-head"><h4>Pre-interview brief with sources</h4><button class="copy" type="button">Copy</button></div>
+    <pre>Search the web and build me a pre-interview brief on [PERSON], who I am interviewing about [TOPIC].
+
+Give me: what they are known for, what they have said publicly on this topic and where, any position they have changed, and the three questions they are always asked so I can avoid them.
+
+Cite a source for every factual claim. Where you could not find a source, say "unsourced" rather than filling it in. I will be checking the citations.</pre>
+  </div></div>
+  <p class="backto">Used in <a href="#" data-goto="3">03 · Running the show</a></p>
+
+  <div class="note good">
+    <h4>How to tell a prompt is working</h4>
+    <p>A good prompt makes the model's uncertainty visible to you. If everything comes back confident and tidy, it probably has not been given permission to fail — adding the line that lets it say "not in the material" and running it again usually shows the difference.</p>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>How this was put together.</strong> Every case and policy linked here was checked in September 2026, against either the organization that published it or a journalism research outfit: Nieman Lab, Poynter, Current, GIJN, IRE, CJR, the EBU. Product facts — file limits, pricing, retention — come from the vendors' own documentation and are marked with the date they were verified. Those are the facts that go stale fastest; follow the links rather than trusting the numbers here in six months.</p>
+    <p>Claude is used throughout for the worked examples. The mechanism in tab 00, the techniques in tab 02 and the guardrails in tab 04 apply to any of these tools. What is left, and what is flagged as second-hand or undocumented, is collected in <a href="#" class="jump" data-goto="5">tab 05</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = tabs.map(function(t){ return document.getElementById(t.getAttribute('aria-controls')); });
+
+  /* build an in-page contents list for any panel marked data-toc */
+  panels.forEach(function(panel){
+    if (!panel.hasAttribute('data-toc')) { return; }
+    var heads = Array.prototype.slice.call(panel.querySelectorAll('h3, .evgroup'));
+    if (heads.length < 3) { return; }
+    var nav = document.createElement('nav');
+    nav.className = 'toc';
+    nav.setAttribute('aria-label', 'On this page');
+    var lab = document.createElement('span');
+    lab.className = 'toc-lab';
+    lab.textContent = 'On this page';
+    nav.appendChild(lab);
+    heads.forEach(function(h, i){
+      if (!h.id) { h.id = panel.id + '-h' + i; }
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      nav.appendChild(a);
+    });
+    var lede = panel.querySelector('.lede');
+    if (lede && lede.nextSibling) { panel.insertBefore(nav, lede.nextSibling); }
+    else { panel.insertBefore(nav, panel.children[3] || null); }
+  });
+
+  function show(i, focus){
+    tabs.forEach(function(t, j){
+      var on = i === j;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      panels[j].hidden = !on;
+    });
+    if (focus) { tabs[i].focus(); }
+    try { localStorage.setItem('cfaj-tab-v3', String(i)); } catch (e) {}
+    tabs[i].scrollIntoView({block:'nearest', inline:'nearest'});
+  }
+
+  tabs.forEach(function(t, i){
+    t.tabIndex = i === 0 ? 0 : -1;
+    t.addEventListener('click', function(){
+      show(i, false);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    t.addEventListener('keydown', function(e){
+      var n = null;
+      if (e.key === 'ArrowRight') { n = (i + 1) % tabs.length; }
+      else if (e.key === 'ArrowLeft') { n = (i - 1 + tabs.length) % tabs.length; }
+      else if (e.key === 'Home') { n = 0; }
+      else if (e.key === 'End') { n = tabs.length - 1; }
+      if (n !== null) { e.preventDefault(); show(n, true); }
+    });
+  });
+
+  /* cross-tab links, optionally scrolling to a specific card or prompt */
+  document.querySelectorAll('[data-goto]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var i = parseInt(a.getAttribute('data-goto'), 10);
+      if (isNaN(i) || i < 0 || i >= tabs.length) { return; }
+      show(i, false);
+      var anchor = a.getAttribute('data-anchor');
+      var target = anchor ? document.getElementById(anchor) : null;
+      if (target) {
+        target.scrollIntoView({block:'start', behavior:'smooth'});
+        target.classList.remove('flash');
+        void target.offsetWidth;
+        target.classList.add('flash');
+      } else {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      }
+    });
+  });
+
+  var start = 0;
+  try {
+    var saved = parseInt(localStorage.getItem('cfaj-tab-v3'), 10);
+    if (!isNaN(saved) && saved >= 0 && saved < tabs.length) { start = saved; }
+  } catch (e) {}
+  show(start, false);
+
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.prompt').querySelector('pre');
+      var text = pre.textContent;
+      var done = function(){
+        btn.textContent = 'Copied';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+      } else {
+        fallback(text, done);
+      }
+    });
+  });
+
+  function fallback(text, done){
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      done();
+    } catch (e) {
+      done();
+    }
+  }
+})();
+</script>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="c853f0b2-2599-4bb4-b074-1cdfb45eb6c4" data-app-host="app.netlify.com"></script>
