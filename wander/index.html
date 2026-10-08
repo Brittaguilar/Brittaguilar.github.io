@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=0a8518ec-a6f7-4fe4-ac4d-87b209613a9e
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wander — Discover the web</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --ink:#0f0f13; --ink2:#1a1a22; --ink3:#252530;
+  --paper:#f2efe8; --paper2:#ccc8bf;
+  --spark:#e8533a; --spark2:#f0956e;
+  --violet:#8b5cf6; --violet-dim:rgba(139,92,246,0.18);
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+}
+
+html, body { min-height:100vh; background:var(--ink); color:var(--paper); font-family:'DM Sans',sans-serif; }
+
+nav {
+  position:sticky; top:0; z-index:200;
+  background:rgba(15,15,19,0.92); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:20px; padding:0 28px; height:60px;
+}
+.logo { font-family:'DM Serif Display',serif; font-size:22px; color:var(--paper); letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; flex-shrink:0; user-select:none; }
+.logo-pip { width:7px; height:7px; background:var(--spark); border-radius:50%; animation:breathe 2.4s ease-in-out infinite; }
+@keyframes breathe { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.5);opacity:0.6;} }
+
+.nav-filters { display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; flex:1; }
+.nav-filters::-webkit-scrollbar { display:none; }
+.pill { font-size:12px; font-weight:500; padding:5px 14px; border-radius:99px; border:1px solid var(--border2); background:transparent; color:var(--paper2); cursor:pointer; white-space:nowrap; transition:background 0.15s,color 0.15s,border-color 0.15s; font-family:'DM Sans',sans-serif; }
+.pill:hover { color:var(--paper); border-color:rgba(255,255,255,0.28); }
+.pill.active { background:var(--spark); border-color:var(--spark); color:#fff; }
+
+.wander-btn { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; padding:9px 20px; border-radius:7px; border:none; background:var(--spark); color:#fff; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background 0.15s,transform 0.1s; white-space:nowrap; flex-shrink:0; }
+.wander-btn:hover { background:#d9442c; }
+.wander-btn:active { transform:scale(0.97); }
+.wander-btn .kbd { font-size:10px; opacity:0.6; background:rgba(0,0,0,0.2); padding:1px 5px; border-radius:3px; }
+
+/* Single-site hero */
+#hero-section { display:none; padding:40px 28px 20px; max-width:1100px; margin:0 auto; }
+#hero-section.visible { display:block; }
+#hero-card {
+  background:var(--ink2); border:1px solid var(--border2); border-radius:16px; overflow:hidden;
+  display:grid; grid-template-columns:1.5fr 1fr; min-height:440px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35);
+}
+.hero-shot { position:relative; background:var(--ink3); overflow:hidden; min-height:360px; cursor:pointer; }
+.hero-shot img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; transition:transform 0.5s ease; }
+.hero-shot:hover img { transform:scale(1.03); }
+.spinner { width:34px; height:34px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--spark); border-radius:50%; animation:spin 0.7s linear infinite; }
+
+.hero-info { padding:40px 40px 36px; display:flex; flex-direction:column; border-left:1px solid var(--border); }
+.hero-eyebrow { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--spark2); margin-bottom:20px; }
+.hero-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.hero-tags .tag { font-size:11px; font-weight:500; padding:3px 11px; border-radius:99px; background:var(--violet-dim); color:#c4b5fd; border:1px solid rgba(139,92,246,0.25); font-family:'DM Mono',monospace; }
+.hero-title { font-family:'DM Serif Display',serif; font-size:38px; line-height:1.1; color:var(--paper); margin-bottom:14px; letter-spacing:-0.5px; }
+.hero-desc { font-size:16px; line-height:1.65; color:var(--paper2); flex:1; }
+.hero-url { font-family:'DM Mono',monospace; font-size:12px; color:rgba(255,255,255,0.28); margin:24px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hero-actions { margin-top:22px; display:flex; gap:10px; }
+.btn-visit { flex:1; padding:13px 20px; background:var(--spark); color:#fff; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; transition:background 0.15s; }
+.btn-visit:hover { background:#d9442c; }
+.btn-next { padding:13px 18px; background:var(--ink3); color:var(--paper); border:1px solid var(--border2); border-radius:8px; font-family:'DM Mono',monospace; font-size:13px; cursor:pointer; transition:border-color 0.15s,background 0.15s; white-space:nowrap; }
+.btn-next:hover { border-color:rgba(255,255,255,0.35); background:#2e2e3a; }
+.hero-browse { margin-top:16px; background:none; border:none; color:rgba(255,255,255,0.3); font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; padding:0; text-align:left; transition:color 0.15s; }
+.hero-browse:hover { color:var(--paper2); }
+
+/* Grid */
+#grid-section { padding:28px 28px 20px; display:none; }
+.grid-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.grid-label span { color:var(--paper2); }
+#site-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+
+.site-card { position:relative; background:var(--ink2); border:1px solid var(--border); border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color 0.18s,transform 0.18s; text-decoration:none; display:flex; flex-direction:column; }
+.site-card:hover { border-color:rgba(255,255,255,0.2); transform:translateY(-2px); }
+
+.card-thumb { width:100%; aspect-ratio:16/9; background:var(--ink3); overflow:hidden; position:relative; flex-shrink:0; }
+.card-thumb img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; transition:transform 0.35s ease; }
+.site-card:hover .card-thumb img { transform:scale(1.04); }
+.thumb-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.mini-spin { width:20px; height:20px; border:2px solid rgba(255,255,255,0.08); border-top-color:var(--spark); border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.card-body { padding:12px 14px 14px; flex:1; display:flex; flex-direction:column; gap:5px; }
+.card-title { font-size:13px; font-weight:600; color:var(--paper); line-height:1.3; }
+.card-desc { font-size:12px; color:var(--paper2); line-height:1.5; flex:1; }
+.card-meta { display:flex; align-items:center; gap:6px; margin-top:6px; }
+.card-favicon { width:14px; height:14px; border-radius:2px; flex-shrink:0; }
+.card-domain { font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,0.22); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.card-tag { margin-left:auto; font-size:10px; padding:2px 7px; border-radius:99px; background:var(--violet-dim); color:#c4b5fd; border:1px solid rgba(139,92,246,0.2); font-family:'DM Mono',monospace; flex-shrink:0; }
+
+#splash-state { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 60px); gap:20px; text-align:center; padding:40px; }
+.splash-heading { font-family:'DM Serif Display',serif; font-size:clamp(40px,7vw,76px); line-height:1; letter-spacing:-1.5px; color:var(--paper); }
+.splash-heading em { font-style:italic; color:var(--spark2); }
+.splash-sub { font-size:16px; color:var(--paper2); max-width:400px; line-height:1.6; }
+.splash-cta { font-family:'DM Mono',monospace; font-size:14px; font-weight:500; padding:13px 32px; border-radius:8px; border:none; background:var(--spark); color:#fff; cursor:pointer; transition:background 0.15s,transform 0.1s; display:flex; align-items:center; gap:10px; }
+.splash-cta:hover { background:#d9442c; }
+.splash-hint { font-family:'DM Mono',monospace; font-size:11px; color:rgba(255,255,255,0.2); }
+
+#load-more-wrap { display:none; justify-content:center; padding:8px 0 48px; }
+#load-more-wrap.visible { display:flex; }
+.load-more-btn { font-family:'DM Mono',monospace; font-size:12px; padding:10px 28px; border-radius:7px; border:1px solid var(--border2); background:transparent; color:var(--paper2); cursor:pointer; transition:border-color 0.15s,color 0.15s; }
+.load-more-btn:hover { border-color:rgba(255,255,255,0.3); color:var(--paper); }
+
+@media (max-width:720px) {
+  nav { padding:0 16px; gap:12px; }
+  #grid-section { padding-left:16px; padding-right:16px; }
+  #site-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+  #hero-section { padding:20px 16px; }
+  #hero-card { grid-template-columns:1fr; min-height:0; }
+  .hero-shot { min-height:220px; }
+  .hero-info { border-left:none; border-top:1px solid var(--border); padding:28px 24px 28px; }
+  .hero-title { font-size:28px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><div class="logo-pip"></div> wander</div>
+  <div class="nav-filters" id="nav-filters">
+    <button class="pill active" data-cat="all">All</button>
+    <button class="pill" data-cat="science">Science</button>
+    <button class="pill" data-cat="design">Design</button>
+    <button class="pill" data-cat="tools">Tools</button>
+    <button class="pill" data-cat="art">Art</button>
+    <button class="pill" data-cat="data">Data</button>
+    <button class="pill" data-cat="nature">Nature</button>
+    <button class="pill" data-cat="culture">Culture</button>
+    <button class="pill" data-cat="games">Games</button>
+  </div>
+  <button class="wander-btn" id="wander-btn">Wander <span class="kbd">space</span></button>
+</nav>
+
+<div id="splash-state">
+  <div class="splash-heading">Go down a<br><em>good rabbit hole.</em></div>
+  <div class="splash-sub"><span id="splash-count">—</span> curious, hand-picked corners of the web — heavy on science and wonder. Hit wander and get lost.</div>
+  <button class="splash-cta" id="splash-cta">Start wandering →</button>
+  <div class="splash-hint">or press space</div>
+</div>
+
+<!-- Single-site hero (StumbleUpon-style spotlight) -->
+<div id="hero-section">
+  <div id="hero-card">
+    <div class="hero-shot" id="hero-shot"><div class="thumb-placeholder"><div class="spinner"></div></div></div>
+    <div class="hero-info">
+      <div class="hero-eyebrow">✦ You landed on</div>
+      <div class="hero-tags" id="hero-tags"></div>
+      <div class="hero-title" id="hero-title">—</div>
+      <div class="hero-desc" id="hero-desc">—</div>
+      <div class="hero-url" id="hero-url">—</div>
+      <div class="hero-actions">
+        <a class="btn-visit" id="hero-visit" href="#" target="_blank" rel="noopener noreferrer">Visit site ↗</a>
+        <button class="btn-next" id="hero-next">Wander again →</button>
+      </div>
+      <button class="hero-browse" id="hero-browse">or browse all <span id="browse-count">—</span> →</button>
+    </div>
+  </div>
+</div>
+
+<div id="grid-section">
+  <div class="grid-label">Exploring &nbsp;<span id="grid-count"></span></div>
+  <div id="site-grid"></div>
+</div>
+
+<div id="load-more-wrap"><button class="load-more-btn" id="load-more-btn">Load more</button></div>
+
+<script>
+const SITES = [
+  // ══════════ SCIENCE ══════════
+  { url:'https://scaleofuniverse.com/',            title:'Scale of the Universe',   desc:'Scroll from quantum foam to the observable cosmos.',                 tags:['science'],        cat:'science' },
+  { url:'https://apod.nasa.gov/apod/',             title:'Astronomy Picture of the Day', desc:'A new image of our universe, every day since 1995.',            tags:['science','art'],  cat:'science' },
+  { url:'https://stellarium-web.org/',             title:'Stellarium Web',          desc:'A planetarium in your browser — the sky from anywhere.',             tags:['science'],        cat:'science' },
+  { url:'https://home.cern/',                      title:'CERN',                    desc:"Inside the world's largest particle physics laboratory.",            tags:['science'],        cat:'science' },
+  { url:'https://phet.colorado.edu/',              title:'PhET Simulations',        desc:'Free interactive math and science simulations.',                     tags:['science','tools'],cat:'science' },
+  { url:'https://www.exploratorium.edu/',          title:'Exploratorium',           desc:'Hands-on science, art, and human perception experiments.',           tags:['science','art'],  cat:'science' },
+  { url:'https://www.chemicool.com/',              title:'Chemicool',               desc:'An interactive periodic table and chemistry reference.',             tags:['science'],        cat:'science' },
+  { url:'https://scholar.archive.org/',            title:'Internet Archive Scholar',desc:'Search millions of research papers, free and open.',                 tags:['science','culture'],cat:'science' },
+  { url:'https://www.symmetrymagazine.org/',       title:'Symmetry Magazine',       desc:'Dispatches from the world of particle physics.',                     tags:['science'],        cat:'science' },
+  { url:'https://quantamagazine.org/',             title:'Quanta Magazine',         desc:'Illuminating basic science and math research.',                      tags:['science'],        cat:'science' },
+  { url:'https://www.spacetelescope.org/images/',  title:'Hubble & Webb Images',    desc:'The deep-space image archive of the great telescopes.',              tags:['science','art'],  cat:'science' },
+  { url:'https://sky.esa.int/',                    title:'ESASky',                  desc:'Explore the sky across the full electromagnetic spectrum.',          tags:['science'],        cat:'science' },
+  { url:'https://theskylive.com/',                 title:'TheSkyLive',              desc:'Track planets, comets, and asteroids in real time.',                 tags:['science'],        cat:'science' },
+  { url:'https://www.wolframscience.com/nks/',     title:'A New Kind of Science',   desc:"Wolfram's tome on cellular automata, free to read.",                 tags:['science'],        cat:'science' },
+  { url:'https://distill.pub/',                    title:'Distill',                 desc:'Clear, interactive explanations of machine learning.',               tags:['science','data'], cat:'science' },
+  { url:'https://ciechanow.ski/',                  title:'Bartosz Ciechanowski',    desc:'Astonishing interactive essays on how things work.',                 tags:['science','design'],cat:'science' },
+  { url:'https://www.jpl.nasa.gov/',               title:'NASA JPL',                desc:'Mission control for robotic space exploration.',                     tags:['science'],        cat:'science' },
+  { url:'https://eol.org/',                        title:'Encyclopedia of Life',    desc:'A page for every species on Earth.',                                 tags:['science','nature'],cat:'science' },
+  { url:'https://www.deepmind.com/research',       title:'DeepMind Research',       desc:'Frontier AI research, explained.',                                   tags:['science'],        cat:'science' },
+  { url:'https://plato.stanford.edu/',             title:'Stanford Encyclopedia of Philosophy', desc:'The gold-standard reference for philosophy.',           tags:['science','culture'],cat:'science' },
+  { url:'https://www.microscopyu.com/',            title:'MicroscopyU',             desc:'The art and science of the microscopic world.',                      tags:['science','art'],  cat:'science' },
+  { url:'https://www.fourmilab.ch/',               title:'Fourmilab',               desc:"John Walker's eclectic science and curiosity archive.",              tags:['science'],        cat:'science' },
+  { url:'https://acko.net/',                       title:'Acko.net',                desc:'Deep, visual explorations of math and graphics.',                    tags:['science','design'],cat:'science' },
+
+  { url:'https://www.atlasoftheuniverse.com/', title:'Atlas of the Universe', desc:'Maps of everything from nearby stars to the cosmos.', tags:['science'], cat:'science' },
+  { url:'https://stars.chromeexperiments.com/', title:'100,000 Stars', desc:'An interactive 3D visualization of our stellar neighborhood.', tags:['science','data'], cat:'science' },
+  { url:'https://neuronames.braininfo.org/', noShot:true, title:'NeuroNames', desc:'A structured atlas of the vertebrate brain.', tags:['science'], cat:'science' },
+  { url:'https://spaceweather.com/', noShot:true, title:'SpaceWeather', desc:'Daily news of solar storms, auroras, and near-Earth objects.', tags:['science','nature'], cat:'science' },
+  { url:'https://www.metabunk.org/', title:'Metabunk', desc:'Careful, evidence-based debunking of extraordinary claims.', tags:['science','culture'], cat:'science' },
+  { url:'https://theconversation.com/global', title:'The Conversation Global', desc:'Research-driven journalism from academics worldwide.', tags:['science','culture'], cat:'science' },
+  { url:'https://elementalselenium.com/', title:'Periodic Videos', desc:'A short film for every element on the periodic table.', tags:['science'], cat:'science' },
+  // ══════════ DESIGN ══════════
+  { url:'https://www.are.na/',                     title:'Are.na',                  desc:'A slow, thoughtful platform for connecting ideas.',                  tags:['design'],         cat:'design'  },
+  { url:'https://poolsuite.net/',                  title:'Poolsuite FM',            desc:'A premium leisure internet radio experience.',                       tags:['design','art'],   cat:'design'  },
+  { url:'https://brutalistwebsites.com/',          title:'Brutalist Websites',      desc:'A curated collection of brutalist web design.',                      tags:['design'],         cat:'design'  },
+  { url:'https://www.typewolf.com/',               title:'Typewolf',                desc:'Typography inspiration and font pairing for type nerds.',            tags:['design'],         cat:'design'  },
+  { url:'https://www.siteinspire.com/',            title:'SiteInspire',             desc:'A showcase of the finest web and interactive design.',               tags:['design'],         cat:'design'  },
+  { url:'https://fontsinuse.com/',                 title:'Fonts In Use',            desc:'Typography documented in the real world.',                           tags:['design'],         cat:'design'  },
+  { url:'https://www.thisiscolossal.com/',         title:'Colossal',                desc:'Art, design, and visual culture worth slowing down for.',            tags:['design','art'],   cat:'design'  },
+  { url:'https://www.designsystems.com/',          title:'Design Systems',          desc:'How the best teams build and maintain design systems.',              tags:['design','tools'], cat:'design'  },
+  { url:'https://www.dafont.com/',                 title:'DaFont',                  desc:'A vast archive of free downloadable fonts.',                         tags:['design'],         cat:'design'  },
+  { url:'https://minimal.gallery/',                title:'Minimal Gallery',         desc:'A daily dose of clean, minimal web design.',                         tags:['design'],         cat:'design'  },
+  { url:'https://land-book.com/',                  title:'Land-book',               desc:'A large, well-curated gallery of landing-page design.',              tags:['design'],         cat:'design'  },
+  { url:'https://httpster.net/',                   title:'Httpster',                desc:'A showcase of bold, characterful websites.',                         tags:['design'],         cat:'design'  },
+  { url:'https://www.commarts.com/',               title:'Communication Arts',      desc:'The premier journal of visual communications.',                      tags:['design'],         cat:'design'  },
+  { url:'https://velvetyne.fr/',                   title:'Velvetyne',               desc:'A bold, free & open-source type foundry.',                            tags:['design'],         cat:'design'  },
+  { url:'https://www.designsystemsrepo.com/',      title:'Design Systems Repo',     desc:'A collection of real-world design systems.',                         tags:['design','tools'], cat:'design'  },
+  { url:'https://www.typographicposters.com/',     title:'Typographic Posters',     desc:'A global platform for poster design.',                               tags:['design','art'],   cat:'design'  },
+  { url:'https://logobook.com/',                   title:'Logobook',                desc:'A reference library of the finest marks and logos.',                 tags:['design'],         cat:'design'  },
+  { url:'https://www.thedieline.com/',             title:'The Dieline',             desc:'The world of packaging design.',                                     tags:['design'],         cat:'design'  },
+  { url:'https://reallygoodemails.com/',           title:'Really Good Emails',      desc:'The best email design, collected.',                                  tags:['design'],         cat:'design'  },
+  { url:'https://www.lettering.org/',              title:'Lettering',               desc:'The craft of hand lettering and calligraphy.',                       tags:['design','art'],   cat:'design'  },
+  { url:'https://calltoidea.com/',                 title:'Call to Idea',            desc:'UI patterns and inspiration, organized.',                            tags:['design','tools'], cat:'design'  },
+
+  { url:'https://www.dwitter.net/', title:'Dwitter', desc:'Tiny 140-character JavaScript animations.', tags:['design','tools'], cat:'design' },
+  { url:'https://tympanus.net/codrops/', title:'Codrops', desc:'Cutting-edge web design tutorials and demos.', tags:['design','tools'], cat:'design' },
+  // ══════════ TOOLS ══════════
+  { url:'https://excalidraw.com/',                 title:'Excalidraw',              desc:'Virtual whiteboard for hand-drawn-style diagrams.',                  tags:['tools','design'], cat:'tools'   },
+  { url:'https://regex101.com/',                   title:'Regex 101',               desc:'Build, test and debug regular expressions interactively.',           tags:['tools'],          cat:'tools'   },
+  { url:'https://carbon.now.sh/',                  title:'Carbon',                  desc:'Create beautiful images of your source code.',                       tags:['tools','design'], cat:'tools'   },
+  { url:'https://www.keybr.com/',                  title:'Keybr',                   desc:'Learn touch typing using adaptive science.',                         tags:['tools','games'],  cat:'tools'   },
+  { url:'https://tldraw.com/',                     title:'tldraw',                  desc:'A tiny, delightful collaborative whiteboard.',                       tags:['tools','design'], cat:'tools'   },
+  { url:'https://www.desmos.com/geometry',         title:'Desmos Geometry',         desc:'A free, elegant geometry construction tool.',                        tags:['tools','science'],cat:'tools'   },
+  { url:'https://www.gpsvisualizer.com/',          title:'GPS Visualizer',          desc:'Turn coordinate data into maps and profiles.',                       tags:['tools','data'],   cat:'tools'   },
+  { url:'https://ninite.com/',                     title:'Ninite',                  desc:'Install a bundle of apps in one click.',                             tags:['tools'],          cat:'tools'   },
+  { url:'https://www.random.org/',                 title:'RANDOM.ORG',              desc:'True randomness from atmospheric noise.',                            tags:['tools'],          cat:'tools'   },
+  { url:'https://it-tools.tech/',                  title:'IT Tools',                desc:'A Swiss-army knife of handy developer utilities.',                   tags:['tools'],          cat:'tools'   },
+  { url:'https://transform.tools/',                title:'Transform',               desc:'Convert between JSON, types, schemas, and more.',                    tags:['tools'],          cat:'tools'   },
+  { url:'https://tools.simonwillison.net/',        title:"Simon's Tools",           desc:'A pile of tiny, useful web tools.',                                  tags:['tools'],          cat:'tools'   },
+  { url:'https://screenshot.rocks/',               title:'Screenshot Rocks',        desc:'Turn plain screenshots into polished mockups.',                      tags:['tools','design'], cat:'tools'   },
+  { url:'https://everytimezone.com/',              title:'Every Time Zone',         desc:'See time across the world at a glance.',                             tags:['tools'],          cat:'tools'   },
+  { url:'https://www.wolframalpha.com/',           title:'Wolfram Alpha',           desc:'A computational engine that answers, not searches.',                  tags:['tools','science'],cat:'tools'   },
+  { url:'https://cryptii.com/',                    title:'Cryptii',                 desc:'Encode, decode, and transform text and ciphers.',                    tags:['tools'],          cat:'tools'   },
+
+  { url:'https://www.wolframalpha.com/examples/', noShot:true, title:'Wolfram Examples', desc:'A tour of everything computational knowledge can answer.', tags:['tools','science'], cat:'tools' },
+  { url:'https://numbr.dev/', title:'Numbr', desc:'A notepad that does math as you type.', tags:['tools'], cat:'tools' },
+  { url:'https://www.geogebra.org/', title:'GeoGebra', desc:'Free interactive geometry, algebra, and calculus tools.', tags:['tools','science'], cat:'tools' },
+  { url:'https://www.desmos.com/scientific', title:'Desmos Scientific', desc:'A clean, free scientific calculator.', tags:['tools','science'], cat:'tools' },
+  { url:'https://sciencenotes.org/', title:'Science Notes', desc:'Free printable periodic tables and science references.', tags:['tools','science'], cat:'tools' },
+  { url:'https://www.timeanddate.com/worldclock/', title:'Time and Date', desc:'The definitive reference for time, dates, and astronomy.', tags:['tools','science'], cat:'tools' },
+  // ══════════ ART ══════════
+  { url:'https://www.rijksmuseum.nl/en/rijksstudio', noShot:true,title:'Rijksstudio',           desc:'Download and remix masterpieces from the Rijksmuseum.',              tags:['art'],            cat:'art'     },
+  { url:'https://wellcomecollection.org/collections/', noShot:true, title:'Wellcome Collection', desc:'Art and artifacts on medicine, the body, and being human.',           tags:['art','science'],  cat:'art'     },
+  { url:'https://www.artic.edu/collection', noShot:true,        title:'Art Institute of Chicago',desc:'Tens of thousands of artworks, many freely licensed.',              tags:['art'],            cat:'art'     },
+  { url:'https://openprocessing.org/', noShot:true,             title:'OpenProcessing',          desc:'Creative coding sketches you can watch and remix.',                  tags:['art','tools'],    cat:'art'     },
+  { url:'https://www.moma.org/collection/', noShot:true,        title:'MoMA Collection',         desc:"The Museum of Modern Art's collection online.",                      tags:['art'],            cat:'art'     },
+  { url:'https://collections.vam.ac.uk/', noShot:true,          title:'V&A Collections',         desc:"The world's leading museum of art and design.",                      tags:['art','design'],   cat:'art'     },
+  { url:'https://www.getty.edu/art/collection/', noShot:true,   title:'The Getty',               desc:'Explore the Getty Museum collection online.',                        tags:['art'],            cat:'art'     },
+  { url:'https://www.nga.gov/collection.html', noShot:true,     title:'National Gallery of Art', desc:"America's national art collection, freely accessible.",              tags:['art'],            cat:'art'     },
+  { url:'https://www.cooperhewitt.org/collections/', noShot:true,title:'Cooper Hewitt',         desc:"The Smithsonian design museum's collection online.",                 tags:['art','design'],   cat:'art'     },
+  { url:'https://images.nasa.gov/',                title:'NASA Image & Video Library',desc:'The full public archive of NASA imagery and footage.',              tags:['art','science'],  cat:'art'     },
+  { url:'https://publicdomainreview.org/collections/',title:'PDR Collections',     desc:'Curated troves of public-domain imagery.',                           tags:['art','culture'],  cat:'art'     },
+  { url:'https://www.oldbookillustrations.com/',   title:'Old Book Illustrations',  desc:'Scanned illustrations from centuries of books.',                     tags:['art','culture'],  cat:'art'     },
+  { url:'https://collection.sciencemuseumgroup.org.uk/', title:'Science Museum Collection',desc:'A quarter-million objects from the history of science.',              tags:['art','science'],  cat:'art'     },
+  { url:'https://www.biodiversitylibrary.org/', noShot:true,    title:'Biodiversity Heritage Library',desc:'Centuries of natural-history illustration, digitized.',         tags:['art','nature'],   cat:'art'     },
+  { url:'https://www.nypl.org/research/collections/digital-collections', noShot:true,title:'NYPL Digital Collections',desc:'Nearly a million items from the New York Public Library.',tags:['art','culture'],cat:'art'  },
+  { url:'https://artvee.com/',                     title:'Artvee',                  desc:'High-resolution public-domain artwork downloads.',                   tags:['art'],            cat:'art'     },
+  { url:'https://anatomia.library.utoronto.ca/', noShot:true, title:'Anatomia',         desc:'Four centuries of anatomical illustration, digitized.',              tags:['art','science'],  cat:'art'     },
+  { url:'https://www.metmuseum.org/art/collection', noShot:true,title:'The Met Collection',     desc:'Over 500,000 artworks, all online.',                                 tags:['art','culture'],  cat:'art'     },
+  { url:'https://www.biodiversitylibrary.org/collection/', noShot:true, title:'BHL Collections',      desc:'Curated troves of natural-history illustration.',                     tags:['art','science','nature'],cat:'art' },
+  { url:'https://www.gutenberg.org/ebooks/bookshelf/',title:'Gutenberg Bookshelves',desc:'Public-domain books organized by theme.',                           tags:['art','culture'],  cat:'art'     },
+  { url:'https://smarthistory.org/',               title:'Smarthistory',            desc:'The story of art, told by scholars, for free.',                      tags:['art','culture'],  cat:'art'     },
+  { url:'https://www.wga.hu/', noShot:true,                      title:'Web Gallery of Art',      desc:'A searchable database of European fine art.',                        tags:['art'],            cat:'art'     },
+
+  { url:'https://www.gutenberg.org/ebooks/subject/', title:'Gutenberg by Subject', desc:'Public-domain books browsable by field, including science.', tags:['art','science','culture'], cat:'art' },
+  { url:'https://www.si.edu/openaccess', noShot:true, title:'Smithsonian Open Access', desc:'Millions of freely usable images across art and science.', tags:['art','science'], cat:'art' },
+  { url:'https://scientificillustration.tumblr.com/', noShot:true, title:'Scientific Illustration', desc:'A curated feed of vintage science art.', tags:['art','science'], cat:'art' },
+  { url:'https://www.nasa.gov/multimedia/imagegallery/', noShot:true, title:'NASA Image Gallery', desc:'Curated highlights from NASA\'s visual archive.', tags:['art','science'], cat:'art' },
+  // ══════════ DATA ══════════
+  { url:'https://ourworldindata.org/',             title:'Our World in Data',       desc:'Research and charts on global living conditions.',                   tags:['data','science'], cat:'data'    },
+  { url:'https://pudding.cool/',                   title:'The Pudding',             desc:'Visual essays that argue ideas with evidence.',                      tags:['data','culture'], cat:'data'    },
+  { url:'https://flowingdata.com/',                title:'FlowingData',             desc:'Data visualisation done with craft and intention.',                  tags:['data','design'],  cat:'data'    },
+  { url:'https://www.gapminder.org/tools/',        title:'Gapminder Tools',         desc:'Animate global development data across 200 years.',                  tags:['data','science'], cat:'data'    },
+  { url:'https://informationisbeautiful.net/',     title:'Information Is Beautiful', desc:'Distilling the world into elegant infographics.',                    tags:['data','design'],  cat:'data'    },
+  { url:'https://observablehq.com/',               title:'Observable',              desc:'Notebooks for exploring and visualising data live.',                 tags:['data','tools'],   cat:'data'    },
+  { url:'https://www.radio.garden/',               title:'Radio Garden',            desc:'Spin a globe and listen to live radio anywhere.',                    tags:['data','culture'], cat:'data'    },
+  { url:'https://www.submarinecablemap.com/',      title:'Submarine Cable Map',     desc:'The undersea cables that carry the internet.',                       tags:['data'],           cat:'data'    },
+  { url:'https://ncase.me/',                        title:'Nicky Case',              desc:'Playable explanations of complex systems.',                          tags:['data','games'],   cat:'data'    },
+  { url:'https://www.opte.org/',                   title:'The Opte Project',        desc:'A visual map of the entire internet.',                               tags:['data','art'],     cat:'data'    },
+  { url:'https://anvaka.github.io/city-roads/',    title:'City Roads',              desc:'Render every road in any city as line art.',                         tags:['data','art'],     cat:'data'    },
+  { url:'https://www.overlapmaps.com/',            title:'Overlap Maps',            desc:'Compare the true size of any two places.',                           tags:['data'],           cat:'data'    },
+  { url:'https://www.truesizeof.com/', noShot:true,             title:'The True Size Of',        desc:'Drag countries around to see their real scale.',                     tags:['data'],           cat:'data'    },
+  { url:'https://histography.io/',                 title:'Histography',             desc:'20,000 years of history as an interactive timeline.',               tags:['data','culture'], cat:'data'    },
+  { url:'https://www.chronas.org/',                title:'Chronas',                 desc:'An interactive historical map of the world.',                        tags:['data','culture'], cat:'data'    },
+  { url:'https://ourairports.com/',                title:'OurAirports',             desc:'Open data on every airport in the world.',                           tags:['data'],           cat:'data'    },
+  { url:'https://population.io/',                   title:'Population.io',           desc:'Where do you rank among everyone alive?',                            tags:['data'],           cat:'data'    },
+  { url:'https://www.usdebtclock.org/',            title:'US Debt Clock',           desc:'A hypnotic real-time tally of national finances.',                   tags:['data'],           cat:'data'    },
+  { url:'https://waitbutwhy.com/',                 title:'Wait But Why',            desc:'Long, illustrated deep-dives on big questions.',                     tags:['data','culture'], cat:'data'    },
+  { url:'https://www.calculatingempires.net/',     title:'Calculating Empires',     desc:'A genealogy of technology and power since 1500.',                     tags:['data','culture'], cat:'data'    },
+
+  { url:'https://www.radiooooo.com/', noShot:true, title:'Radiooooo', desc:'A musical time machine: pick a country and a decade.', tags:['data','culture'], cat:'data' },
+  { url:'https://mapofthedead.com/', title:'Map of the Dead', desc:'A survival-resource map, styled for the apocalypse.', tags:['data','games'], cat:'data' },
+  { url:'https://www.plumelabs.com/en/air/', noShot:true, title:'Plume Air Report', desc:'Live air-quality data mapped around the world.', tags:['data','nature'], cat:'data' },
+  { url:'https://global-warming.org/', noShot:true, title:'Climate Clock', desc:'A running countdown of the carbon budget.', tags:['data','nature'], cat:'data' },
+  { url:'https://spotthestation.nasa.gov/tracking_map.cfm', noShot:true, title:'Spot the Station', desc:"Track the ISS live on NASA's official map.", tags:['data','science'], cat:'data' },
+  { url:'https://livingatlas.arcgis.com/wayback/', title:'World Imagery Wayback', desc:'Scroll back through years of satellite imagery.', tags:['data','nature'], cat:'data' },
+  // ══════════ NATURE ══════════
+  { url:'https://earth.nullschool.net/',           title:'Earth Wind Map',          desc:'A live visualisation of global wind & ocean currents.',              tags:['nature','data'],  cat:'nature'  },
+  { url:'https://www.inaturalist.org/observations',title:'iNaturalist',             desc:'Citizen science: record and explore the natural world.',             tags:['nature','science'],cat:'nature' },
+  { url:'https://www.birds.cornell.edu/home/', noShot:true,     title:'Cornell Lab of Ornithology',desc:'Science, sound, and conservation of birds.',                      tags:['nature','science'],cat:'nature' },
+  { url:'https://www.gbif.org/occurrence/map', noShot:true,     title:'GBIF Species Map',        desc:'Half a billion biodiversity observations, mapped.',                  tags:['nature','data'],  cat:'nature'  },
+  { url:'https://explore.org/livecams',            title:'Explore.org Live Cams',   desc:'Live nature cams — bears, puppies, reefs, and more.',                tags:['nature'],         cat:'nature'  },
+  { url:'https://mynoise.net/',                     title:'myNoise',                 desc:'Calibrated soundscapes: rain, forests, oceans.',                     tags:['nature','tools'], cat:'nature'  },
+  { url:'https://www.mushroomobserver.org/',       title:'Mushroom Observer',       desc:'A community record of mushroom sightings worldwide.',                tags:['nature'],         cat:'nature'  },
+  { url:'https://globe.weather.gov/',              title:'NOAA Globe',              desc:'A 3D globe of live global weather systems.',                         tags:['nature','data'],  cat:'nature'  },
+  { url:'https://eyeonthereef.com.au/',            title:'Eye on the Reef',         desc:'Monitoring the Great Barrier Reef in real time.',                    tags:['nature','science'],cat:'nature' },
+  { url:'https://www.tree-nation.com/',            title:'Tree-Nation',             desc:'Track reforestation projects around the planet.',                    tags:['nature','data'],  cat:'nature'  },
+  { url:'https://www.allaboutbirds.org/', noShot:true,          title:'All About Birds',         desc:'A free online guide to birds and birding.',                          tags:['nature'],         cat:'nature'  },
+  { url:'https://merlin.allaboutbirds.org/', noShot:true,       title:'Merlin Bird ID',          desc:'Identify any bird from a photo or a sound.',                         tags:['nature','tools'], cat:'nature'  },
+  { url:'https://www.calflora.org/',               title:'Calflora',                desc:'Information on wild California plants.',                              tags:['nature'],         cat:'nature'  },
+  { url:'https://www.marinespecies.org/',          title:'World Register of Marine Species',desc:'An authoritative list of ocean life.',                       tags:['nature','science'],cat:'nature' },
+  { url:'https://www.fs.usda.gov/visit/',          title:'US National Forests',     desc:'Explore America\'s forests and grasslands.',                         tags:['nature'],         cat:'nature'  },
+  { url:'https://www.darksitefinder.com/map/',     title:'Dark Site Finder',        desc:'Find the darkest skies for stargazing near you.',                    tags:['nature','science'],cat:'nature' },
+  { url:'https://tidesandcurrents.noaa.gov/',      title:'NOAA Tides & Currents',   desc:'Live tide, current, and water-level data.',                          tags:['nature','data'],  cat:'nature'  },
+  { url:'https://cloudappreciationsociety.org/',   title:'Cloud Appreciation Society',desc:'For everyone who loves looking up.',                               tags:['nature','culture'],cat:'nature' },
+  { url:'https://www.peakbagger.com/',             title:'Peakbagger',              desc:'A database of the world\'s mountains and summits.',                   tags:['nature','data'],  cat:'nature'  },
+
+  { url:'https://www.fishbase.se/', noShot:true, title:'FishBase', desc:'A global information system on all things fish.', tags:['nature','science'], cat:'nature' },
+  { url:'https://eBird.org/explore', noShot:true, title:'eBird', desc:'Real-time bird observations from birders everywhere.', tags:['nature','data'], cat:'nature' },
+  { url:'https://www.usgs.gov/tools/earthquake-map', noShot:true, title:'USGS Earthquakes', desc:'Every earthquake on Earth, mapped as it happens.', tags:['nature','data'], cat:'nature' },
+  { url:'https://www.volcanodiscovery.com/', noShot:true, title:'Volcano Discovery', desc:'Live updates on erupting volcanoes worldwide.', tags:['nature','science'], cat:'nature' },
+  { url:'https://map.snowobservations.org/', noShot:true, title:'Community Snow Obs', desc:'Citizen-science snow-depth measurements.', tags:['nature','science'], cat:'nature' },
+  { url:'https://www.leafsnap.com/', title:'Leafsnap', desc:'Identify trees from a photo of a single leaf.', tags:['nature','tools'], cat:'nature' },
+  { url:'https://xeno-canto.org/', noShot:true, title:'Xeno-canto', desc:'A vast shared library of wildlife sounds.', tags:['nature','science'], cat:'nature' },
+  // ══════════ CULTURE ══════════
+  { url:'https://publicdomainreview.org/',         title:'Public Domain Review',    desc:'The curious and forgotten corners of cultural history.',             tags:['culture','art'],  cat:'culture' },
+  { url:'https://www.atlasobscura.com/', noShot:true,           title:'Atlas Obscura',           desc:"The world's hidden wonders and secret places.",                      tags:['culture','nature'],cat:'culture' },
+  { url:'https://www.themarginalian.org/',         title:'The Marginalian',         desc:'Maria Popova on the examined life.',                                 tags:['culture'],        cat:'culture' },
+  { url:'https://nautil.us/',                      title:'Nautilus',                desc:'Science through the lens of philosophy and culture.',                tags:['culture','science'],cat:'culture' },
+  { url:'https://undark.org/',                     title:'Undark',                  desc:'Science journalism exploring where research meets society.',          tags:['culture','science'],cat:'culture' },
+  { url:'https://aeon.co/',                        title:'Aeon',                    desc:'Deep essays on science, philosophy, and the arts.',                  tags:['culture'],        cat:'culture' },
+  { url:'https://www.openculture.com/',            title:'Open Culture',            desc:'Free cultural and educational media.',                               tags:['culture'],        cat:'culture' },
+  { url:'https://www.gutenberg.org/',              title:'Project Gutenberg',       desc:'Over 70,000 free ebooks in the public domain.',                      tags:['culture'],        cat:'culture' },
+  { url:'https://archive.org/',                    title:'Internet Archive',        desc:'A free library of millions of books, films, and sites.',             tags:['culture','data'], cat:'culture' },
+  { url:'https://openlibrary.org/',                title:'Open Library',            desc:'One web page for every book ever published.',                        tags:['culture'],        cat:'culture' },
+  { url:'https://hyperallergic.com/',              title:'Hyperallergic',           desc:'Perspectives on art and the world it lives in.',                     tags:['culture','art'],  cat:'culture' },
+  { url:'https://www.laphamsquarterly.org/',       title:"Lapham's Quarterly",      desc:'History and literature, arranged by theme.',                         tags:['culture'],        cat:'culture' },
+  { url:'https://thebrowser.com/',                 title:'The Browser',             desc:'Five great articles, hand-picked daily.',                            tags:['culture'],        cat:'culture' },
+  { url:'https://www.cabinetmagazine.org/',        title:'Cabinet',                 desc:'A quarterly of art and culture at its most curious.',                tags:['culture','art'],  cat:'culture' },
+  { url:'https://knowablemagazine.org/', noShot:true,           title:'Knowable Magazine',       desc:'Deep reporting drawn from the scientific literature.',                tags:['culture','science'],cat:'culture' },
+  { url:'https://theconversation.com/', noShot:true,            title:'The Conversation',        desc:'Journalism written by academic experts.',                            tags:['culture','science'],cat:'culture' },
+  { url:'https://daily.jstor.org/', noShot:true,                title:'JSTOR Daily',             desc:'Scholarship made lively for everyone.',                              tags:['culture'],        cat:'culture' },
+  { url:'https://www.futilitycloset.com/',         title:'Futility Closet',         desc:'A collection of curiosities, puzzles, and wit.',                     tags:['culture','games'],cat:'culture' },
+  { url:'https://99percentinvisible.org/',         title:'99% Invisible',           desc:'The unnoticed design of everyday things.',                           tags:['culture','design'],cat:'culture' },
+  { url:'https://www.sciencehistory.org/',         title:'Science History Institute',desc:'The stories, objects, and people behind chemistry and science.',      tags:['culture','science'],cat:'culture' },
+  { url:'https://www.lindahall.org/experience/digital-collections/', noShot:true, title:'Linda Hall Library', desc:'A treasure house of the history of science, digitized.',    tags:['culture','science'],cat:'culture' },
+  { url:'https://worksinprogress.co/',             title:'Works in Progress',       desc:'Essays on science, progress, and the ideas that drive them.',         tags:['culture','science'],cat:'culture' },
+  { url:'https://www.oldmapsonline.org/',          title:'Old Maps Online',         desc:'A searchable gateway to historical maps worldwide.',                  tags:['culture','data'], cat:'culture' },
+  { url:'https://www.spatial.ly/',                 title:'Spatial.ly',              desc:'Maps and cartography with real craft.',                              tags:['culture','data'], cat:'culture' },
+
+  { url:'https://www.quantamagazine.org/tag/podcast/', noShot:true, title:'The Joy of Why', desc:'A Quanta podcast on the biggest questions in science and math.', tags:['culture','science'], cat:'culture' },
+  { url:'https://www.damninteresting.com/', title:'Damn Interesting', desc:'True stories from science and history you\'ve never heard.', tags:['culture','science'], cat:'culture' },
+  { url:'https://www.atomicarchive.com/', title:'AtomicArchive', desc:'The science and history of the nuclear age.', tags:['culture','science'], cat:'culture' },
+  { url:'https://www.saturdayeveningpost.com/', noShot:true, title:'Saturday Evening Post', desc:'A living archive of American cultural history.', tags:['culture'], cat:'culture' },
+  { url:'https://www.atlasobscura.com/newsletters', noShot:true, title:'Atlas Obscura Newsletter', desc:'Wondrous curiosities delivered, from the AO archive.', tags:['culture','science'], cat:'culture' },
+  // ══════════ GAMES / PLAY ══════════
+  { url:'https://neal.fun/',                        title:'Neal.fun',                desc:'A playground of brilliant interactive toys.',                        tags:['games'],          cat:'games'   },
+  { url:'https://neal.fun/deep-sea/',              title:'The Deep Sea',            desc:'Scroll to the ocean floor and meet what lives there.',               tags:['games','nature'], cat:'games'   },
+  { url:'https://neal.fun/absurd-trolley-problems/',title:'Absurd Trolley Problems',desc:'Increasingly ridiculous ethical dilemmas.',                          tags:['games','culture'],cat:'games'   },
+  { url:'https://neal.fun/infinite-craft/',        title:'Infinite Craft',          desc:'Combine elements to discover everything.',                           tags:['games'],          cat:'games'   },
+  { url:'https://lichess.org/',                    title:'Lichess',                 desc:'Free, open-source chess for everyone.',                              tags:['games'],          cat:'games'   },
+  { url:'https://www.puzzmo.com/',                 title:'Puzzmo',                  desc:'A daily home for beautifully made puzzle games.',                    tags:['games'],          cat:'games'   },
+  { url:'https://sandspiel.club/',                 title:'Sandspiel',               desc:'A falling-sand physics playground you can share.',                   tags:['games','art'],    cat:'games'   },
+  { url:'https://pointerpointer.com/',             title:'Pointer Pointer',         desc:"It points at your pointer. That's the whole thing.",                 tags:['games'],          cat:'games'   },
+  { url:'https://theuselessweb.com/',              title:'The Useless Web',         desc:'A button that sends you somewhere pointless.',                       tags:['games'],          cat:'games'   },
+  { url:'https://window-swap.com/',                title:'WindowSwap',              desc:"Look out of someone else's window, somewhere.",                      tags:['games','nature'], cat:'games'   },
+  { url:'https://drawabox.com/',                   title:'Drawabox',                desc:'Learn to draw through free structured lessons.',                     tags:['games','art'],    cat:'games'   },
+  { url:'https://www.mssn.io/',                    title:'Mssn.io',                 desc:'A tiny, tense multiplayer space game.',                              tags:['games'],          cat:'games'   },
+  { url:'https://agar.io/',                        title:'Agar.io',                 desc:'The classic cell-eating multiplayer arena.',                          tags:['games'],          cat:'games'   },
+  { url:'https://www.foddy.net/',                  title:'Foddy.net',               desc:'Bennett Foddy\'s collection of strange games.',                      tags:['games'],          cat:'games'   },
+  { url:'https://orb.farm/',                       title:'Orb Farm',                desc:'A tiny living ecosystem in a jar you tend.',                         tags:['games','nature'], cat:'games'   },
+  { url:'https://alexnisnevich.github.io/untrusted/', title:'Untrusted',              desc:'A meta-JavaScript adventure where you edit the code to escape.',       tags:['games','tools'],  cat:'games'   },
+  { url:'https://cheeseordisease.com/',            title:'Cheese or Disease',       desc:'Guess: is that a cheese, or a skin condition?',                      tags:['games'],          cat:'games'   },
+  { url:'https://wikitrivia.tomjwatson.com/',      title:'Wikitrivia',              desc:'Place historical events on a timeline.',                             tags:['games','culture'],cat:'games'   },
+  { url:'https://www.geoguessr.com/', noShot:true,              title:'GeoGuessr',               desc:'Drop into a random streetview and guess where.',                     tags:['games','culture'],cat:'games'   },
+  { url:'https://guessthe.game/',                  title:'Guess The Game',          desc:'Identify a video game from a single screenshot.',                    tags:['games'],          cat:'games'   },
+  { url:'https://www.travle.earth/',               title:'Travle',                  desc:'Connect two countries through their neighbors.',                      tags:['games','culture'],cat:'games'   },
+  { url:'https://neal.fun/password-game/',         title:'The Password Game',       desc:'The most infuriating password rules ever devised.',                  tags:['games'],          cat:'games'   },
+  { url:'https://www.decisionproblem.com/paperclips/', title:'Paperclips (original)', desc:'The original home of the paperclip apocalypse.', tags:['games'], cat:'games' },
+  { url:'https://adarkroom.doublespeakgames.com/', title:'A Dark Room', desc:'A minimalist text game that becomes something more.', tags:['games'], cat:'games' },
+  { url:'https://www.musicca.com/games', title:'Musicca Games', desc:'Playful ear-training and music-theory games.', tags:['games','tools'], cat:'games' },
+  { url:'https://musiclab.chromeexperiments.com/', title:'Chrome Music Lab', desc:'Hands-on experiments for making and seeing sound.', tags:['games','art'], cat:'games' },
+  { url:'https://smashthewalls.com/', title:'Smash the Walls', desc:'A hypnotic, satisfying browser toy.', tags:['games'], cat:'games' },
+];
+
+// ── Screenshot via WordPress mShots (free, no key, works on hosted sites) ──
+function shotUrl(url, w) {
+  return `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=${w}&h=${Math.round(w*0.625)}`;
+}
+function domain(url) { try { return new URL(url).hostname.replace('www.',''); } catch(e) { return url; } }
+function faviconUrl(url) { try { return `https://www.google.com/s2/favicons?domain=${new URL(url).origin}&sz=32`; } catch(e) { return ''; } }
+
+/*
+  SCREENSHOT POLICY — attempt screenshots everywhere, fall back to a designed
+  gradient card on failure.
+
+  Every site tries for a real mShots screenshot. The retry loop waits out the grey
+  "generating" placeholder, and if the shot errors or never resolves we render the
+  generated gradient card (layered mesh + pattern + initials) — which is designed
+  to look intentional, not like a broken image.
+
+  The one case we can't auto-detect is a site that returns a full-size "you have
+  been blocked" / verification page (it looks identical to a real screenshot from
+  JavaScript's side). For those, add  noShot:true  to the site's entry in SITES and
+  it will skip the screenshot and show the gradient instead. The list below is
+  seeded with sites already confirmed to serve block pages.
+*/
+function loadShot(container, site, width, isHero) {
+  if (site.noShot) { showFallback(container, site); return; }
+
+  container.innerHTML = `<div class="thumb-placeholder"><div class="${isHero ? 'spinner' : 'mini-spin'}"></div></div>`;
+
+  let attempts = 0;
+  const maxAttempts = 5;
+  const src = shotUrl(site.url, width);
+
+  function tryLoad() {
+    attempts++;
+    const img = new Image();
+    img.onload = () => {
+      // mShots placeholder is small & fixed-size. Real captures are wider.
+      if (img.naturalWidth <= 400) {
+        if (attempts < maxAttempts) { setTimeout(tryLoad, 1600); return; }
+        showFallback(container, site);
+        return;
+      }
+      container.innerHTML = '';
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top;';
+      container.appendChild(img);
+    };
+    img.onerror = () => {
+      if (attempts < maxAttempts) { setTimeout(tryLoad, 1600); }
+      else { showFallback(container, site); }
+    };
+    img.src = attempts === 1 ? src : src + '&retry=' + attempts;
+  }
+  tryLoad();
+}
+
+// ── Generated themed fallback card ──
+// Each category gets a 3-stop palette for a layered mesh look
+const CAT_THEMES = {
+  science: ['#0b1e5b','#1e5fd8','#4dd0e1'],
+  design:  ['#4a1259','#a832a8','#ff6ec7'],
+  tools:   ['#0a3d3a','#0f766e','#34e0c4'],
+  art:     ['#6b1e0a','#d4571f','#ffc24d'],
+  data:    ['#241a6b','#4f46e5','#8b9dff'],
+  nature:  ['#0a3d1f','#1a8c42','#6ee87a'],
+  culture: ['#5c1a0a','#d4551f','#ffb066'],
+  games:   ['#5c0f3a','#c9265f','#ff7a5c'],
+};
+function hashStr(s) { let h=0; for (let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
+function initials(title) {
+  const words = title.replace(/['"]/g,'').split(/\s+/).filter(w=>/[A-Za-z0-9]/.test(w));
+  if (words.length === 1) return words[0].slice(0,2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+// A few pattern generators keyed off the site hash for visual variety
+function patternSVG(h, c) {
+  const kind = h % 4;
+  const stroke = 'rgba(255,255,255,0.12)';
+  const fill = 'rgba(255,255,255,0.07)';
+  if (kind === 0) { // concentric rings
+    let r = '';
+    for (let i=1;i<=6;i++) r += `<circle cx="20" cy="80" r="${i*22}" fill="none" stroke="${stroke}" stroke-width="1.5"/>`;
+    return r;
+  } else if (kind === 1) { // diagonal grid
+    let l = '';
+    for (let i=-2;i<=10;i++) l += `<line x1="${i*26}" y1="0" x2="${i*26+120}" y2="200" stroke="${stroke}" stroke-width="1.2"/>`;
+    return l;
+  } else if (kind === 2) { // dot field
+    let d = '';
+    for (let x=0;x<8;x++) for (let y=0;y<6;y++) d += `<circle cx="${18+x*34}" cy="${20+y*34}" r="3" fill="${fill}"/>`;
+    return d;
+  } else { // arcs / waves
+    let w = '';
+    for (let i=0;i<5;i++) w += `<path d="M0 ${30+i*38} Q 70 ${i*38}, 140 ${30+i*38} T 280 ${30+i*38}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+    return w;
+  }
+}
+function showFallback(container, site) {
+  const theme = CAT_THEMES[site.cat] || ['#1c1c28','#2a2a3a','#3a3a4a'];
+  const h = hashStr(site.title);
+  const ini = initials(site.title);
+  const big = container.offsetWidth > 500;
+  const iniSize = big ? '120px' : '52px';
+  const titleSize = big ? '15px' : '11px';
+  const favSize = big ? '24px' : '16px';
+  const a1 = 15 + (h % 70);         // mesh light position 1
+  const a2 = 20 + ((h>>3) % 70);
+  const b1 = 60 + ((h>>5) % 40);
+  const b2 = 55 + ((h>>7) % 40);
+  const baseAngle = 120 + (h % 80);
+  container.innerHTML = `
+    <div style="position:absolute; inset:0; overflow:hidden;
+      background:
+        radial-gradient(circle at ${a1}% ${a2}%, ${theme[2]} 0%, transparent 45%),
+        radial-gradient(circle at ${b1}% ${b2}%, ${theme[1]} 0%, transparent 55%),
+        linear-gradient(${baseAngle}deg, ${theme[0]}, ${theme[1]});
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:${big?'14px':'8px'}; padding:14px; text-align:center;">
+      <svg viewBox="0 0 280 200" preserveAspectRatio="xMidYMid slice" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.9;">${patternSVG(h, theme)}</svg>
+      <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.28));"></div>
+      <div style="font-family:'DM Serif Display',serif; font-size:${iniSize}; font-weight:700; color:rgba(255,255,255,0.97); line-height:1; letter-spacing:-2px; z-index:1; text-shadow:0 3px 24px rgba(0,0,0,0.35);">${ini}</div>
+      <div style="z-index:1; font-family:'DM Mono',monospace; font-size:${titleSize}; color:rgba(255,255,255,0.92); font-weight:500; max-width:90%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${site.title}</div>
+      <img src="${faviconUrl(site.url)}" alt="" style="z-index:1; width:${favSize}; height:${favSize}; border-radius:4px; opacity:0.95;" onerror="this.style.display='none'">
+    </div>`;
+}
+
+// ── State ──
+let currentCat='all', shuffled=[], shown=0;
+const PAGE=24;
+
+function filtered() { return currentCat==='all' ? SITES : SITES.filter(s=>s.cat===currentCat); }
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function makeCard(site) {
+  const card = document.createElement('a');
+  card.className = 'site-card';
+  card.href = site.url; card.target='_blank'; card.rel='noopener noreferrer';
+  card.innerHTML = `
+    <div class="card-thumb"><div class="thumb-placeholder"><div class="mini-spin"></div></div></div>
+    <div class="card-body">
+      <div class="card-title">${site.title}</div>
+      <div class="card-desc">${site.desc}</div>
+      <div class="card-meta">
+        <img class="card-favicon" src="${faviconUrl(site.url)}" alt="" onerror="this.style.display='none'">
+        <span class="card-domain">${domain(site.url)}</span>
+        <span class="card-tag">${site.tags[0]}</span>
+      </div>
+    </div>`;
+  const thumbEl = card.querySelector('.card-thumb');
+  const observer = new IntersectionObserver((entries)=>{
+    if (entries[0].isIntersecting) { observer.disconnect(); loadShot(thumbEl, site, 500, false); }
+  }, { rootMargin:'400px' });
+  observer.observe(card);
+  return card;
+}
+
+function renderMore() {
+  const grid = document.getElementById('site-grid');
+  const slice = shuffled.slice(shown, shown + PAGE);
+  slice.forEach((s) => grid.appendChild(makeCard(s)));
+  shown += slice.length;
+  document.getElementById('load-more-wrap').classList.toggle('visible', shown < shuffled.length);
+}
+
+function hide(id) { document.getElementById(id).style.display='none'; }
+function el(id) { return document.getElementById(id); }
+
+// ── Wander: single-site hero, new random pick each time ──
+let lastHeroUrl = null;
+function wander() {
+  hide('splash-state');
+  hide('grid-section');
+  el('load-more-wrap').classList.remove('visible');
+  el('hero-section').classList.add('visible');
+
+  const pool = filtered();
+  let site = pool[Math.floor(Math.random()*pool.length)];
+  // avoid repeating the same site twice in a row when the pool is big enough
+  if (pool.length > 1) {
+    let guard = 0;
+    while (site.url === lastHeroUrl && guard++ < 20) site = pool[Math.floor(Math.random()*pool.length)];
+  }
+  lastHeroUrl = site.url;
+
+  el('hero-title').textContent = site.title;
+  el('hero-desc').textContent = site.desc;
+  el('hero-url').textContent = domain(site.url);
+  el('hero-visit').href = site.url;
+  el('hero-tags').innerHTML = site.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+
+  const shot = el('hero-shot');
+  shot.onclick = () => window.open(site.url, '_blank');
+  shot.innerHTML = `<div class="thumb-placeholder"><div class="spinner"></div></div>`;
+  loadShot(shot, site, 1000, true);
+
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ── Browse: full grid (no hero) ──
+function browseGrid() {
+  hide('splash-state');
+  el('hero-section').classList.remove('visible');
+  el('grid-section').style.display='block';
+  shuffled = shuffle(filtered());
+  shown = 0;
+  el('site-grid').innerHTML='';
+  el('grid-count').textContent = shuffled.length + ' sites';
+  renderMore();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+el('wander-btn').addEventListener('click', wander);
+el('splash-cta').addEventListener('click', wander);
+el('hero-next').addEventListener('click', wander);
+el('hero-browse').addEventListener('click', browseGrid);
+el('load-more-btn').addEventListener('click', renderMore);
+
+el('nav-filters').addEventListener('click', e=>{
+  const btn = e.target.closest('.pill'); if(!btn) return;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active'); currentCat = btn.dataset.cat;
+  // Clicking a category always opens the browsable grid for that category
+  browseGrid();
+});
+
+// Populate dynamic site counts
+(function(){ var n=SITES.length; var a=document.getElementById('splash-count'); var b=document.getElementById('browse-count'); if(a)a.textContent=n; if(b)b.textContent=n; })();
+
+document.addEventListener('keydown', e=>{
+  if (e.key===' ' && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA') {
+    e.preventDefault();
+    wander();
+  }
+});
+</script>
+</body>
+</html>
