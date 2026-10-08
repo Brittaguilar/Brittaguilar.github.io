@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=4b092501-37d7-4c18-b808-2dd9e4d3c090
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SciComm Collaborator Directory</title>
+<style>
+  :root{
+    --teal:#53B2B5; --blue:#4E8ABC; --violet:#74539C; --green:#76B559; --rose:#C27279;
+    --gray:#959595; --ink:#000000; --ink-soft:#3d3d3d; --ink-faint:#6f6f6f;
+    --line:#e4e4e4; --line-dark:#2c2c2c; --bg:#ffffff; --bg-soft:#F7F7F7;
+    --gradient:linear-gradient(90deg,#53B2B5 0%,#5284B8 50%,#6F4D99 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Helvetica Neue",Helvetica,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.5}
+  .topbar{height:6px;background:var(--gradient)}
+  header{max-width:1200px;margin:0 auto;padding:64px 24px 40px;border-bottom:1px solid var(--line-dark)}
+  header h1{font-size:clamp(40px,3.75vw,64px);font-weight:700;letter-spacing:-.03em;line-height:1.05;max-width:850px}
+  header h1 .grad{background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p.lede{margin-top:20px;max-width:720px;font-size:clamp(18px,1.3vw,21px);color:var(--ink-soft);line-height:1.55}
+  header .count-line{margin-top:22px;font-size:13px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em}
+  .controls{max-width:1200px;margin:0 auto;padding:24px 24px 8px;position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);z-index:5;border-bottom:1px solid var(--line)}
+  .search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  #search{flex:1;min-width:220px;padding:12px 16px;font-size:16px;border:1px solid var(--line-dark);border-radius:0;font-family:inherit;background:#fff}
+  #search:focus{outline:2px solid var(--blue);outline-offset:-1px}
+  select{padding:11px 12px;border:1px solid var(--line-dark);border-radius:0;font-size:14px;background:#fff;color:var(--ink);font-family:inherit;max-width:225px;cursor:pointer}
+  select:focus{outline:2px solid var(--blue);outline-offset:-1px}
+  .filter-meta{display:flex;justify-content:space-between;align-items:center;padding:10px 0 12px;flex-wrap:wrap;gap:8px}
+  #result-count{font-size:13px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.1em}
+  #clear-btn{background:none;border:none;color:var(--blue);font-size:14px;cursor:pointer;text-decoration:underline;font-family:inherit;display:none}
+  main{max-width:1200px;margin:0 auto;padding:28px 24px 80px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px}
+  .card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--cat,var(--teal));padding:26px 24px 22px;display:flex;flex-direction:column;gap:13px;transition:box-shadow .15s ease}
+  .card:hover{box-shadow:0 10px 30px rgba(0,0,0,.08)}
+  .card-top{display:flex;gap:15px;align-items:center}
+  .card-top>div:last-child{min-width:0;flex:1}
+  .card-top h2,.card-top .title{overflow-wrap:break-word}
+  .avatar-wrap{width:68px;height:68px;border-radius:50%;flex-shrink:0;position:relative}
+  .avatar-wrap img{width:68px;height:68px;border-radius:50%;object-fit:cover;border:1px solid var(--line);display:block}
+  .avatar-fallback{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;letter-spacing:.02em}
+  .card h2{font-size:21px;line-height:1.2;letter-spacing:-.02em;font-weight:700}
+  .card .title{font-size:14px;color:var(--ink-soft);margin-top:3px;line-height:1.35}
+  .loc{font-size:12.5px;color:var(--ink-faint);margin-top:3px;text-transform:uppercase;letter-spacing:.08em}
+  .fit{border-left:3px solid;border-image:linear-gradient(180deg,#53B2B5,#5284B8,#6F4D99) 1;background:var(--bg-soft);padding:12px 14px;font-size:15.5px;line-height:1.5;color:#1f1f1f}
+  .fit strong{font-weight:700}
+  .bio{font-size:14.5px;color:var(--ink-soft);line-height:1.55}
+  .bio.clamped{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .more-btn{background:none;border:none;color:var(--blue);cursor:pointer;font-size:13px;padding:0;text-align:left;font-family:inherit;text-decoration:underline;margin-top:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:11.5px;padding:4px 10px;border-radius:0;font-weight:500;letter-spacing:.02em;border:1px solid}
+  .chip.svc{border-color:var(--teal);color:#2d7a7d;background:#fff}
+  .chip.topic{border-color:#d9d9d9;color:var(--ink-faint);background:var(--bg-soft)}
+  .card-foot{margin-top:auto;padding-top:13px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .links{display:flex;gap:14px}
+  .links a{font-size:14px;color:var(--ink);text-decoration:none;font-weight:600;border-bottom:2px solid;border-image:var(--gradient) 1}
+  .links a:hover{color:var(--blue)}
+  .award{font-size:11.5px;color:var(--ink-faint);text-align:right;line-height:1.45}
+  .award .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cat,var(--teal));margin-right:5px}
+  .no-results{text-align:center;padding:80px 20px;color:var(--ink-faint);font-size:18px;grid-column:1/-1}
+  footer{background:#000;color:#fff;margin-top:20px}
+  .footer-inner{max-width:1200px;margin:0 auto;padding:36px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+  footer p{font-size:13px;color:#bdbdbd;max-width:640px;line-height:1.6}
+  footer .grad-bar{height:4px;background:var(--gradient)}
+  @media (max-width:640px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<header>
+  <h1>Find your <span class="grad">science communication</span> collaborator</h1>
+  <p class="lede">Freelance writers, filmmakers, podcasters, artists, and strategists ready to help scientists share their work with the world. Every collaborator here is a winner of the Eric &amp; Wendy Schmidt Awards for Excellence in Science Communications, presented by the National Academies of Sciences, Engineering, and Medicine with Schmidt Sciences.</p>
+  <div class="count-line" id="header-count"></div>
+</header>
+
+<div class="controls">
+  <div class="search-row">
+    <input type="text" id="search" placeholder="Search by name, skill, topic, or keyword…">
+    <select id="f-service"><option value="">Any service</option></select>
+    <select id="f-topic"><option value="">Any topic</option></select>
+    <select id="f-country"><option value="">Any location</option></select>
+    <select id="f-category"><option value="">Any background</option></select>
+  </div>
+  <div class="filter-meta">
+    <span id="result-count"></span>
+    <button id="clear-btn">Clear filters</button>
+  </div>
+</div>
+
+<main><div class="grid" id="grid"></div></main>
+
+<footer>
+  <div class="grad-bar"></div>
+  <div class="footer-inner">
+    <p>Profiles compiled from awardee submissions and public sources; headshots courtesy of the National Academies. Spot an error or want your profile updated? Contact the directory team.</p>
+    <p>Eric &amp; Wendy Schmidt Awards for Excellence in Science Communications</p>
+  </div>
+</footer>
+
+<script>
+const PEOPLE = [
+{
+"name": "J.D. Allen",
+"title": "Journalism Lecturer & Climate Communication Strategist, Stony Brook University",
+"city": "Stony Brook",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production",
+"Creative, Cultural & Experiential Projects",
+"Journalism & Editorial Writing",
+"Communications Consulting",
+"Digital & Social Media Content"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Education, Learning & Knowledge Systems",
+"Human Behavior, Society & Social Science"
+],
+"website": "https://www.linkedin.com/in/jdreports",
+"linkedin": "https://www.linkedin.com/in/jdreports",
+"bio": "J.D. Allen is a lecturer in journalism at Stony Brook University, affiliated faculty at the Alan Alda Center for Communicating Science, and a climate communication strategist. A public radio veteran, he is a podcaster who also enjoys magazine writing and short film.",
+"fit": "You should work with J.D. if you need podcast production, communications strategy, or multimedia climate storytelling — he offers nearly every format.",
+"photo": "https://nationalacademies.bynder.com/asset/51c33928-5e25-44db-bebe-209c831b0092/thumbnail/webimage-Allen_JD"
+},
+{
+"name": "Golda Arthur",
+"title": "Audio Producer & Host, Overlooked",
+"city": "New York City",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2025",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Audio Production",
+"Writing and Editing"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.goldaarthur.com",
+"linkedin": "https://www.linkedin.com/in/golda-arthur-23743b82/",
+"bio": "Golda Arthur is the host and creator of Overlooked, an award-winning women's health podcast, and an audio producer with a 20-year journalism career spanning the BBC, Marketplace, Vox Media, and MIT Technology Review. She teaches audio reporting at Columbia University's Graduate School of Journalism.",
+"fit": "You should work with Golda if you need a podcast developed end to end — concept, reporting, production, and launch.",
+"photo": "https://nationalacademies.bynder.com/asset/8c9ea26b-040a-47cf-bcd8-588d87eef8e8/thumbnail/webimage-Arthur_Golda_3"
+},
+{
+"name": "Simar Bajaj",
+"title": "Health Journalist",
+"city": "New York City / Palo Alto",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2023",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Technology, AI & Data Science",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.simarbajaj.com",
+"linkedin": "https://www.linkedin.com/in/simar-bajaj/",
+"bio": "Simar Bajaj is a health journalist whose writing has appeared in The Washington Post, TIME, The Guardian, NPR, and STAT. A Harvard graduate with a master's in global health from Oxford, he is now a medical student and Knight-Hennessy Scholar at Stanford, and was the youngest-ever winner of a top Schmidt Award prize.",
+"fit": "You should work with Simar if you need health and medicine features written for top international outlets.",
+"photo": "https://nationalacademies.bynder.com/asset/35af80cf-e03b-4def-9473-6e7c33a31152/thumbnail/webimage-Simar_Bajaj_1"
+},
+{
+"name": "John-Charles Baucom",
+"title": "Chemist & Creator, Chem Thug",
+"city": "Chicago",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2025",
+"services": [
+"Video and Film Production",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Science & the Arts / Culture"
+],
+"website": "https://www.tiktok.com/@chem.thug",
+"linkedin": null,
+"bio": "John-Charles Baucom is a Brooklyn-born organic chemistry PhD who created the Chem Thug channel with his wife, making videos that explain chemical phenomena and debunk pseudoscience scams. After years of teaching and research, he is committed to sharing his love of chemistry with wide audiences.",
+"fit": "You should work with JC if you need short-form video that makes chemistry entertaining — or debunks pseudoscience in your field.",
+"photo": "https://nationalacademies.bynder.com/asset/43e9842f-0259-4d67-810e-8d3ef8f172f0/thumbnail/webimage-Baucom_John-Charles_1"
+},
+{
+"name": "Joel Bervell",
+"title": "Physician & \"Medical Mythbuster\"",
+"city": "Tacoma",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2024",
+"services": [
+"Video and Film Production"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Technology, AI & Data Science",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://joelbervell.com",
+"linkedin": null,
+"bio": "Joel Bervell is a physician and science communicator known as the \"Medical Mythbuster,\" using short-form social video to debunk medical myths and expose racial disparities in healthcare. He hosts The Dose podcast with the Commonwealth Fund and has been named a TIME100 Creator and Peabody Award recipient.",
+"fit": "You should work with Joel if you need short-form health video with reach in the millions and an equity lens.",
+"photo": "https://nationalacademies.bynder.com/asset/0e0551f0-33be-4297-a616-2259b845836f/thumbnail/webimage-SC_Ind_Bervell_Joel_3_Owns_Copyright"
+},
+{
+"name": "Rebecca Boyle",
+"title": "Author & Freelance Journalist",
+"city": "Colorado Springs",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Space, Physics & the Universe",
+"Science & the Arts / Culture",
+"Climate, Environment & Earth Systems"
+],
+"website": "https://rebeccaboyle.com",
+"linkedin": "https://linkedin.com/in/rboyle31",
+"bio": "Rebecca Boyle is an award-winning author and freelance journalist whose bestselling first book, Our Moon, was longlisted for the National Book Award and won the LA Times Book Prize. She writes about astronomy, astrophysics, and cosmology as a contributing editor at Scientific American and contributing writer at Quanta Magazine.",
+"fit": "You should work with Rebecca if you need feature or book-quality writing on astronomy, physics, and the history of science.",
+"photo": "https://nationalacademies.bynder.com/asset/83440443-4a7e-4c3c-9bf0-517c2e257bd0/thumbnail/webimage-Boyle_Rebecca_Does_Not_Own_Grants_Permission_TOP"
+},
+{
+"name": "Iván Carrillo",
+"title": "Journalist & Filmmaker, Celsius Media",
+"city": "Valladolid / Mexico City",
+"country": "Spain / Mexico",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Health, Medicine & the Brain"
+],
+"website": "https://carrillazo.com",
+"linkedin": "https://www.linkedin.com/in/ivan-carrillo-5526521b/",
+"bio": "Iván Carrillo is a science journalist and documentary filmmaker based in Mexico and Spain, focused on climate change, pollution, and biodiversity conservation in Latin America. A Knight Science Journalism Fellow at MIT and National Geographic Explorer, he produced the series \"1.5 Degrees to Save the Planet\" and co-founded the award-winning collaborative initiative Historias Sin Fronteras.",
+"fit": "You should work with Iván if you need documentary film, writing, or audio in Spanish or English for Latin American audiences.",
+"photo": "https://nationalacademies.bynder.com/asset/0c84fc04-4231-45c5-835a-e171784f1944/thumbnail/webimage-Carrillo_Ivan_2"
+},
+{
+"name": "Andrea Obaid Carrion",
+"title": "Science Journalist & TV/Radio Host",
+"city": "Santiago",
+"country": "Chile",
+"category": "Science Journalist",
+"year": "2023",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Technology, AI & Data Science",
+"Space, Physics & the Universe",
+"Life Sciences & Biology",
+"Energy, Materials & Engineering"
+],
+"website": "https://x.com/AndreaObaid",
+"linkedin": null,
+"bio": "Andrea Obaid Carrión is a Chilean science journalist and TV/radio host known for series including Tecnociencia and Cocina Lab on Chilean national television, and president of the Chilean Association of Journalists and Professionals for Science Communication (ACHIPEC). In 2023 she became the first South American to win a Schmidt Award for Excellence in Science Communications.",
+"fit": "You should work with Andrea if you need Spanish-language science TV, radio, podcasts, or multimedia campaigns.",
+"photo": "https://nationalacademies.bynder.com/asset/96140292-7206-4e3b-b7ee-e89de1c6ea25/thumbnail/webimage-Andrea_Obaid_1"
+},
+{
+"name": "Jordana Cepelewicz",
+"title": "Staff Writer, Quanta Magazine",
+"city": "New York City",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2023",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Life Sciences & Biology",
+"Technology, AI & Data Science",
+"Science & the Arts / Culture",
+"Space, Physics & the Universe",
+"Health, Medicine & the Brain",
+"Mathematics, Statistics & Formal Science"
+],
+"website": "https://www.quantamagazine.org/authors/jordana-cepelewicz/",
+"linkedin": null,
+"bio": "Jordana Cepelewicz is a science journalist at Quanta Magazine, where she covered biology before turning to mathematics in 2022; her writing has also appeared in Scientific American and Nautilus. Her Schmidt Award recognized, in part, her profiles of Fields Medalist June Huh and math prodigy Daniel Larsen.",
+"fit": "You should work with Jordana if you need writing or editing that makes mathematics and fundamental science elegant and clear.",
+"photo": "https://nationalacademies.bynder.com/asset/e87dd41e-3907-47fa-a5b5-4a096931961d/thumbnail/webimage-Jordana_Cepelewicz_2"
+},
+{
+"name": "George Chan",
+"title": "Science Communicator",
+"city": "Oxford",
+"country": "United Kingdom",
+"category": "Science Communicator",
+"year": null,
+"services": [
+"Video and Film Production",
+"Audio Production",
+"Communications Consulting"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems"
+],
+"website": null,
+"linkedin": null,
+"bio": "George Chan is an Oxford, UK-based science communicator offering video and film production, audio production, and communications consulting across the life and environmental sciences.",
+"fit": "You should work with George if you need UK-based video and film production, audio production, or communications consulting.",
+"photo": null
+},
+{
+"name": "Vaishnavi Chandrashekhar",
+"title": "Science & Environment Journalist",
+"city": "Mumbai",
+"country": "India",
+"category": "Science Journalist",
+"year": "2023",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Health, Medicine & the Brain",
+"Life Sciences & Biology",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://muckrack.com/winterapples",
+"linkedin": "https://www.linkedin.com/in/vaishnavi-chandrashekhar-35016620",
+"bio": "Vaishnavi Chandrashekhar is a Mumbai-based science and environment journalist covering climate change, urbanization, and development in India, and a contributing correspondent for Science. A former reporter and editor at The Christian Science Monitor and The Times of India, her work has appeared in The Guardian, The Atlantic, Hakai, and Mongabay.",
+"fit": "You should work with Vaishnavi if you need reported writing on climate, environment, and development in India.",
+"photo": "https://nationalacademies.bynder.com/asset/6d93cf88-9ce5-4ea1-a94b-5b55462766a2/thumbnail/webimage-Vaishnavi_Chandrashekhar_2"
+},
+{
+"name": "Alex Dainis",
+"title": "Geneticist & Founder, Helicase Media",
+"city": "Los Angeles",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2024",
+"services": [
+"Video and Film Production",
+"Writing and Editing"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Life Sciences & Biology",
+"Energy, Materials & Engineering"
+],
+"website": "https://helicasemedia.com",
+"linkedin": null,
+"bio": "Alex Dainis is a geneticist and science video producer with a PhD in genetics from Stanford University who runs Helicase Media, a science communication and video production company. Her YouTube and social media work brings genetics, biology, and lab life to a broad online audience.",
+"fit": "You should work with Alex if you need lab-accurate science video — from short-form social to full production — made by a PhD geneticist.",
+"photo": "https://nationalacademies.bynder.com/asset/c07c9c23-35f8-406b-8896-86c7464d7d83/thumbnail/webimage-SC_Ind_Dainis_Alex_2_Owns_Copyright"
+},
+{
+"name": "Sarah DeWeerdt",
+"title": "Freelance Science Writer",
+"city": "Seattle",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2024",
+"services": [
+"Writing and Editing",
+"Journalism & Editorial Writing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Life Sciences & Biology",
+"Science & the Arts / Culture"
+],
+"website": "http://sarahdeweerdt.com",
+"linkedin": null,
+"bio": "Sarah DeWeerdt is a Seattle-based freelance science journalist specializing in biology, medicine, and the environment, and a longtime contributor to Anthropocene magazine's Daily Science coverage. Her work has appeared in Nature, Newsweek, Nautilus, and The Transmitter.",
+"fit": "You should work with Sarah if you need dependable research summaries, feature writing, or editing across biology, climate, and conservation.",
+"photo": "https://nationalacademies.bynder.com/asset/6c2a7e89-6d35-43a2-9e56-30f3de1324ee/thumbnail/webimage-SJ_Freelancer_DeWeerdt_Sarah_Headshot_2_Owns_Copyright"
+},
+{
+"name": "James Dingley",
+"title": "Engineer & Creator, Atomic Frontier",
+"city": "Boston",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2023",
+"services": [
+"Video and Film Production"
+],
+"topics": [
+"Technology, AI & Data Science",
+"Space, Physics & the Universe",
+"Life Sciences & Biology",
+"Energy, Materials & Engineering"
+],
+"website": "https://www.youtube.com/@AtomicFrontier",
+"linkedin": null,
+"bio": "James Dingley is a PhD research engineer at MIT studying space robotics who travels the world to tell stories about engineering — from the depths of the ocean to arctic tundras and giant blast furnaces — on his YouTube channel Atomic Frontier. Diagnosed with dyslexia as a kid, he found video a way to share his love of science without writing anything down.",
+"fit": "You should work with James if you need a YouTube-style video produced that makes your engineering or space research exciting to a general audience.",
+"photo": "https://nationalacademies.bynder.com/asset/43a4b2c8-c13a-4257-a519-eaa99043bf2c/thumbnail/webimage-James_Dingley_1"
+},
+{
+"name": "Ridwan Karim Dini-Osman",
+"title": "Broadcast Journalist, EIB Network & The World",
+"city": "Accra / Boston",
+"country": "Ghana / United States",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Writing and Editing",
+"Audio Production"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://pulitzercenter.org/people/ridwan-karim-dini-osman",
+"linkedin": "https://www.linkedin.com/in/ridwan-karim-dini-osman-67417183",
+"bio": "Ridwan Karim Dini-Osman is a Ghanaian broadcast journalist covering global health, climate, and development for the EIB Network and as a correspondent for the public radio program The World. A multiple Pulitzer Center grantee and seven-time recipient of Ghana's National Journalism Award, he is a member of Harvard's Nieman Fellowship class of 2026.",
+"fit": "You should work with Ridwan if you need broadcast reporting or audio on global health and climate that connects African stories to international audiences.",
+"photo": "https://nationalacademies.bynder.com/asset/d134f014-1d71-4b8c-85de-a491fb125598/thumbnail/webimage-Dini_Osman_Ridwan_Karim"
+},
+{
+"name": "Lindsay Ejoh",
+"title": "Neuroscience PhD Candidate, University of Pennsylvania",
+"city": "Philadelphia",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2025",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain",
+"Technology, AI & Data Science"
+],
+"website": "https://www.lindsayejoh.com",
+"linkedin": "https://www.linkedin.com/in/lindsay-ejoh-932a66149/",
+"bio": "Lindsay Ejoh is a final-year neuroscience PhD candidate at the University of Pennsylvania, originally from Bamenda, Cameroon, whose research investigates brain circuits underlying pain and pain relief. Alongside research, she is passionate about STEM outreach — communicating brain science to the public and expanding opportunities for underrepresented minorities in STEM.",
+"fit": "You should work with Lindsay if you need outreach content — video, audio, writing, or events — that brings neuroscience to audiences often left out of science.",
+"photo": "https://nationalacademies.bynder.com/asset/fd894b6f-67b5-4d34-a562-434b0d62e145/thumbnail/webimage-Ejoh_Lindsay_2"
+},
+{
+"name": "Jeremy Faust",
+"title": "Emergency Physician & Editor-in-Chief, MedPage Today",
+"city": "Cambridge",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Audio Production",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain"
+],
+"website": "https://insidemedicine.substack.com",
+"linkedin": "https://www.linkedin.com/in/jeremy-faust-b951b448",
+"bio": "Jeremy Samuel Faust, MD, is an emergency physician at Brigham and Women's Hospital, Assistant Professor at Harvard Medical School, and Editor-in-Chief of MedPage Today. He writes Inside Medicine on Substack, his epidemiological research has appeared in JAMA and Lancet Infectious Diseases, and his essays have run in The New York Times, The Washington Post, and The Atlantic.",
+"fit": "You should work with Jeremy if you need medical and public health writing, audio, or editorial collaboration carrying clinical authority.",
+"photo": "https://nationalacademies.bynder.com/asset/b7db4963-9897-4b36-b977-c51fd479aac5/thumbnail/webimage-Faust_Jeremy_1"
+},
+{
+"name": "Clare Fieseler",
+"title": "Ecologist & Reporter, Canary Media",
+"city": "Washington DC",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2024",
+"services": [
+"Writing and Editing",
+"Journalism & Editorial Writing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Life Sciences & Biology",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": null,
+"linkedin": null,
+"bio": "Clare Fieseler, PhD, is a journalist, ecologist, and National Geographic Explorer currently covering offshore wind for Canary Media; she previously covered climate for POLITICO and was an investigative environment reporter at The Post and Courier. A former Smithsonian ocean scientist with a PhD in ecology from UNC Chapel Hill, she was a top winner of the 2024 Schmidt Award for her reporting on the American South.",
+"fit": "You should work with Clare if you need reported writing on oceans, climate, or clean energy with an ecologist's depth.",
+"photo": "https://nationalacademies.bynder.com/asset/a1648740-4a62-486f-8265-e428e6f49fca/thumbnail/webimage-Clare_Fieseler_new_1"
+},
+{
+"name": "Grace Huckins",
+"title": "Science Journalist",
+"city": "Bay Area",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Technology, AI & Data Science",
+"Health, Medicine & the Brain",
+"Life Sciences & Biology",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.linkedin.com/in/grace-huckins-142a3ba6/",
+"linkedin": "https://www.linkedin.com/in/grace-huckins-142a3ba6/",
+"bio": "Grace Huckins is a science journalist covering neuroscience and artificial intelligence, with work in MIT Technology Review, Slate, and The Transmitter. Huckins earned a PhD in neuroscience from Stanford University and won the 2024/25 Nine Dots Prize for an essay on data and AI in science.",
+"fit": "You should work with Grace if you need writing or editing about the brain or AI that is rigorous without the jargon.",
+"photo": "https://nationalacademies.bynder.com/asset/4c3501aa-95f8-4000-b75d-62646dbf0d9e/thumbnail/webimage-RS_Grad_TOP_Huckins_Grace_Owns_Copyright"
+},
+{
+"name": "Nia Imara",
+"title": "Astrophysicist, Artist & Professor, UC Santa Cruz",
+"city": "Oakland",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Science & the Arts / Culture",
+"Space, Physics & the Universe"
+],
+"website": "https://www.niaimara.com",
+"linkedin": null,
+"bio": "Dr. Nia Imara is an artist, astrophysicist, and author whose 2025 book Painting the Cosmos explores how art and science intersect to reveal the secrets of the universe. A professor of astronomy at UC Santa Cruz researching star formation, she is also founder of Onaketa, a nonprofit providing free STEM tutoring for Black and brown youth.",
+"fit": "You should work with Nia if you need original artwork, writing, or an art-science collaboration grounded in astrophysics.",
+"photo": "https://nationalacademies.bynder.com/asset/d25459b6-f58f-4409-a69a-50dd421b24c7/thumbnail/webimage-Imara_Nia_1"
+},
+{
+"name": "Sanket Jain",
+"title": "Independent Journalist",
+"city": "Ichalkaranji",
+"country": "India",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Health, Medicine & the Brain",
+"Life Sciences & Biology"
+],
+"website": "https://www.linkedin.com/in/snktjain08/",
+"linkedin": "https://www.linkedin.com/in/snktjain08/",
+"bio": "Sanket Jain is an award-winning independent journalist based in Maharashtra, India, reporting on the intersection of climate change, public health, and social justice in rural India. His work has appeared in more than 35 publications including Science, Yale Climate Connections, and C&EN, and he has won 26 journalism awards including a Forbes 30 Under 30 listing.",
+"fit": "You should work with Sanket if you need written features or creative documentary projects on climate and health at the grassroots in rural India.",
+"photo": "https://nationalacademies.bynder.com/asset/0f890c7c-3bf2-49f1-9351-ade91a4e1d60/thumbnail/webimage-Jain_Sanket_1"
+},
+{
+"name": "Samantha Jones",
+"title": "Executive Producer & Co-host, Tiny Matters",
+"city": "Takoma Park",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2024",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Life Sciences & Biology",
+"Technology, AI & Data Science",
+"Science Policy, Governance & Innovation Systems",
+"Human Behavior, Society & Social Science"
+],
+"website": null,
+"linkedin": null,
+"bio": "Sam Jones, PhD, is a scientist turned journalist and podcast producer based in Washington, DC. She is the executive producer and co-host of the award-winning science podcast Tiny Matters, and has written for The New York Times, The Washington Post, National Geographic, Scientific American, and Nature.",
+"fit": "You should work with Sam if you need podcast production or science writing from someone who can take a paper to a polished story.",
+"photo": "https://nationalacademies.bynder.com/asset/3ed05fbb-a28c-4345-bf1f-788d6b75dfd5/thumbnail/webimage-SC_Org_Jones_Samantha_1_Owns_Copyright"
+},
+{
+"name": "Neil Lewis Jr",
+"title": "Associate Professor of Communication, Cornell University",
+"city": "Ithaca",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2023",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Health, Medicine & the Brain",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://neillewisjr.com",
+"linkedin": "https://www.linkedin.com/in/neil-lewis-jr-551b1b18",
+"bio": "Neil Lewis Jr. is a behavioral scientist and associate professor of communication at Cornell University and Weill Cornell Medicine, studying the motivational, behavioral, and equity implications of social interventions and policies. He co-founded the Cornell Action Research Collaborative, working with policymakers to reduce disparities in education, health, and the environment.",
+"fit": "You should work with Neil if you need evidence-based communication strategy or writing that measurably reaches the communities you want to serve.",
+"photo": "https://nationalacademies.bynder.com/asset/818bdc6f-a148-49f8-a7da-585fce30927f/thumbnail/webimage-Neil_Lewis_Jr_2"
+},
+{
+"name": "Winnie Karanja",
+"title": "CEO & Founder, Nakira's World",
+"city": "Houston",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2025",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Audio Production"
+],
+"topics": [
+"Science & the Arts / Culture",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.winniekaranja.com",
+"linkedin": "https://www.linkedin.com/company/nakirasworld/",
+"bio": "Winnie Karanja is a Forbes 30 Under 30 social entrepreneur and founder of Nakira's World, which builds imaginative learning spaces through animation and storytelling to spark early STEM literacy and children's sense of belonging in science. Her work sits at the intersection of STEM education and pediatric public health.",
+"fit": "You should work with Winnie if you need animation, storytelling, or experiential learning content that welcomes children into STEM and health.",
+"photo": "https://nationalacademies.bynder.com/asset/395073e0-36fb-4f88-92c7-414f9af76c56/thumbnail/webimage-Karanja_Winnie_Does_Not_Own_Grants_Permission"
+},
+{
+"name": "Jessica Kendall-Bar",
+"title": "Marine Scientist & Visual Storyteller",
+"city": "San Diego",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2022",
+"services": [
+"Video and Film Production",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.jessiekb.com",
+"linkedin": "https://www.linkedin.com/in/jessicakendallbar",
+"bio": "Jessica Kendall-Bar is a marine scientist at Scripps Institution of Oceanography, UC San Diego, whose work combines ecology, data science, and visualization to study marine animal behavior and physiology. Her dissertation produced the first recordings of marine mammal sleep at sea, published in Science, and her data visualizations have appeared in The New York Times and The Atlantic.",
+"fit": "You should work with Jessica if you need scientific animation, film, or immersive data-driven visuals produced from your research.",
+"photo": "https://nationalacademies.bynder.com/asset/4569e4e8-fb73-491c-a20c-29a94d786bf8/thumbnail/webimage-JKB-Headshot"
+},
+{
+"name": "Patience Kiyuka",
+"title": "Scientist, Kenya Medical Research Institute (KEMRI)",
+"city": "Kilifi",
+"country": "Kenya",
+"category": "Research Scientist",
+"year": "2022",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production"
+],
+"topics": [
+"Science & the Arts / Culture",
+"Life Sciences & Biology",
+"Health, Medicine & the Brain"
+],
+"website": "https://twitter.com/pkiyuka",
+"linkedin": "https://www.linkedin.com/in/patience-kiyuka-ph-d-7b50b749",
+"bio": "Patience Kiyuka is a scientist at the Kenya Medical Research Institute (KEMRI) researching the immunology and molecular epidemiology of infectious diseases such as malaria and RSV. An award-winning science communicator, she has produced community theatre, radio dramas, talk shows, and virtual reality videos to bring science to diverse audiences.",
+"fit": "You should work with Patience if you need community-centered health communication in East Africa — radio drama, theatre, video, or virtual reality.",
+"photo": "https://nationalacademies.bynder.com/asset/e9c20731-8d62-4a41-b72a-f5e7aab069cb/thumbnail/webimage-Kiyuka_Patience"
+},
+{
+"name": "Trent Knoss",
+"title": "Science Writer & Communications Director",
+"city": "Philadelphia",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing",
+"Audio Production"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.linkedin.com/in/trent-knoss",
+"linkedin": "https://www.linkedin.com/in/trent-knoss",
+"bio": "Trent Knoss is a science writer and communications leader who has served as director of communications for The Nature Conservancy in Pennsylvania and Delaware. He previously held senior editorial roles at the Institute for Science & Policy, where he co-produced a documentary podcast.",
+"fit": "You should work with Trent if you need communications strategy, editorial writing, or podcast production for a science-driven organization.",
+"photo": "https://nationalacademies.bynder.com/asset/10bdf45a-78f2-40a0-b245-00ed3332f111/thumbnail/webimage-Version-2"
+},
+{
+"name": "Claire Lamman",
+"title": "Cosmologist & NSF Postdoctoral Fellow, Ohio State University",
+"city": "Columbus",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Art",
+"Data Visualizations"
+],
+"topics": [
+"Space, Physics & the Universe"
+],
+"website": "https://cmlamman.github.io",
+"linkedin": null,
+"bio": "Claire Lamman is an observational cosmologist who completed her PhD at Harvard's Center for Astrophysics and is now an NSF Postdoctoral Fellow at Ohio State working on the DESI survey. She communicates cosmology through art, comics, and data visualization — including cartoon annotations of scientific papers — and co-chairs DESI's public outreach committee.",
+"fit": "You should work with Claire if you need custom science art, comics, or data visualizations that make abstract research graspable.",
+"photo": "https://nationalacademies.bynder.com/asset/3ad54c6a-8536-4917-964c-92ac8df3c3ab/thumbnail/webimage-RS_Grad_Lamman_Claire_1_See_Notes"
+},
+{
+"name": "Bing Lin",
+"title": "Conservation Scientist, Writer & Photographer",
+"city": "Sydney",
+"country": "Australia",
+"category": "Research Scientist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Life Sciences & Biology",
+"Climate, Environment & Earth Systems",
+"Technology, AI & Data Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.thebinglin.com",
+"linkedin": "https://linkedin.com/in/thebinglin",
+"bio": "Bing Lin is a conservation scientist, writer, and photographer, and a postdoctoral researcher at the University of Sydney's Thriving Oceans Research Hub studying coral reef \"bright spots.\" A Princeton PhD and member of the International League of Conservation Photographers, his writing and photography have appeared in National Geographic, Scientific American, BBC Wildlife, and Nature.",
+"fit": "You should work with Bing if you need conservation photography, writing, or film from someone who is also a working scientist.",
+"photo": "https://nationalacademies.bynder.com/asset/a534186e-0d8c-400f-8bf2-4b732dbe7da9/thumbnail/webimage-Lin_Bing_2"
+},
+{
+"name": "Alec Luhn",
+"title": "Climate Journalist",
+"city": "Milwaukee",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2024",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Life Sciences & Biology",
+"Energy, Materials & Engineering"
+],
+"website": "https://alecluhn.com",
+"linkedin": "https://www.linkedin.com/in/alecluhn/",
+"bio": "Alec Luhn is an award-winning climate journalist whose reporting has appeared in The Atlantic, The Guardian, National Geographic, Scientific American, TIME, and VICE News. His Scientific American feature \"Why Are Alaska's Rivers Turning Orange?\" won an AAAS Kavli Science Journalism Award.",
+"fit": "You should work with Alec if you need ambitious climate feature writing or creative field-reported projects.",
+"photo": "https://nationalacademies.bynder.com/asset/da819b52-936b-41a0-94bc-ab9eec6cfed7/thumbnail/webimage-SJ_Freelancer_Luhn_Alec_1_Owns_Copyright"
+},
+{
+"name": "Andrew Luttrell",
+"title": "Social Psychologist & Host, Opinion Science",
+"city": "Columbus",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Audio Production",
+"Writing and Editing"
+],
+"topics": [
+"Human Behavior, Society & Social Science"
+],
+"website": "https://andyluttrell.com",
+"linkedin": null,
+"bio": "Andrew Luttrell is a social psychologist and associate professor at Ball State University whose research examines moralized attitudes, persuasion, and opinion change. He hosts Opinion Science, a podcast on the psychology of opinions with more than 100 episodes of interviews with psychologists, political scientists, and communication scholars.",
+"fit": "You should work with Andrew if you need podcast production or writing grounded in behavioral science — interviews, scripts, or explainers on how people form opinions.",
+"photo": "https://nationalacademies.bynder.com/asset/4f0d5db6-a975-450e-bc0d-7168bb47c746/thumbnail/webimage-RS_Later_Luttrell_Andrew_2_Owns_Copyright"
+},
+{
+"name": "Patrick Mayoyo",
+"title": "Investigative Journalist & Founder, Eyewitness Media Group",
+"city": "Nairobi",
+"country": "Kenya",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Writing and Editing",
+"Video and Film Production"
+],
+"topics": [
+"Energy, Materials & Engineering",
+"Life Sciences & Biology",
+"Climate, Environment & Earth Systems"
+],
+"website": "https://twitter.com/pmayoyo",
+"linkedin": "https://www.linkedin.com/in/patrick-mayoyo-16482844",
+"bio": "Patrick Mayoyo is a Kenyan investigative journalist and founder of Eyewitness Media Group, focused on environment, climate change, and solutions-oriented reporting in East Africa; he is a former deputy news editor at Kenya's Daily Nation. His honors include UNCA global prizes for climate coverage and the European Commission's Lorenzo Natali Media Prize.",
+"fit": "You should work with Patrick if you need solutions-focused environmental reporting or video from East Africa.",
+"photo": "https://nationalacademies.bynder.com/asset/8eb918c1-84c4-439b-b9a8-7b1acc3aeafa/thumbnail/webimage-Mayoyo_Patrick"
+},
+{
+"name": "Calli McMurray",
+"title": "Reporter, The Transmitter",
+"city": "New York City",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain",
+"Technology, AI & Data Science",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://callimcmurray.com",
+"linkedin": "https://www.linkedin.com/in/calli-mcmurray-bb5587187/",
+"bio": "Calli McMurray is a reporter at The Transmitter, where she covers neuroscience, research integrity, and the structural and regulatory issues that affect the scientific world. She won the 2024 David W. Miller Award for Young Journalists, and her work has appeared in STAT, The Texas Observer, and KFF Health News. She holds a neuroscience degree from UT Austin and a master's in science journalism from NYU.",
+"fit": "You should work with Calli if you need reported news or feature writing about neuroscience or the workings of the research enterprise.",
+"photo": "https://nationalacademies.bynder.com/asset/b0c37b0e-c167-421c-89e9-bf0df2e6caaf/thumbnail/webimage-McMurray_Calli_1_Doesnt_Own_Grants_Permission_TOP"
+},
+{
+"name": "Rudy Molinek",
+"title": "Geoscientist & Audio Producer",
+"city": "Madison",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Writing and Editing",
+"Audio Production",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Climate, Environment & Earth Systems"
+],
+"website": "https://www.rudymolinek.com",
+"linkedin": null,
+"bio": "Rudy Molinek is a geoscience PhD candidate at the University of Wisconsin-Madison and creator of the podcast Under Our Feet, which explores the geologic forces shaping the world around us. He won his Schmidt Award for audio reporting on PFAS groundwater contamination in northern Wisconsin, and has written for Smithsonian Magazine as a AAAS Mass Media Fellow.",
+"fit": "You should work with Rudy if you need narrative podcast episodes or accessible writing about earth and environmental science.",
+"photo": "https://nationalacademies.bynder.com/asset/1115ae41-5107-44f8-8a20-9c2a3bb4e41c/thumbnail/webimage-RS_Grad_Molinek_Rudy_3_Owns_Copyright"
+},
+{
+"name": "Fredrick Mugira",
+"title": "Water & Climate Journalist; Co-founder, InfoNile",
+"city": "Kampala",
+"country": "Uganda",
+"category": "Science Journalist",
+"year": "2023",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Life Sciences & Biology",
+"Science & the Arts / Culture",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://pulitzercenter.org/people/fredrick-mugira",
+"linkedin": null,
+"bio": "Fredrick Mugira is a Ugandan water and climate journalist, co-founder of InfoNile — a geojournalism platform mapping data-driven stories on water across the Nile basin — and CEO of Water Journalists Africa, a network of hundreds of journalists. His honors include a CNN/MultiChoice African Journalist award and a UN development journalism award.",
+"fit": "You should work with Fredrick if you need data-driven stories, multimedia, or cross-border collaborations on water and climate in Africa.",
+"photo": "https://nationalacademies.bynder.com/asset/23e886f4-32c9-4b53-b906-eb4f7ed9641b/thumbnail/webimage-Fredrick_Mugira_1"
+},
+{
+"name": "Jesse Nichols",
+"title": "Video Producer, Grist",
+"city": "Seattle",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Video and Film Production"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.jessenicholsvideo.com",
+"linkedin": "https://www.linkedin.com/in/jessetnichols",
+"bio": "Jesse Nichols is a multimedia journalist at Grist and creator of the science video series \"Proof of Concept,\" which profiles the science and scientists behind surprising environmental research. His work has earned an AAAS Kavli Science Journalism Award and a Northwest Emmy nomination.",
+"fit": "You should work with Jesse if you need a professionally produced video segment profiling your environmental research.",
+"photo": "https://nationalacademies.bynder.com/asset/0f95ea91-c824-4be7-bd92-5def530ba796/thumbnail/webimage-Nichols_Jesse_1"
+},
+{
+"name": "Brandon Ogbunu",
+"title": "Professor of Ecology & Evolutionary Biology, Yale",
+"city": "New Haven",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing",
+"Audio Production",
+"Video and Film Production"
+],
+"topics": [
+"Life Sciences & Biology",
+"Technology, AI & Data Science",
+"Science & the Arts / Culture",
+"Health, Medicine & the Brain",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://eeb.yale.edu/people/faculty/c-brandon-ogbunu",
+"linkedin": null,
+"bio": "C. Brandon Ogbunu is a computational biologist and professor in the Department of Ecology and Evolutionary Biology at Yale University, where his research spans evolutionary biology, population genetics, and epidemiology. He is an active science writer, contributing to Wired, Scientific American, and Undark.",
+"fit": "You should work with Brandon if you need essays, talks, audio, or video connecting your research to culture and society.",
+"photo": "https://nationalacademies.bynder.com/asset/a0ad89f3-1f7d-48bc-b2c8-3f7deb0f9320/thumbnail/webimage-RS_Later_Ogbunu_Brandon_1_Stephanie_Seguino"
+},
+{
+"name": "Albert Oppong-Ansah",
+"title": "Editor, Ghana News Agency",
+"city": "Accra",
+"country": "Ghana",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production"
+],
+"topics": [
+"Technology, AI & Data Science",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Energy, Materials & Engineering",
+"Health, Medicine & the Brain",
+"Life Sciences & Biology",
+"Space, Physics & the Universe",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://gna.org.gh",
+"linkedin": "https://www.linkedin.com/in/albert-oppong-ansah-97938618",
+"bio": "Albert Oppong-Ansah is a Ghanaian journalist with over 14 years of experience who leads the Environment, Science, Energy, and Agriculture desk at the Ghana News Agency and freelances for SciDev, D+C, and IPS. A communication consultant and Wolfson Press Fellow (Cambridge), his award-winning work covers carbon markets, climate adaptation, air quality, and sustainability.",
+"fit": "You should work with Albert if you need reporting, video, audio, or communications consulting on climate and development in West Africa.",
+"photo": "https://nationalacademies.bynder.com/asset/0c475264-ebdd-462a-a15b-81a1debc9f2d/thumbnail/webimage-Oppong_Ansah_Albert_3"
+},
+{
+"name": "Sapna Parikh",
+"title": "Director of Visual Storytelling, UC San Diego",
+"city": "San Diego",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2024",
+"services": [
+"Video and Film Production",
+"Creative, Cultural & Experiential Projects",
+"Digital & Social Media Content",
+"Audio Production",
+"Journalism & Editorial Writing"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Human Behavior, Society & Social Science"
+],
+"website": "https://sapna.world",
+"linkedin": null,
+"bio": "Sapna Parikh is Director of Visual Storytelling at UC San Diego, where she creates, hosts, and produces research-focused video series such as Brainiacs. She began her career as a television health reporter for CBS New York and later worked as a medical correspondent for FOX and ABC News. She also offers photography, event hosting, and panel moderation.",
+"fit": "You should work with Sapna if you need hosted, broadcast-quality video, photography, event hosting, or panel moderation.",
+"photo": "https://nationalacademies.bynder.com/asset/605bace5-eaf5-4c01-9622-32f7060e9d96/thumbnail/webimage-SC_Org_TOP_Parikh_Sapna_3_Owns_Copyright"
+},
+{
+"name": "Lois Parshley",
+"title": "Investigative Journalist",
+"city": "Homer",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.loisparshley.com",
+"linkedin": "https://linkedin.com/in/loisparshley",
+"bio": "Lois Parshley is an award-winning investigative journalist and former editor at Foreign Policy and Popular Science, with work featured in National Geographic, The Atlantic, The New York Times, and the Best American Science and Nature Writing anthologies. Her reporting on science and geopolitics has been cited in Senate testimony and contributed to proposed national legislation.",
+"fit": "You should work with Lois if you need investigative reporting or narrative features on climate, energy, or science policy.",
+"photo": "https://nationalacademies.bynder.com/asset/5dc6ba64-4649-484b-9876-c6d1d482183b/thumbnail/webimage-Lois-Parshley-Headshot"
+},
+{
+"name": "Vanessa Pirotta",
+"title": "Wildlife Scientist & Science Communicator",
+"city": "Sydney",
+"country": "Australia",
+"category": "Research Scientist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Video and Film Production",
+"Audio Production",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Life Sciences & Biology",
+"Technology, AI & Data Science",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture"
+],
+"website": "https://www.vanessapirotta.com",
+"linkedin": "https://linkedin.com/in/drvanessapirotta/",
+"bio": "Dr. Vanessa Pirotta is one of Australia's most recognised wildlife scientists, known for blending technology with conservation — from whale snot drones to detecting illegal wildlife trafficking. An award-winning author of books for children and adults, she leads community-driven projects like the Tongan Whale Tourism Project and appears regularly on TV, radio, and digital media.",
+"fit": "You should work with Vanessa if you need writing, broadcast media, children's books, or community engagement around wildlife science.",
+"photo": "https://nationalacademies.bynder.com/asset/2449cfd8-5bf2-4a97-aaa2-bed002c9999c/thumbnail/webimage-Pirotta_Vanessa_2"
+},
+{
+"name": "Sofia Quaglia",
+"title": "Freelance Science Journalist",
+"city": "Fully remote / nomadic",
+"country": null,
+"category": "Science Journalist",
+"year": "2023",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Life Sciences & Biology",
+"Health, Medicine & the Brain",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://twitter.com/sofiquaglia",
+"linkedin": null,
+"bio": "Sofia Quaglia is a freelance journalist writing about all things science and how we talk about it, with work regularly appearing in New Scientist, The New York Times, National Geographic, The Guardian, Discover, and BBC. On a mission to visit the entire planet, she has been living on the road since 2021.",
+"fit": "You should work with Sofia if you need articles about your research pitched and written for major international outlets — from anywhere on Earth.",
+"photo": "https://nationalacademies.bynder.com/asset/a634a58a-6430-4df6-90f8-56a9a09e6a49/thumbnail/webimage-Quaglia_Sofia_Headshot_2"
+},
+{
+"name": "Ranjini Raghunath",
+"title": "Communications Officer, Indian Institute of Science",
+"city": "Bengaluru",
+"country": "India",
+"category": "Science Communicator",
+"year": "2024",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Space, Physics & the Universe",
+"Life Sciences & Biology"
+],
+"website": "https://www.linkedin.com/in/ranjiniraghunath/",
+"linkedin": "https://www.linkedin.com/in/ranjiniraghunath/",
+"bio": "Ranjini Raghunath is a science communicator in the Office of Communications at the Indian Institute of Science (IISc) in Bengaluru, where she writes and edits stories for the institute's Connect magazine. Her Schmidt Award recognized, in part, her reporting on digital health and ageing research.",
+"fit": "You should work with Ranjini if you need research papers turned into readable stories, institutional magazine features, or polished press copy.",
+"photo": "https://nationalacademies.bynder.com/asset/63b00e12-32ee-4990-ad80-75202f30c543/thumbnail/webimage-SC_Org_Raghunath_Ranjini_1_Owns_Copyright"
+},
+{
+"name": "Ben Rawlence",
+"title": "Author & Director, Black Mountains College",
+"city": "Brecon, Wales",
+"country": "United Kingdom",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Life Sciences & Biology"
+],
+"website": "https://blackmountainscollege.uk",
+"linkedin": "https://www.linkedin.com/in/ben-rawlence-33488721",
+"bio": "Ben Rawlence is a Wales-based author whose book The Treeline: The Last Forest and the Future of Life on Earth earned a top prize in the inaugural 2022 Schmidt Awards. He is co-founder and director of Black Mountains College, an educational institution focused on climate and ecological change.",
+"fit": "You should work with Ben if you need longform or book-length writing on climate and ecology.",
+"photo": "https://nationalacademies.bynder.com/asset/9d31563e-fb5b-4de2-85ff-b87b07a7fa61/thumbnail/webimage-TOP_Rawlence_Ben"
+},
+{
+"name": "Ben Rein",
+"title": "Neuroscientist & Chief Science Officer, Mind Science Foundation",
+"city": "Buffalo",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2023",
+"services": [
+"Video and Film Production",
+"Audio Production",
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Life Sciences & Biology",
+"Science & the Arts / Culture",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.benrein.com",
+"linkedin": null,
+"bio": "Ben Rein is a neuroscientist who studies the science of social behavior and creates educational videos for more than a million social media followers, debunking misinformation and explaining new research. Trained at Stanford, he is Chief Science Officer of the Mind Science Foundation and an adjunct lecturer at Stanford University.",
+"fit": "You should work with Ben if you need social-media video, audio, or writing that translates peer-reviewed research credibly — including myth-busting for your field.",
+"photo": "https://nationalacademies.bynder.com/asset/4c586e1c-1ff3-4418-aaee-0bce2e262106/thumbnail/webimage-Rein-Benjamin"
+},
+{
+"name": "Fletcher Reveley",
+"title": "Freelance Writer & Senior Contributor, Undark Magazine",
+"city": "Tucson",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2024",
+"services": [
+"Writing and Editing",
+"Audio Production"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Technology, AI & Data Science",
+"Health, Medicine & the Brain"
+],
+"website": "https://www.fletcherreveley.com",
+"linkedin": null,
+"bio": "Fletcher Reveley is a freelance science journalist based in Tucson and a senior contributor at Undark Magazine, with work anthologized in The Best American Science and Nature Writing 2023. He was named to the Knight Science Journalism at MIT fellowship class of 2026-27.",
+"fit": "You should work with Fletcher if you need longform feature writing or narrative audio on complex, contested science.",
+"photo": "https://nationalacademies.bynder.com/asset/b5d292cc-64fa-4cad-a095-050030023263/thumbnail/webimage-SJ_Early_Reveley_Fletcher_1_Owns_Copyright"
+},
+{
+"name": "Zack Savitsky",
+"title": "Science Journalist",
+"city": "Berlin",
+"country": "Germany",
+"category": "Science Journalist",
+"year": "2024",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects",
+"Video and Film Production",
+"Audio Production"
+],
+"topics": [
+"Space, Physics & the Universe",
+"Energy, Materials & Engineering",
+"Technology, AI & Data Science"
+],
+"website": "https://www.zacksavitsky.com",
+"linkedin": null,
+"bio": "Zack Savitsky is a physics-focused science journalist and regular contributor to Science, Quanta Magazine, and Scientific American. A graduate of UC Santa Cruz's Science Communication Program, he has also received the AGU's David Perlman Award for Excellence in Science Writing.",
+"fit": "You should work with Zack if you need physics translated in any format — writing, audio, or video.",
+"photo": "https://nationalacademies.bynder.com/asset/688264fd-fee5-487b-9a7e-0f0fc2591153/thumbnail/webimage-SJ_Early_TOP_Savitsky_Zack_2_Owns_Copyright"
+},
+{
+"name": "Alex Schwartz",
+"title": "Environmental Journalist",
+"city": "New York City",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Life Sciences & Biology",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture"
+],
+"website": "https://twitter.com/alexpshorts",
+"linkedin": null,
+"bio": "Alex Schwartz is an environmental journalist whose reporting — in Popular Science, Atlas Obscura, and Gizmodo, among others — targets the intersection of science and culture. He worked on The New York Times data graphics team tracking COVID-19, then spent two years as a Report for America corps member covering the complex Klamath Basin water conflict, producing a solutions-focused series supported by the MIT Environmental Solutions Initiative.",
+"fit": "You should work with Alex if you need environmental writing that pairs data fluency with community-level storytelling.",
+"photo": "https://nationalacademies.bynder.com/asset/4029f2cd-d743-4f08-8775-48357cc9da65/thumbnail/webimage-Schwartz_Alex"
+},
+{
+"name": "Sarah Scoles",
+"title": "Freelance Science Journalist & Author",
+"city": "Silver Cliff",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2024",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Technology, AI & Data Science",
+"Space, Physics & the Universe",
+"Energy, Materials & Engineering",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.sarahscoles.com",
+"linkedin": null,
+"bio": "Sarah Scoles is a Colorado-based freelance science journalist covering the space industry, national security, and astrophysics, with work in The New York Times, Wired, Scientific American, and Popular Science. She is the author of Making Contact, They Are Already Here, and Countdown: The Blinding Future of Nuclear Weapons.",
+"fit": "You should work with Sarah if you need feature writing, profiles, or editing on space, defense, physics, or technology.",
+"photo": "https://nationalacademies.bynder.com/asset/52c4db02-8a0b-4ddf-8d5f-ba2105f2370f/thumbnail/webimage-SJ_Freelancer_TOP_Scoles_Sarah_1_Owns_Copyright"
+},
+{
+"name": "Daniel Shailer",
+"title": "Reporter, The Shetland Times",
+"city": "London",
+"country": "United Kingdom",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems"
+],
+"website": "https://www.clippings.me/users/danielshailer",
+"linkedin": "https://www.linkedin.com/in/daniel-shailer-05ab53197/",
+"bio": "Daniel Shailer is a reporter for The Shetland Times covering fishing, fish farming, and the marine environment. He previously worked with the Associated Press's Mexico City bureau, and his freelance work has appeared in the Guardian, New Yorker, Scientific American, and Mongabay, earning awards from the Overseas Press Club and Columbia's Graduate School of Journalism.",
+"fit": "You should work with Daniel if you need reported writing on marine, environmental, or climate science — from news items to longform.",
+"photo": "https://nationalacademies.bynder.com/asset/fddbeb3c-91dc-4ec7-a5ee-6df078717649/thumbnail/webimage-Shailer_Daniel_1"
+},
+{
+"name": "J. Marshall Shepherd",
+"title": "Distinguished Professor of Atmospheric Sciences, University of Georgia",
+"city": "Dacula",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems"
+],
+"website": "https://geography.uga.edu/directory/people/james-marshall-shepherd",
+"linkedin": null,
+"bio": "J. Marshall Shepherd is the Georgia Athletic Association Distinguished Professor of Atmospheric Sciences and Geography at the University of Georgia, focusing on urban climate, weather extremes, and climate risk communication. A Forbes senior contributor and podcast host, he was the first UGA faculty member elected to the National Academies of Sciences, Engineering, and the American Academy of Arts and Sciences in the same year.",
+"fit": "You should work with Marshall if you need authoritative op-eds, commentary, or writing on weather and climate.",
+"photo": "https://nationalacademies.bynder.com/asset/fea960bd-fed2-4ad3-b956-2c6db0eb704e/thumbnail/webimage-Dr-Marshall-Shepherd"
+},
+{
+"name": "Fayth Hui Tan",
+"title": "Biologist & Writer",
+"city": "South Pasadena",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2022",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Life Sciences & Biology",
+"Technology, AI & Data Science",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://fxfytan.github.io",
+"linkedin": "https://www.linkedin.com/in/fayth-tan-b791a9137",
+"bio": "Fayth Hui Tan is a biologist and writer who earned a PhD from Caltech studying the development and evolution of animal regeneration. Their creative nonfiction and science history writing examines how the stories of science are constructed and who gets to tell them.",
+"fit": "You should work with Fayth if you need creative nonfiction, essays, or historical framing that gives your research cultural depth.",
+"photo": "https://nationalacademies.bynder.com/asset/f135a6f9-de5b-426e-a48b-96026968188f/thumbnail/webimage-Hui_Tan_Fayth"
+},
+{
+"name": "Kristel Tjandra",
+"title": "Independent Science Journalist",
+"city": "Washington DC",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2022",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Life Sciences & Biology",
+"Health, Medicine & the Brain"
+],
+"website": "https://www.kristeltjandra.com",
+"linkedin": "https://www.linkedin.com/in/kristeltjandra",
+"bio": "Kristel Tjandra is an independent journalist based in the Washington, D.C. area. She grew up in Indonesia, earned a doctorate in medicinal chemistry at the University of New South Wales, completed a postdoc at Stanford, and holds a master's in science communication from UC Santa Cruz.",
+"fit": "You should work with Kristel if you need writing or editing — news, features, or clear explainers of technical work in chemistry, medicine, and the life sciences.",
+"photo": "https://nationalacademies.bynder.com/asset/3db439e1-4769-447e-a60f-fadc68bfd457/thumbnail/webimage-Tjandra_Kristel"
+},
+{
+"name": "Nicola Twilley",
+"title": "Author & Co-host, Gastropod",
+"city": "Los Angeles",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2025",
+"services": [
+"Writing and Editing",
+"Audio Production",
+"Journalism & Editorial Writing",
+"Books, Longform & Author Support",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Life Sciences & Biology",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Health, Medicine & the Brain",
+"Human Behavior, Society & Social Science",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.nicolatwilley.com",
+"linkedin": null,
+"bio": "Nicola Twilley is the author of Frostbite: How Refrigeration Changed Our Food, Our Planet, and Ourselves, winner of the 2025 James Beard Award for Literary Writing. She co-hosts the award-winning Gastropod podcast, which looks at food through the lens of history and science, and is a contributing writer at The New Yorker.",
+"fit": "You should work with Nicola if you need longform writing, book and author support, or podcast storytelling that makes your science irresistibly narrative.",
+"photo": "https://nationalacademies.bynder.com/asset/7dc6b7cb-f619-45f3-8ec3-fe65b5679735/thumbnail/webimage-Twilley_Nicola_3_Does_Not_Own_Grants_Permission"
+},
+{
+"name": "Kristan Uhlenbrock",
+"title": "Executive Director, Institute for Science & Policy",
+"city": "Denver",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2023",
+"services": [
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Technology, AI & Data Science",
+"Energy, Materials & Engineering",
+"Science & the Arts / Culture",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://institute.dmns.org",
+"linkedin": "https://www.linkedin.com/in/kuhlenbrock",
+"bio": "Kristan Uhlenbrock is Executive Director of the Institute for Science & Policy at the Denver Museum of Nature & Science, working to strengthen the role of science in public discourse and policymaking. She has spent two decades at the intersection of science, policy, and communication, including at AGU and the Center for American Progress.",
+"fit": "You should work with Kristan if you need dialogue design, convenings, or experiential programming where science meets contested policy.",
+"photo": "https://nationalacademies.bynder.com/asset/9738d8c5-439e-487d-9462-aef438b4623d/thumbnail/webimage-Kristan_Uhlenbrock_1"
+},
+{
+"name": "Imari Walker-Franklin",
+"title": "Research Chemist, RTI International",
+"city": "Durham",
+"country": "United States",
+"category": "Research Scientist",
+"year": "2024",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems"
+],
+"website": "https://www.imariwalker.com",
+"linkedin": null,
+"bio": "Imari Walker-Franklin is a research chemist at RTI International who studies plastics, microplastics, and their associated chemicals in the environment, and serves on the National Academies' Roundtable on Plastics. She earned her PhD at Duke University, co-authored the MIT Press book Plastics, and runs a YouTube channel on plastic pollution research.",
+"fit": "You should work with Imari if you need writing and editing that translates environmental chemistry and plastics research for general audiences.",
+"photo": "https://nationalacademies.bynder.com/asset/46540e41-ee74-4ac2-8df1-263c94a8ece6/thumbnail/webimage-RS_Early_Walker-Franklin_Imari_2_Owns_Copyright"
+},
+{
+"name": "Brett Walton",
+"title": "Reporter, Circle of Blue",
+"city": "Seattle",
+"country": "United States",
+"category": "Science Journalist",
+"year": "2022",
+"services": [
+"Writing and Editing"
+],
+"topics": [
+"Climate, Environment & Earth Systems",
+"Health, Medicine & the Brain",
+"Energy, Materials & Engineering",
+"Life Sciences & Biology",
+"Science Policy, Governance & Innovation Systems"
+],
+"website": "https://www.circleofblue.org/author/brett/",
+"linkedin": "https://www.linkedin.com/in/brett-walton-b75646b",
+"bio": "Brett Walton is a Seattle-based reporter for Circle of Blue, a nonprofit news organization covering fresh water and its connections to food, energy, policy, and public health. He received a 2022 Schmidt Award for his local and regional water reporting.",
+"fit": "You should work with Brett if you need reporting or writing on water — policy, infrastructure, or public health.",
+"photo": "https://nationalacademies.bynder.com/asset/72b38ac8-e4d1-487b-b78f-5ccee2220b9e/thumbnail/webimage-Walton_Brett"
+},
+{
+"name": "Britt Wray",
+"title": "Author & Researcher, Climate and Mental Health",
+"city": "Copenhagen",
+"country": "Denmark",
+"category": "Research Scientist",
+"year": "2023",
+"services": [
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Science Policy, Governance & Innovation Systems",
+"Human Behavior, Society & Social Science"
+],
+"website": "https://x.com/gen_dread",
+"linkedin": null,
+"bio": "Britt Wray is an author, broadcaster, and researcher working on the mental health dimensions of the climate crisis. She wrote Generation Dread: Finding Purpose in an Age of Climate Crisis and the newsletter Gen Dread, which explores how to stay sane in a changing climate.",
+"fit": "You should work with Britt if you need writing, talks, or creative projects on climate that engage emotions and mental health, not just facts.",
+"photo": "https://nationalacademies.bynder.com/asset/6099b073-06ec-454c-a675-4a7a7acb8955/thumbnail/webimage-Brit_Wray_2"
+},
+{
+"name": "Elijah Yetter-Bowman",
+"title": "Filmmaker & Founder, Ethereal Films",
+"city": "Raleigh",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2023",
+"services": [
+"Video and Film Production",
+"Audio Production",
+"Creative, Cultural & Experiential Projects",
+"Communications Consulting",
+"Writing and Editing",
+"Digital & Social Media Content",
+"Policy & Advocacy Communications"
+],
+"topics": [
+"Health, Medicine & the Brain",
+"Climate, Environment & Earth Systems",
+"Science & the Arts / Culture",
+"Life Sciences & Biology"
+],
+"website": "https://twitter.com/ethereal__films",
+"linkedin": null,
+"bio": "Award-winning storyteller and filmmaker Elijah Yetter-Bowman (they/them) founded Ethereal Films to help solve problems with media, storytelling, and impact campaigns. Their interdisciplinary work on major social issues has been featured in Forbes and the Wall Street Journal, and spans documentary film, public performance, and public engagement.",
+"fit": "You should work with Elijah if you need film or video production, an impact campaign, or event design and interactive engagement built around your research.",
+"photo": "https://nationalacademies.bynder.com/asset/0bcde0bc-204c-4d1e-9885-da0f8120313c/thumbnail/webimage-Elijah_Yetter-Bowman_1"
+},
+{
+"name": "Emily Zhang",
+"title": "YouTube Writer & Director",
+"city": "New York City",
+"country": "United States",
+"category": "Science Communicator",
+"year": "2025",
+"services": [
+"Video and Film Production",
+"Writing and Editing",
+"Creative, Cultural & Experiential Projects"
+],
+"topics": [
+"Space, Physics & the Universe",
+"Science & the Arts / Culture"
+],
+"website": "https://emilylinzhang.com",
+"linkedin": "https://linkedin.com/in/emilylinzhang",
+"bio": "Emily Zhang is a writer and director specializing in science YouTube whose videos — from the physics of bowling to the invention of the blue LED — have received over 250 million views. An astrophysics graduate of Columbia University, she was one of Veritasium's first employees, creating some of the channel's most successful videos from 2021 to 2024.",
+"fit": "You should work with Emily if you need a science YouTube video written and directed for massive reach.",
+"photo": "https://nationalacademies.bynder.com/asset/951b3ee9-d168-4e7c-8091-db48e655651f/thumbnail/webimage-Zhang_Emily_1"
+}
+];
+
+const CAT_COLORS={"Research Scientist":"#74539C","Science Journalist":"#4E8ABC","Science Communicator":"#53B2B5"};
+const AVATAR_COLORS=["#53B2B5","#4E8ABC","#74539C","#76B559","#C27279"];
+function initials(n){return n.split(/\s+/).filter(w=>/^[A-Za-zÀ-ÿ]/.test(w)).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0}return Math.abs(h);}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+const grid=document.getElementById('grid');
+const search=document.getElementById('search');
+const fService=document.getElementById('f-service');
+const fTopic=document.getElementById('f-topic');
+const fCountry=document.getElementById('f-country');
+const fCategory=document.getElementById('f-category');
+const clearBtn=document.getElementById('clear-btn');
+
+function uniqueSorted(arr){return [...new Set(arr)].sort((a,b)=>a.localeCompare(b));}
+function fill(sel,values){values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});}
+fill(fService,uniqueSorted(PEOPLE.flatMap(p=>p.services)));
+fill(fTopic,uniqueSorted(PEOPLE.flatMap(p=>p.topics)));
+fill(fCountry,uniqueSorted(PEOPLE.flatMap(p=>p.country?p.country.split(' / '):[])));
+fill(fCategory,uniqueSorted(PEOPLE.map(p=>p.category)));
+document.getElementById('header-count').textContent=PEOPLE.length+' collaborators · '+uniqueSorted(PEOPLE.flatMap(p=>p.country?p.country.split(' / '):[])).length+' countries · '+uniqueSorted(PEOPLE.flatMap(p=>p.services)).length+' services';
+
+function avatarHTML(p){
+  const color=AVATAR_COLORS[hashCode(p.name)%AVATAR_COLORS.length];
+  if(!p.photo) return '<div class="avatar-wrap"><div class="avatar-fallback" style="background:'+color+'">'+initials(p.name)+'</div></div>';
+  return '<div class="avatar-wrap"><img src="'+esc(p.photo)+'" alt="'+esc(p.name)+'" loading="lazy" data-color="'+color+'" data-initials="'+initials(p.name)+'" onerror="imgFail(this)"></div>';
+}
+function imgFail(img){
+  const d=document.createElement('div');
+  d.className='avatar-fallback';
+  d.style.background=img.dataset.color;
+  d.textContent=img.dataset.initials;
+  img.replaceWith(d);
+}
+
+function card(p,i){
+  const cat=CAT_COLORS[p.category]||'#53B2B5';
+  const loc=[p.city,p.country].filter(Boolean).join(', ');
+  const links=[];
+  if(p.website) links.push('<a href="'+esc(p.website)+'" target="_blank" rel="noopener">Website</a>');
+  if(p.linkedin && p.linkedin!==p.website) links.push('<a href="'+esc(p.linkedin)+'" target="_blank" rel="noopener">LinkedIn</a>');
+  const award=(p.year?esc(p.year)+' Schmidt Award':'')+(p.year&&p.category?'<br>':'')+'<span class="dot"></span>'+esc(p.category);
+  const longBio=p.bio.length>240;
+  return '<article class="card" style="--cat:'+cat+'">'
+    +'<div class="card-top">'+avatarHTML(p)
+    +'<div><h2>'+esc(p.name)+'</h2><div class="title">'+esc(p.title)+'</div><div class="loc">'+esc(loc)+'</div></div></div>'
+    +'<div class="fit">'+esc(p.fit)+'</div>'
+    +'<div><p class="bio'+(longBio?' clamped':'')+'" id="bio-'+i+'">'+esc(p.bio)+'</p>'
+    +(longBio?'<button class="more-btn" onclick="toggleBio('+i+',this)">Read more</button>':'')+'</div>'
+    +'<div class="chips">'+p.services.map(s=>'<span class="chip svc">'+esc(s)+'</span>').join('')
+    +p.topics.map(t=>'<span class="chip topic">'+esc(t)+'</span>').join('')+'</div>'
+    +'<div class="card-foot"><div class="links">'+links.join('')+'</div><div class="award">'+award+'</div></div>'
+    +'</article>';
+}
+
+function toggleBio(i,btn){
+  const el=document.getElementById('bio-'+i);
+  el.classList.toggle('clamped');
+  btn.textContent=el.classList.contains('clamped')?'Read more':'Show less';
+}
+
+function render(){
+  const q=search.value.trim().toLowerCase();
+  const sv=fService.value, tp=fTopic.value, co=fCountry.value, ca=fCategory.value;
+  const results=PEOPLE.map((p,i)=>({p,i})).filter(({p})=>{
+    if(sv && !p.services.includes(sv)) return false;
+    if(tp && !p.topics.includes(tp)) return false;
+    if(co && !(p.country||'').split(' / ').includes(co)) return false;
+    if(ca && p.category!==ca) return false;
+    if(q){
+      const hay=[p.name,p.title,p.city,p.country,p.bio,p.fit,p.services.join(' '),p.topics.join(' ')].join(' ').toLowerCase();
+      if(!q.split(/\s+/).every(w=>hay.includes(w))) return false;
+    }
+    return true;
+  });
+  grid.innerHTML=results.length
+    ? results.map(({p,i})=>card(p,i)).join('')
+    : '<div class="no-results">No collaborators match those filters — try broadening your search.</div>';
+  document.getElementById('result-count').textContent='Showing '+results.length+' of '+PEOPLE.length+' collaborators';
+  clearBtn.style.display=(q||sv||tp||co||ca)?'inline':'none';
+}
+
+[search,fService,fTopic,fCountry,fCategory].forEach(el=>el.addEventListener('input',render));
+clearBtn.addEventListener('click',()=>{search.value='';[fService,fTopic,fCountry,fCategory].forEach(s=>s.value='');render();});
+render();
+</script>
+</body>
+</html>
