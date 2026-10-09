@@ -374,7 +374,7 @@ const PEOPLE = [
 "Science Policy, Governance & Innovation Systems",
 "Health, Medicine & the Brain"
 ],
-"website": null,
+"website": "https://twitter.com/YCabreraOC",
 "linkedin": null,
 "bio": "Yvette Cabrera is an independent investigative journalist based in Santa Barbara, covering climate and environmental justice and science policy. She is a 2026–2027 Nova Institute for Health Media Fellow.",
 "fit": "You should work with Yvette if you need investigative reporting on environmental justice and science policy.",
@@ -2042,7 +2042,8 @@ function card(p,i){
   const cat=CAT_COLORS[p.jobs[0]]||'var(--c1)';
   const loc=[p.city,p.country].filter(Boolean).join(', ');
   const links=[];
-  if(p.website) links.push('<a href="'+esc(p.website)+'" target="_blank" rel="noopener">Website</a>');
+  const linkLabel=u=>/\/\/(www\.)?(twitter|x)\.com\//.test(u)?'X':/tiktok\.com/.test(u)?'TikTok':/youtube\.com/.test(u)?'YouTube':/linkedin\.com/.test(u)?'LinkedIn':'Website';
+  if(p.website) links.push('<a href="'+esc(p.website)+'" target="_blank" rel="noopener">'+linkLabel(p.website)+'</a>');
   if(p.linkedin && p.linkedin!==p.website) links.push('<a href="'+esc(p.linkedin)+'" target="_blank" rel="noopener">LinkedIn</a>');
   const award=(p.year?esc(p.year)+' Schmidt Award':'')+(p.year&&p.jobs.length?'<br>':'')+(p.jobs.length?'<span class="dot"></span>'+esc(p.jobs.join(' · ')):'');
   const longBio=p.bio.length>240;
