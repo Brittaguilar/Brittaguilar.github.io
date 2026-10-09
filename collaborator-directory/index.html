@@ -83,6 +83,8 @@
   header.hero h1{font-size:clamp(34px,5.2vw,56px);max-width:850px}
   header.hero h1 .grad{color:#8FE6E6;font-weight:700}
   .hero .lede{font-size:clamp(16px,1.3vw,18px)}
+  .hero .lede a{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+  .hero .lede a:hover{color:#8FE6E6}
   header.hero .count-line{margin-top:22px;font-size:12px;font-weight:700;color:#8FE6E6;text-transform:uppercase;letter-spacing:.14em}
   .controls{max-width:1200px;margin:0 auto;padding:24px 24px 8px;position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
   .search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -141,7 +143,7 @@
   <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme">Dark</button>
   <div class="hero-inner">
   <h1>Find your <span class="grad">science communication</span> collaborator</h1>
-  <p class="lede">Freelance writers, filmmakers, podcasters, artists, and strategists ready to help scientists share their work with the world. Every collaborator here is a winner of the Eric &amp; Wendy Schmidt Awards for Excellence in Science Communications, presented by the National Academies of Sciences, Engineering, and Medicine with Schmidt Sciences.</p>
+  <p class="lede">Communicators and strategists ready to help scientists share their work with the world. Every collaborator here is a winner of the <a href="https://www.nationalacademies.org/programs/NAE-NAM-22-P-489" target="_blank" rel="noopener">Eric &amp; Wendy Schmidt Awards for Excellence in Science Communications</a>.</p>
   <div class="count-line" id="header-count"></div>
   </div>
 </header>
@@ -173,11 +175,11 @@
 const PEOPLE = [
 {
 "name": "J.D. Allen",
-"title": "Journalism Lecturer & Climate Communication Strategist, Stony Brook University",
+"title": "Managing Editor, WSHU Public Radio; Adjunct Instructor, Stony Brook University",
 "city": "Stony Brook",
 "country": "United States",
 "category": "Science Journalist",
-"jobs": ["Professor & Educator", "Science Communicator"],
+"jobs": ["Journalist & Editor", "Professor & Educator"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -195,7 +197,7 @@ const PEOPLE = [
 ],
 "website": "https://www.linkedin.com/in/jdreports",
 "linkedin": "https://www.linkedin.com/in/jdreports",
-"bio": "J.D. Allen is a lecturer in journalism at Stony Brook University, affiliated faculty at the Alan Alda Center for Communicating Science, and a climate communication strategist. A public radio veteran, he is a podcaster who also enjoys magazine writing and short film.",
+"bio": "J.D. Allen is managing editor of WSHU Public Radio and an adjunct instructor in the School of Communication and Journalism at Stony Brook University; he has also taught at Quinnipiac University and Suffolk County Community College. His reporting covers climate and the environment alongside education, and he is a podcaster with an interest in magazine writing and short film.",
 "fit": "You should work with J.D. if you need podcast production, communications strategy, or multimedia climate storytelling — he offers nearly every format.",
 "photo": "https://nationalacademies.bynder.com/asset/51c33928-5e25-44db-bebe-209c831b0092/thumbnail/webimage-Allen_JD"
 },
@@ -210,7 +212,9 @@ const PEOPLE = [
 "services": [
 "Creative, Cultural & Experiential Projects",
 "Audio Production",
-"Writing and Editing"
+"Writing and Editing",
+"Journalism & Editorial Writing",
+"Podcasting"
 ],
 "topics": [
 "Health, Medicine & the Brain",
@@ -256,7 +260,10 @@ const PEOPLE = [
 "year": "2025",
 "services": [
 "Video and Film Production",
-"Creative, Cultural & Experiential Projects"
+"Creative, Cultural & Experiential Projects",
+"Writing and Editing",
+"On-Camera Speaking, Interview, Discussions",
+"Reports, Research Synthesis & Knowledge Translation"
 ],
 "topics": [
 "Science & the Arts / Culture"
@@ -269,7 +276,7 @@ const PEOPLE = [
 },
 {
 "name": "Joel Bervell",
-"title": "Physician & \"Medical Mythbuster\"",
+"title": "Internal Medicine Resident Physician",
 "city": "Tacoma",
 "country": "United States",
 "category": "Science Communicator",
@@ -287,7 +294,7 @@ const PEOPLE = [
 ],
 "website": "https://joelbervell.com",
 "linkedin": null,
-"bio": "Joel Bervell is a physician and science communicator known as the \"Medical Mythbuster,\" using short-form social video to debunk medical myths and expose racial disparities in healthcare. He hosts The Dose podcast with the Commonwealth Fund and has been named a TIME100 Creator and Peabody Award recipient.",
+"bio": "Joel Bervell is an internal medicine resident physician at Virginia Mason Franciscan Health – St. Joseph Medical Center in Tacoma, Washington. He earned his MD from Washington State University's Elson S. Floyd College of Medicine in 2025, and is known online as the \"Medical Mythbuster\" for short-form videos on racial bias and disparities in medicine.",
 "fit": "You should work with Joel if you need short-form health video with reach in the millions and an equity lens.",
 "photo": "https://nationalacademies.bynder.com/asset/0e0551f0-33be-4297-a616-2259b845836f/thumbnail/webimage-SC_Ind_Bervell_Joel_3_Owns_Copyright"
 },
@@ -340,7 +347,7 @@ const PEOPLE = [
 },
 {
 "name": "Andrea Obaid Carrion",
-"title": "Science Journalist & TV/Radio Host",
+"title": "Journalist & Host, Tu Nuevo ADN (Radio ADN)",
 "city": "Santiago",
 "country": "Chile",
 "category": "Science Journalist",
@@ -361,17 +368,17 @@ const PEOPLE = [
 ],
 "website": "https://x.com/AndreaObaid",
 "linkedin": null,
-"bio": "Andrea Obaid Carrión is a Chilean science journalist and TV/radio host known for series including Tecnociencia and Cocina Lab on Chilean national television, and president of the Chilean Association of Journalists and Professionals for Science Communication (ACHIPEC). In 2023 she became the first South American to win a Schmidt Award for Excellence in Science Communications.",
+"bio": "Andrea Obaid Carrión is a journalist based in Santiago, Chile, who hosts the program Tu Nuevo ADN on Radio ADN and directs her own production house, Neurona Group, which made the science series Cocina Lab and Chilenautas. She is the author of the Tecnociencia: 30 rutas de turismo científico en Chile guides (2016, 2018) and, with Alejandro Roth, of Cocina Lab (Planeta, 2023).",
 "fit": "You should work with Andrea if you need Spanish-language science TV, radio, podcasts, or multimedia campaigns.",
 "photo": "https://nationalacademies.bynder.com/asset/96140292-7206-4e3b-b7ee-e89de1c6ea25/thumbnail/webimage-Andrea_Obaid_1"
 },
 {
 "name": "Jordana Cepelewicz",
-"title": "Staff Writer, Quanta Magazine",
+"title": "Math Editor, Quanta Magazine",
 "city": "New York City",
 "country": "United States",
 "category": "Science Journalist",
-"jobs": ["Journalist & Editor", "Writer & Author"],
+"jobs": ["Journalist & Editor"],
 "year": "2023",
 "services": [
 "Writing and Editing"
@@ -386,7 +393,7 @@ const PEOPLE = [
 ],
 "website": "https://www.quantamagazine.org/authors/jordana-cepelewicz/",
 "linkedin": null,
-"bio": "Jordana Cepelewicz is a science journalist at Quanta Magazine, where she covered biology before turning to mathematics in 2022; her writing has also appeared in Scientific American and Nautilus. Her Schmidt Award recognized, in part, her profiles of Fields Medalist June Huh and math prodigy Daniel Larsen.",
+"bio": "Jordana Cepelewicz is the Math Editor at Quanta Magazine, having previously covered mathematics and biology there as a senior writer. She is based in New York City, and her Schmidt Award recognized her mathematics writing for Quanta, including “Teenager Solves Stubborn Riddle About Prime Number Look-Alikes.”",
 "fit": "You should work with Jordana if you need writing or editing that makes mathematics and fundamental science elegant and clear.",
 "photo": "https://nationalacademies.bynder.com/asset/e87dd41e-3907-47fa-a5b5-4a096931961d/thumbnail/webimage-Jordana_Cepelewicz_2"
 },
@@ -401,7 +408,9 @@ const PEOPLE = [
 "services": [
 "Video and Film Production",
 "Audio Production",
-"Communications Consulting"
+"Communications Consulting",
+"Digital & Social Media Content",
+"Podcasting"
 ],
 "topics": [
 "Life Sciences & Biology",
@@ -416,7 +425,7 @@ const PEOPLE = [
 },
 {
 "name": "Vaishnavi Chandrashekhar",
-"title": "Science & Environment Journalist",
+"title": "Freelance Science & Environment Journalist",
 "city": "Mumbai",
 "country": "India",
 "category": "Science Journalist",
@@ -433,8 +442,8 @@ const PEOPLE = [
 ],
 "website": "https://muckrack.com/winterapples",
 "linkedin": "https://www.linkedin.com/in/vaishnavi-chandrashekhar-35016620",
-"bio": "Vaishnavi Chandrashekhar is a Mumbai-based science and environment journalist covering climate change, urbanization, and development in India, and a contributing correspondent for Science. A former reporter and editor at The Christian Science Monitor and The Times of India, her work has appeared in The Guardian, The Atlantic, Hakai, and Mongabay.",
-"fit": "You should work with Vaishnavi if you need reported writing on climate, environment, and development in India.",
+"bio": "Vaishnavi Chandrashekhar is a freelance journalist based in Mumbai, covering climate, health, life sciences, and science policy across South Asia. She also serves as Consulting Editor at The Times of India and contributes to Science magazine.",
+"fit": "You should work with Vaishnavi if you need reported writing on climate, environment, health, and science policy in South Asia.",
 "photo": "https://nationalacademies.bynder.com/asset/6d93cf88-9ce5-4ea1-a94b-5b55462766a2/thumbnail/webimage-Vaishnavi_Chandrashekhar_2"
 },
 {
@@ -447,7 +456,10 @@ const PEOPLE = [
 "year": "2024",
 "services": [
 "Video and Film Production",
-"Writing and Editing"
+"Writing and Editing",
+"On-Camera Speaking, Interview, Discussions",
+"Digital & Social Media Content",
+"Communications Consulting"
 ],
 "topics": [
 "Health, Medicine & the Brain",
@@ -518,7 +530,10 @@ const PEOPLE = [
 "year": "2022",
 "services": [
 "Writing and Editing",
-"Audio Production"
+"Audio Production",
+"On-Camera Speaking, Interview, Discussions",
+"Policy & Advocacy Communications",
+"Journalism & Editorial Writing"
 ],
 "topics": [
 "Health, Medicine & the Brain",
@@ -533,17 +548,19 @@ const PEOPLE = [
 },
 {
 "name": "Lindsay Ejoh",
-"title": "Neuroscience PhD Candidate, University of Pennsylvania",
-"city": "Philadelphia",
+"title": "Postdoctoral Researcher, University of Texas at Dallas",
+"city": "Dallas",
 "country": "United States",
 "category": "Research Scientist",
 "jobs": ["Scientist & Engineer"],
 "year": "2025",
 "services": [
 "Creative, Cultural & Experiential Projects",
-"Writing and Editing",
 "Video and Film Production",
-"Audio Production"
+"Data Visualizations",
+"Digital & Social Media Content",
+"Communications Consulting",
+"On-Camera Speaking, Interview, Discussions"
 ],
 "topics": [
 "Life Sciences & Biology",
@@ -552,7 +569,7 @@ const PEOPLE = [
 ],
 "website": "https://www.lindsayejoh.com",
 "linkedin": "https://www.linkedin.com/in/lindsay-ejoh-932a66149/",
-"bio": "Lindsay Ejoh is a final-year neuroscience PhD candidate at the University of Pennsylvania, originally from Bamenda, Cameroon, whose research investigates brain circuits underlying pain and pain relief. Alongside research, she is passionate about STEM outreach — communicating brain science to the public and expanding opportunities for underrepresented minorities in STEM.",
+"bio": "Lindsay Ejoh is a postdoctoral researcher at the University of Texas at Dallas, where her research investigates brain circuits underlying pain, with a focus on gastrointestinal and other internal pain disorders. Alongside research, she is active in STEM outreach, communicating brain science to the public and working to increase opportunities for underrepresented minorities in STEM. She has a PhD in neuroscience from the University of Pennsylvania.",
 "fit": "You should work with Lindsay if you need outreach content — video, audio, writing, or events — that brings neuroscience to audiences often left out of science.",
 "photo": "https://nationalacademies.bynder.com/asset/fd894b6f-67b5-4d34-a562-434b0d62e145/thumbnail/webimage-Ejoh_Lindsay_2"
 },
@@ -604,14 +621,15 @@ const PEOPLE = [
 },
 {
 "name": "Grace Huckins",
-"title": "Science Journalist",
+"title": "AI Reporter, MIT Technology Review",
 "city": "Bay Area",
 "country": "United States",
 "category": "Research Scientist",
 "jobs": ["Journalist & Editor"],
 "year": "2024",
 "services": [
-"Writing and Editing"
+"Writing and Editing",
+"On-Camera Speaking, Interview, Discussions"
 ],
 "topics": [
 "Technology, AI & Data Science",
@@ -622,13 +640,13 @@ const PEOPLE = [
 ],
 "website": "https://www.linkedin.com/in/grace-huckins-142a3ba6/",
 "linkedin": "https://www.linkedin.com/in/grace-huckins-142a3ba6/",
-"bio": "Grace Huckins is a science journalist covering neuroscience and artificial intelligence, with work in MIT Technology Review, Slate, and The Transmitter. Huckins earned a PhD in neuroscience from Stanford University and won the 2024/25 Nine Dots Prize for an essay on data and AI in science.",
+"bio": "Grace Huckins is an AI reporter at MIT Technology Review, based in the Bay Area, writing on artificial intelligence, health and medicine, and the life sciences. They won the 2024/25 Nine Dots Prize for The End of Understanding, forthcoming from Cambridge University Press, and have a PhD in neuroscience from Stanford University.",
 "fit": "You should work with Grace if you need writing or editing about the brain or AI that is rigorous without the jargon.",
 "photo": "https://nationalacademies.bynder.com/asset/4c3501aa-95f8-4000-b75d-62646dbf0d9e/thumbnail/webimage-RS_Grad_TOP_Huckins_Grace_Owns_Copyright"
 },
 {
 "name": "Nia Imara",
-"title": "Astrophysicist, Artist & Professor, UC Santa Cruz",
+"title": "Astrophysicist, Artist & Assistant Professor, UC Santa Cruz",
 "city": "Oakland",
 "country": "United States",
 "category": "Research Scientist",
@@ -644,7 +662,7 @@ const PEOPLE = [
 ],
 "website": "https://www.niaimara.com",
 "linkedin": null,
-"bio": "Dr. Nia Imara is an artist, astrophysicist, and author whose 2025 book Painting the Cosmos explores how art and science intersect to reveal the secrets of the universe. A professor of astronomy at UC Santa Cruz researching star formation, she is also founder of Onaketa, a nonprofit providing free STEM tutoring for Black and brown youth.",
+"bio": "Dr. Nia Imara is an artist, astrophysicist, and author whose 2025 book Painting the Cosmos explores how art and science intersect to reveal the secrets of the universe. An assistant professor of astronomy and astrophysics at UC Santa Cruz researching how stars are born, she is also founder of Onaketa, a nonprofit providing free STEM tutoring for Black and brown youth.",
 "fit": "You should work with Nia if you need original artwork, writing, or an art-science collaboration grounded in astrophysics.",
 "photo": "https://nationalacademies.bynder.com/asset/d25459b6-f58f-4409-a69a-50dd421b24c7/thumbnail/webimage-Imara_Nia_1"
 },
@@ -715,7 +733,7 @@ const PEOPLE = [
 ],
 "website": "https://neillewisjr.com",
 "linkedin": "https://www.linkedin.com/in/neil-lewis-jr-551b1b18",
-"bio": "Neil Lewis Jr. is a behavioral scientist and associate professor of communication at Cornell University and Weill Cornell Medicine, studying the motivational, behavioral, and equity implications of social interventions and policies. He co-founded the Cornell Action Research Collaborative, working with policymakers to reduce disparities in education, health, and the environment.",
+"bio": "Neil Lewis Jr. is an associate professor of communication at Cornell University, cross-appointed in Psychology and the Brooks School of Public Policy, and the Nancy and Peter Meinig Family Investigator in the Life Sciences. His research focuses on motivation, identity, and social disparities in education and health, and he also works as a science communicator and writer. He co-founded and co-directs Cornell's Action Research Collaborative and is a co-author of the textbook Social Psychology (Aronson, 12th edition).",
 "fit": "You should work with Neil if you need evidence-based communication strategy or writing that measurably reaches the communities you want to serve.",
 "photo": "https://nationalacademies.bynder.com/asset/818bdc6f-a148-49f8-a7da-585fce30927f/thumbnail/webimage-Neil_Lewis_Jr_2"
 },
@@ -745,14 +763,17 @@ const PEOPLE = [
 {
 "name": "Jessica Kendall-Bar",
 "title": "Marine Scientist & Visual Storyteller",
-"city": "San Diego",
+"city": "Monterey",
 "country": "United States",
 "category": "Research Scientist",
 "jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
 "year": "2022",
 "services": [
 "Video and Film Production",
-"Creative, Cultural & Experiential Projects"
+"Creative, Cultural & Experiential Projects",
+"Data Visualizations",
+"Art",
+"Illustration"
 ],
 "topics": [
 "Life Sciences & Biology",
@@ -791,11 +812,11 @@ const PEOPLE = [
 },
 {
 "name": "Trent Knoss",
-"title": "Science Writer & Communications Director",
+"title": "Senior Director of Communications & Development, Nova Institute for Health",
 "city": "Philadelphia",
 "country": "United States",
 "category": "Science Journalist",
-"jobs": ["Writer & Author", "Science Communicator"],
+"jobs": ["Science Communicator"],
 "year": "2022",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -809,7 +830,7 @@ const PEOPLE = [
 ],
 "website": "https://www.linkedin.com/in/trent-knoss",
 "linkedin": "https://www.linkedin.com/in/trent-knoss",
-"bio": "Trent Knoss is a science writer and communications leader who has served as director of communications for The Nature Conservancy in Pennsylvania and Delaware. He previously held senior editorial roles at the Institute for Science & Policy, where he co-produced a documentary podcast.",
+"bio": "Trent Knoss is Senior Director of Communications and Development at the Nova Institute for Health in Philadelphia, working across health and medicine, climate and environmental issues, and science policy communications. He previously worked at the Nature Conservancy in Pennsylvania and Delaware, and his Schmidt Award recognized writing and executive producing Coal at Sunset, an eight-part podcast series on a Colorado town in transition.",
 "fit": "You should work with Trent if you need communications strategy, editorial writing, or podcast production for a science-driven organization.",
 "photo": "https://nationalacademies.bynder.com/asset/10bdf45a-78f2-40a0-b245-00ed3332f111/thumbnail/webimage-Version-2"
 },
@@ -824,7 +845,8 @@ const PEOPLE = [
 "services": [
 "Creative, Cultural & Experiential Projects",
 "Art",
-"Data Visualizations"
+"Data Visualizations",
+"Illustration"
 ],
 "topics": [
 "Space, Physics & the Universe"
@@ -846,7 +868,14 @@ const PEOPLE = [
 "services": [
 "Writing and Editing",
 "Video and Film Production",
-"Creative, Cultural & Experiential Projects"
+"Creative, Cultural & Experiential Projects",
+"Audio Production",
+"Data Visualizations",
+"On-Camera Speaking, Interview, Discussions",
+"Journalism & Editorial Writing",
+"Policy & Advocacy Communications",
+"Books, Longform & Author Support",
+"Reports, Research Synthesis & Knowledge Translation"
 ],
 "topics": [
 "Life Sciences & Biology",
@@ -862,7 +891,7 @@ const PEOPLE = [
 },
 {
 "name": "Alec Luhn",
-"title": "Climate Journalist",
+"title": "Environment Reporter, New Scientist",
 "city": "Milwaukee",
 "country": "United States",
 "category": "Science Journalist",
@@ -879,7 +908,7 @@ const PEOPLE = [
 ],
 "website": "https://alecluhn.com",
 "linkedin": "https://www.linkedin.com/in/alecluhn/",
-"bio": "Alec Luhn is an award-winning climate journalist whose reporting has appeared in The Atlantic, The Guardian, National Geographic, Scientific American, TIME, and VICE News. His Scientific American feature \"Why Are Alaska's Rivers Turning Orange?\" won an AAAS Kavli Science Journalism Award.",
+"bio": "Alec Luhn is an environment reporter at New Scientist, covering climate, conflict, and migration, and also works as a freelance journalist. He has reported for The Atlantic, The Guardian, National Geographic, Scientific American, TIME, and VICE News, was a 2024 Pulitzer Center Ocean Reporting Fellow for Europe, and has twice been nominated for an Emmy.",
 "fit": "You should work with Alec if you need ambitious climate feature writing or creative field-reported projects.",
 "photo": "https://nationalacademies.bynder.com/asset/da819b52-936b-41a0-94bc-ab9eec6cfed7/thumbnail/webimage-SJ_Freelancer_Luhn_Alec_1_Owns_Copyright"
 },
@@ -906,11 +935,11 @@ const PEOPLE = [
 },
 {
 "name": "Patrick Mayoyo",
-"title": "Investigative Journalist & Founder, Eyewitness Media Group",
+"title": "Editorial Director, Eyewitness Africa",
 "city": "Nairobi",
 "country": "Kenya",
 "category": "Science Journalist",
-"jobs": ["Journalist & Editor", "Founder & Executive"],
+"jobs": ["Journalist & Editor"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -923,7 +952,7 @@ const PEOPLE = [
 ],
 "website": "https://twitter.com/pmayoyo",
 "linkedin": "https://www.linkedin.com/in/patrick-mayoyo-16482844",
-"bio": "Patrick Mayoyo is a Kenyan investigative journalist and founder of Eyewitness Media Group, focused on environment, climate change, and solutions-oriented reporting in East Africa; he is a former deputy news editor at Kenya's Daily Nation. His honors include UNCA global prizes for climate coverage and the European Commission's Lorenzo Natali Media Prize.",
+"bio": "Patrick Mayoyo is editorial director at Eyewitness Africa, an investigative media outlet based in Nairobi, Kenya. His reporting covers energy, the environment, and the life sciences, including stories on Kenyan villagers using carbon credits and Indigenous knowledge against climate impacts and on a village turning to mushroom farming as a climate response.",
 "fit": "You should work with Patrick if you need solutions-focused environmental reporting or video from East Africa.",
 "photo": "https://nationalacademies.bynder.com/asset/8eb918c1-84c4-439b-b9a8-7b1acc3aeafa/thumbnail/webimage-Mayoyo_Patrick"
 },
@@ -953,11 +982,11 @@ const PEOPLE = [
 },
 {
 "name": "Rudy Molinek",
-"title": "Geoscientist & Audio Producer",
+"title": "Science Writer, Morgridge Institute for Research",
 "city": "Madison",
 "country": "United States",
 "category": "Research Scientist",
-"jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
+"jobs": ["Writer & Author", "Producer, Filmmaker & Host"],
 "year": "2024",
 "services": [
 "Writing and Editing",
@@ -969,7 +998,7 @@ const PEOPLE = [
 ],
 "website": "https://www.rudymolinek.com",
 "linkedin": null,
-"bio": "Rudy Molinek is a geoscience PhD candidate at the University of Wisconsin-Madison and creator of the podcast Under Our Feet, which explores the geologic forces shaping the world around us. He won his Schmidt Award for audio reporting on PFAS groundwater contamination in northern Wisconsin, and has written for Smithsonian Magazine as a AAAS Mass Media Fellow.",
+"bio": "Rudy Molinek is a science writer at the Morgridge Institute for Research and recently completed his PhD in geoscience at the University of Wisconsin–Madison, where he studied the history of Earth's climate and sea level. He hosts, produces, and edits the podcast Under Our Feet through his own imprint, Meandering Media, and was named a Geological Society of America Science Communication Fellow for 2025–2026.",
 "fit": "You should work with Rudy if you need narrative podcast episodes or accessible writing about earth and environmental science.",
 "photo": "https://nationalacademies.bynder.com/asset/1115ae41-5107-44f8-8a20-9c2a3bb4e41c/thumbnail/webimage-RS_Grad_Molinek_Rudy_3_Owns_Copyright"
 },
@@ -1020,7 +1049,7 @@ const PEOPLE = [
 },
 {
 "name": "Brandon Ogbunu",
-"title": "Professor of Ecology & Evolutionary Biology, Yale",
+"title": "Associate Professor of Ecology & Evolutionary Biology, Yale",
 "city": "New Haven",
 "country": "United States",
 "category": "Research Scientist",
@@ -1041,7 +1070,7 @@ const PEOPLE = [
 ],
 "website": "https://eeb.yale.edu/people/faculty/c-brandon-ogbunu",
 "linkedin": null,
-"bio": "C. Brandon Ogbunu is a computational biologist and professor in the Department of Ecology and Evolutionary Biology at Yale University, where his research spans evolutionary biology, population genetics, and epidemiology. He is an active science writer, contributing to Wired, Scientific American, and Undark.",
+"bio": "C. Brandon Ogbunu is an Associate Professor with tenure in the Department of Ecology & Evolutionary Biology at Yale University, with a secondary appointment at the Yale School of Public Health. His research sits at the intersection of evolutionary biology, genetics, and epidemiology, and he writes for The Atlantic on the intersections of public health and culture.",
 "fit": "You should work with Brandon if you need essays, talks, audio, or video connecting your research to culture and society.",
 "photo": "https://nationalacademies.bynder.com/asset/a0ad89f3-1f7d-48bc-b2c8-3f7deb0f9320/thumbnail/webimage-RS_Later_Ogbunu_Brandon_1_Stephanie_Seguino"
 },
@@ -1197,14 +1226,19 @@ const PEOPLE = [
 },
 {
 "name": "Ben Rawlence",
-"title": "Author & Director, Black Mountains College",
+"title": "Author & CEO, Black Mountains College",
 "city": "Brecon, Wales",
 "country": "United Kingdom",
 "category": "Science Journalist",
 "jobs": ["Writer & Author", "Founder & Executive"],
 "year": "2022",
 "services": [
-"Writing and Editing"
+"Writing and Editing",
+"On-Camera Speaking, Interview, Discussions",
+"Journalism & Editorial Writing",
+"Communications Consulting",
+"Policy & Advocacy Communications",
+"Books, Longform & Author Support"
 ],
 "topics": [
 "Climate, Environment & Earth Systems",
@@ -1212,7 +1246,7 @@ const PEOPLE = [
 ],
 "website": "https://blackmountainscollege.uk",
 "linkedin": "https://www.linkedin.com/in/ben-rawlence-33488721",
-"bio": "Ben Rawlence is a Wales-based author whose book The Treeline: The Last Forest and the Future of Life on Earth earned a top prize in the inaugural 2022 Schmidt Awards. He is co-founder and director of Black Mountains College, an educational institution focused on climate and ecological change.",
+"bio": "Ben Rawlence is an award-winning writer and science communicator on climate, nature, and conflict, and co-founder and CEO of Black Mountains College. He is the author of The Treeline (2022), City of Thorns (2016), Radio Congo (2012), and Think Like a Forest (2026), and received a Schmidt Award in 2022 for The Treeline.",
 "fit": "You should work with Ben if you need longform or book-length writing on climate and ecology.",
 "photo": "https://nationalacademies.bynder.com/asset/9d31563e-fb5b-4de2-85ff-b87b07a7fa61/thumbnail/webimage-TOP_Rawlence_Ben"
 },
@@ -1268,7 +1302,7 @@ const PEOPLE = [
 },
 {
 "name": "Zack Savitsky",
-"title": "Science Journalist",
+"title": "Physics Correspondent, Science Magazine & Freelance Journalist",
 "city": "Berlin",
 "country": "Germany",
 "category": "Science Journalist",
@@ -1287,7 +1321,7 @@ const PEOPLE = [
 ],
 "website": "https://www.zacksavitsky.com",
 "linkedin": null,
-"bio": "Zack Savitsky is a physics-focused science journalist and regular contributor to Science, Quanta Magazine, and Scientific American. A graduate of UC Santa Cruz's Science Communication Program, he has also received the AGU's David Perlman Award for Excellence in Science Writing.",
+"bio": "Zack Savitsky is a freelance science journalist and physics correspondent for Science magazine, based in Berlin. He covers physics, space, energy, materials, and technology, with reporting also in Quanta Magazine, and received the top prize in the early-career science journalist category of the 2024 Schmidt Awards.",
 "fit": "You should work with Zack if you need physics translated in any format — writing, audio, or video.",
 "photo": "https://nationalacademies.bynder.com/asset/688264fd-fee5-487b-9a7e-0f0fc2591153/thumbnail/webimage-SJ_Early_TOP_Savitsky_Zack_2_Owns_Copyright"
 },
@@ -1339,7 +1373,7 @@ const PEOPLE = [
 },
 {
 "name": "Daniel Shailer",
-"title": "Reporter, The Shetland Times",
+"title": "Freelance Marine Science & Environment Reporter",
 "city": "London",
 "country": "United Kingdom",
 "category": "Science Journalist",
@@ -1353,7 +1387,7 @@ const PEOPLE = [
 ],
 "website": "https://www.clippings.me/users/danielshailer",
 "linkedin": "https://www.linkedin.com/in/daniel-shailer-05ab53197/",
-"bio": "Daniel Shailer is a reporter for The Shetland Times covering fishing, fish farming, and the marine environment. He previously worked with the Associated Press's Mexico City bureau, and his freelance work has appeared in the Guardian, New Yorker, Scientific American, and Mongabay, earning awards from the Overseas Press Club and Columbia's Graduate School of Journalism.",
+"bio": "Daniel Shailer is a freelance reporter based in London, specializing in marine science and the environment, with work in The New Yorker, Scientific American, The Guardian, AP News, Inside Climate News, and Mongabay. Before freelancing he worked for local newsrooms from Southern Arizona to the Shetland Islands, via the AP's Mexico Bureau, and in 2026 he was named Reporter of the Year at the Highlands and Islands media awards.",
 "fit": "You should work with Daniel if you need reported writing on marine, environmental, or climate science — from news items to longform.",
 "photo": "https://nationalacademies.bynder.com/asset/fddbeb3c-91dc-4ec7-a5ee-6df078717649/thumbnail/webimage-Shailer_Daniel_1"
 },
@@ -1462,7 +1496,13 @@ const PEOPLE = [
 "jobs": ["Founder & Executive"],
 "year": "2023",
 "services": [
-"Creative, Cultural & Experiential Projects"
+"Writing and Editing",
+"Audio Production",
+"Creative, Cultural & Experiential Projects",
+"On-Camera Speaking, Interview, Discussions",
+"Communications Consulting",
+"Policy & Advocacy Communications",
+"Podcasting"
 ],
 "topics": [
 "Health, Medicine & the Brain",
@@ -1524,7 +1564,7 @@ const PEOPLE = [
 },
 {
 "name": "Britt Wray",
-"title": "Author & Researcher, Climate and Mental Health",
+"title": "Instructor & Founding Director of CIRCLE, Stanford Psychiatry",
 "city": "Copenhagen",
 "country": "Denmark",
 "category": "Research Scientist",
@@ -1543,7 +1583,7 @@ const PEOPLE = [
 ],
 "website": "https://x.com/gen_dread",
 "linkedin": null,
-"bio": "Britt Wray is an author, broadcaster, and researcher working on the mental health dimensions of the climate crisis. She wrote Generation Dread: Finding Purpose in an Age of Climate Crisis and the newsletter Gen Dread, which explores how to stay sane in a changing climate.",
+"bio": "Britt Wray is an instructor in Psychiatry and Behavioral Sciences at Stanford University and founding director of CIRCLE within Stanford Psychiatry. A book author and science communicator based in Copenhagen, she works across climate, health, and human behavior, and is the author of Rise of the Necrofauna (2017) and Generation Dread (2022).",
 "fit": "You should work with Britt if you need writing, talks, or creative projects on climate that engage emotions and mental health, not just facts.",
 "photo": "https://nationalacademies.bynder.com/asset/6099b073-06ec-454c-a675-4a7a7acb8955/thumbnail/webimage-Brit_Wray_2"
 },
