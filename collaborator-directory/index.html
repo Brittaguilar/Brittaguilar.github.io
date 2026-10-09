@@ -152,7 +152,7 @@
     <select id="f-service"><option value="">Any service</option></select>
     <select id="f-topic"><option value="">Any topic</option></select>
     <select id="f-country"><option value="">Any location</option></select>
-    <select id="f-category"><option value="">Any background</option></select>
+    <select id="f-category"><option value="">Any current job</option></select>
   </div>
   <div class="filter-meta">
     <span id="result-count"></span>
@@ -177,6 +177,7 @@ const PEOPLE = [
 "city": "Stony Brook",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Professor & Educator", "Science Communicator"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -204,6 +205,7 @@ const PEOPLE = [
 "city": "New York City",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -227,6 +229,7 @@ const PEOPLE = [
 "city": "New York City / Palo Alto",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2023",
 "services": [
 "Writing and Editing"
@@ -249,6 +252,7 @@ const PEOPLE = [
 "city": "Chicago",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Video and Film Production",
@@ -269,6 +273,7 @@ const PEOPLE = [
 "city": "Tacoma",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Physician", "Science Communicator"],
 "year": "2024",
 "services": [
 "Video and Film Production"
@@ -292,6 +297,7 @@ const PEOPLE = [
 "city": "Colorado Springs",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Writer & Author", "Journalist & Editor"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -314,6 +320,7 @@ const PEOPLE = [
 "city": "Valladolid / Mexico City",
 "country": "Spain / Mexico",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor", "Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -337,6 +344,7 @@ const PEOPLE = [
 "city": "Santiago",
 "country": "Chile",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor", "Producer, Filmmaker & Host"],
 "year": "2023",
 "services": [
 "Writing and Editing",
@@ -363,6 +371,7 @@ const PEOPLE = [
 "city": "New York City",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor", "Writer & Author"],
 "year": "2023",
 "services": [
 "Writing and Editing"
@@ -387,6 +396,7 @@ const PEOPLE = [
 "city": "Oxford",
 "country": "United Kingdom",
 "category": "Science Communicator",
+"jobs": ["Science Communicator"],
 "year": null,
 "services": [
 "Video and Film Production",
@@ -410,6 +420,7 @@ const PEOPLE = [
 "city": "Mumbai",
 "country": "India",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2023",
 "services": [
 "Writing and Editing"
@@ -432,6 +443,7 @@ const PEOPLE = [
 "city": "Los Angeles",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Scientist & Engineer", "Founder & Executive"],
 "year": "2024",
 "services": [
 "Video and Film Production",
@@ -454,6 +466,7 @@ const PEOPLE = [
 "city": "Seattle",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Writer & Author", "Journalist & Editor"],
 "year": "2024",
 "services": [
 "Writing and Editing",
@@ -478,6 +491,7 @@ const PEOPLE = [
 "city": "Boston",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
 "year": "2023",
 "services": [
 "Video and Film Production"
@@ -500,6 +514,7 @@ const PEOPLE = [
 "city": "Accra / Boston",
 "country": "Ghana / United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -522,6 +537,7 @@ const PEOPLE = [
 "city": "Philadelphia",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer"],
 "year": "2025",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -546,6 +562,7 @@ const PEOPLE = [
 "city": "Cambridge",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Physician", "Journalist & Editor"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -568,6 +585,7 @@ const PEOPLE = [
 "city": "Washington DC",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Scientist & Engineer", "Journalist & Editor"],
 "year": "2024",
 "services": [
 "Writing and Editing",
@@ -590,6 +608,7 @@ const PEOPLE = [
 "city": "Bay Area",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Journalist & Editor"],
 "year": "2024",
 "services": [
 "Writing and Editing"
@@ -613,6 +632,7 @@ const PEOPLE = [
 "city": "Oakland",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Professor & Educator", "Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -634,6 +654,7 @@ const PEOPLE = [
 "city": "Ichalkaranji",
 "country": "India",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -657,6 +678,7 @@ const PEOPLE = [
 "city": "Takoma Park",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Producer, Filmmaker & Host"],
 "year": "2024",
 "services": [
 "Writing and Editing"
@@ -680,6 +702,7 @@ const PEOPLE = [
 "city": "Ithaca",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Professor & Educator", "Scientist & Engineer"],
 "year": "2023",
 "services": [
 "Writing and Editing"
@@ -702,6 +725,7 @@ const PEOPLE = [
 "city": "Houston",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Founder & Executive"],
 "year": "2025",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -724,6 +748,7 @@ const PEOPLE = [
 "city": "San Diego",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
 "year": "2022",
 "services": [
 "Video and Film Production",
@@ -746,6 +771,7 @@ const PEOPLE = [
 "city": "Kilifi",
 "country": "Kenya",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -769,6 +795,7 @@ const PEOPLE = [
 "city": "Philadelphia",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Writer & Author", "Science Communicator"],
 "year": "2022",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -792,6 +819,7 @@ const PEOPLE = [
 "city": "Columbus",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer"],
 "year": "2024",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -813,6 +841,7 @@ const PEOPLE = [
 "city": "Sydney",
 "country": "Australia",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Writer & Author", "Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -837,6 +866,7 @@ const PEOPLE = [
 "city": "Milwaukee",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2024",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -859,6 +889,7 @@ const PEOPLE = [
 "city": "Columbus",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
 "year": "2024",
 "services": [
 "Audio Production",
@@ -879,6 +910,7 @@ const PEOPLE = [
 "city": "Nairobi",
 "country": "Kenya",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor", "Founder & Executive"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -901,6 +933,7 @@ const PEOPLE = [
 "city": "New York City",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2025",
 "services": [
 "Writing and Editing"
@@ -924,6 +957,7 @@ const PEOPLE = [
 "city": "Madison",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Producer, Filmmaker & Host"],
 "year": "2024",
 "services": [
 "Writing and Editing",
@@ -945,6 +979,7 @@ const PEOPLE = [
 "city": "Kampala",
 "country": "Uganda",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor", "Founder & Executive"],
 "year": "2023",
 "services": [
 "Writing and Editing",
@@ -968,6 +1003,7 @@ const PEOPLE = [
 "city": "Seattle",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Video and Film Production"
@@ -988,6 +1024,7 @@ const PEOPLE = [
 "city": "New Haven",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Professor & Educator", "Scientist & Engineer"],
 "year": "2024",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -1014,6 +1051,7 @@ const PEOPLE = [
 "city": "Accra",
 "country": "Ghana",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -1042,6 +1080,7 @@ const PEOPLE = [
 "city": "San Diego",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Producer, Filmmaker & Host", "Science Communicator"],
 "year": "2024",
 "services": [
 "Video and Film Production",
@@ -1069,6 +1108,7 @@ const PEOPLE = [
 "city": "Homer",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2025",
 "services": [
 "Creative, Cultural & Experiential Projects",
@@ -1090,6 +1130,7 @@ const PEOPLE = [
 "city": "Sydney",
 "country": "Australia",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Science Communicator"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -1115,6 +1156,7 @@ const PEOPLE = [
 "city": "Fully remote / nomadic",
 "country": null,
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2023",
 "services": [
 "Writing and Editing"
@@ -1137,6 +1179,7 @@ const PEOPLE = [
 "city": "Bengaluru",
 "country": "India",
 "category": "Science Communicator",
+"jobs": ["Science Communicator"],
 "year": "2024",
 "services": [
 "Writing and Editing"
@@ -1158,6 +1201,7 @@ const PEOPLE = [
 "city": "Brecon, Wales",
 "country": "United Kingdom",
 "category": "Science Journalist",
+"jobs": ["Writer & Author", "Founder & Executive"],
 "year": "2022",
 "services": [
 "Writing and Editing"
@@ -1178,6 +1222,7 @@ const PEOPLE = [
 "city": "Buffalo",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Founder & Executive"],
 "year": "2023",
 "services": [
 "Video and Film Production",
@@ -1204,6 +1249,7 @@ const PEOPLE = [
 "city": "Tucson",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Writer & Author", "Journalist & Editor"],
 "year": "2024",
 "services": [
 "Writing and Editing",
@@ -1226,6 +1272,7 @@ const PEOPLE = [
 "city": "Berlin",
 "country": "Germany",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2024",
 "services": [
 "Writing and Editing",
@@ -1250,6 +1297,7 @@ const PEOPLE = [
 "city": "New York City",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2022",
 "services": [
 "Writing and Editing"
@@ -1271,6 +1319,7 @@ const PEOPLE = [
 "city": "Silver Cliff",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor", "Writer & Author"],
 "year": "2024",
 "services": [
 "Writing and Editing"
@@ -1294,6 +1343,7 @@ const PEOPLE = [
 "city": "London",
 "country": "United Kingdom",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2025",
 "services": [
 "Writing and Editing"
@@ -1313,6 +1363,7 @@ const PEOPLE = [
 "city": "Dacula",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Professor & Educator", "Scientist & Engineer"],
 "year": "2024",
 "services": [
 "Writing and Editing"
@@ -1332,6 +1383,7 @@ const PEOPLE = [
 "city": "South Pasadena",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer", "Writer & Author"],
 "year": "2022",
 "services": [
 "Writing and Editing",
@@ -1357,6 +1409,7 @@ const PEOPLE = [
 "city": "Washington DC",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Journalist & Editor"],
 "year": "2022",
 "services": [
 "Writing and Editing"
@@ -1377,6 +1430,7 @@ const PEOPLE = [
 "city": "Los Angeles",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Writer & Author", "Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Writing and Editing",
@@ -1405,6 +1459,7 @@ const PEOPLE = [
 "city": "Denver",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Founder & Executive"],
 "year": "2023",
 "services": [
 "Creative, Cultural & Experiential Projects"
@@ -1429,6 +1484,7 @@ const PEOPLE = [
 "city": "Durham",
 "country": "United States",
 "category": "Research Scientist",
+"jobs": ["Scientist & Engineer"],
 "year": "2024",
 "services": [
 "Writing and Editing"
@@ -1448,6 +1504,7 @@ const PEOPLE = [
 "city": "Seattle",
 "country": "United States",
 "category": "Science Journalist",
+"jobs": ["Journalist & Editor"],
 "year": "2022",
 "services": [
 "Writing and Editing"
@@ -1471,6 +1528,7 @@ const PEOPLE = [
 "city": "Copenhagen",
 "country": "Denmark",
 "category": "Research Scientist",
+"jobs": ["Writer & Author", "Scientist & Engineer"],
 "year": "2023",
 "services": [
 "Writing and Editing",
@@ -1495,6 +1553,7 @@ const PEOPLE = [
 "city": "Raleigh",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Producer, Filmmaker & Host", "Founder & Executive"],
 "year": "2023",
 "services": [
 "Video and Film Production",
@@ -1523,6 +1582,7 @@ const PEOPLE = [
 "city": "New York City",
 "country": "United States",
 "category": "Science Communicator",
+"jobs": ["Producer, Filmmaker & Host"],
 "year": "2025",
 "services": [
 "Video and Film Production",
@@ -1541,7 +1601,7 @@ const PEOPLE = [
 }
 ];
 
-const CAT_COLORS={"Research Scientist":"var(--c2)","Science Journalist":"var(--c4)","Science Communicator":"var(--c1)"};
+const CAT_COLORS={"Journalist & Editor": "var(--c1)", "Writer & Author": "var(--c2)", "Producer, Filmmaker & Host": "var(--c3)", "Scientist & Engineer": "var(--c4)", "Professor & Educator": "var(--c5)", "Physician": "var(--c2)", "Science Communicator": "var(--c4)", "Founder & Executive": "var(--c3)"};
 const AVATAR_COLORS=["var(--grad)"];
 function initials(n){return n.split(/\s+/).filter(w=>/^[A-Za-zÀ-ÿ]/.test(w)).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
 function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0}return Math.abs(h);}
@@ -1560,7 +1620,7 @@ function fill(sel,values){values.forEach(v=>{const o=document.createElement('opt
 fill(fService,uniqueSorted(PEOPLE.flatMap(p=>p.services)));
 fill(fTopic,uniqueSorted(PEOPLE.flatMap(p=>p.topics)));
 fill(fCountry,uniqueSorted(PEOPLE.flatMap(p=>p.country?p.country.split(' / '):[])));
-fill(fCategory,uniqueSorted(PEOPLE.map(p=>p.category)));
+fill(fCategory,["Journalist & Editor", "Writer & Author", "Producer, Filmmaker & Host", "Scientist & Engineer", "Professor & Educator", "Physician", "Science Communicator", "Founder & Executive"].filter(j=>PEOPLE.some(p=>p.jobs.includes(j))));
 document.getElementById('header-count').textContent=PEOPLE.length+' collaborators · '+uniqueSorted(PEOPLE.flatMap(p=>p.country?p.country.split(' / '):[])).length+' countries · '+uniqueSorted(PEOPLE.flatMap(p=>p.services)).length+' services';
 
 function avatarHTML(p){
@@ -1577,12 +1637,12 @@ function imgFail(img){
 }
 
 function card(p,i){
-  const cat=CAT_COLORS[p.category]||'var(--c1)';
+  const cat=CAT_COLORS[p.jobs[0]]||'var(--c1)';
   const loc=[p.city,p.country].filter(Boolean).join(', ');
   const links=[];
   if(p.website) links.push('<a href="'+esc(p.website)+'" target="_blank" rel="noopener">Website</a>');
   if(p.linkedin && p.linkedin!==p.website) links.push('<a href="'+esc(p.linkedin)+'" target="_blank" rel="noopener">LinkedIn</a>');
-  const award=(p.year?esc(p.year)+' Schmidt Award':'')+(p.year&&p.category?'<br>':'')+'<span class="dot"></span>'+esc(p.category);
+  const award=(p.year?esc(p.year)+' Schmidt Award':'')+(p.year&&p.jobs.length?'<br>':'')+(p.jobs.length?'<span class="dot"></span>'+esc(p.jobs.join(' · ')):'');
   const longBio=p.bio.length>240;
   return '<article class="card" style="--cat:'+cat+'">'
     +'<div class="card-top">'+avatarHTML(p)
@@ -1609,9 +1669,9 @@ function render(){
     if(sv && !p.services.includes(sv)) return false;
     if(tp && !p.topics.includes(tp)) return false;
     if(co && !(p.country||'').split(' / ').includes(co)) return false;
-    if(ca && p.category!==ca) return false;
+    if(ca && !p.jobs.includes(ca)) return false;
     if(q){
-      const hay=[p.name,p.title,p.city,p.country,p.bio,p.fit,p.services.join(' '),p.topics.join(' ')].join(' ').toLowerCase();
+      const hay=[p.name,p.title,p.city,p.country,p.bio,p.fit,p.services.join(' '),p.topics.join(' '),p.jobs.join(' ')].join(' ').toLowerCase();
       if(!q.split(/\s+/).every(w=>hay.includes(w))) return false;
     }
     return true;
