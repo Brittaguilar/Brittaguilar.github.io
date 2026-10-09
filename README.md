@@ -42,7 +42,7 @@ The Artifact Hub dashboard in Claude embeds a snapshot of `artifacts.json`. Afte
 | `slug` | Folder name and link ending |
 | `title` | Card title |
 | `description` | One sentence |
-| `tags` | Category tags, only `Science Communications`, `AI` or `Sandbox`. Anything tied to the science communications program is Science Communications, anything related to AI is AI, everything else is Sandbox. An artifact can have more than one. |
+| `tags` | Type tags, only `Directories & Libraries`, `Tools`, `Guides & Training` or `Experiments`. Pick the one that says what the artifact is. |
 | `status` | `live` (in this repo) or `queued` (still elsewhere, give a `url`) |
 | `created`, `updated` | `YYYY-MM-DD` |
 | `url` | Only for `queued` items: where it lives now |
