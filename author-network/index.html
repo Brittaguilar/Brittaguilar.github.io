@@ -4250,7 +4250,7 @@ function renderClusterLabels() {
     .style("pointer-events", "none");
   enter.merge(sel)
     .attr("x", d => d.center.x)
-    .attr("y", d => d.center.y - 52)
+    .attr("y", d => d.center.y - 64)
     .attr("font-size", n <= 12 ? 12 : 10.5)
     .attr("font-weight", 500)
     .attr("fill", d => d.color)
