@@ -1,0 +1,44 @@
+name: Sync collaborator directory
+
+on:
+  schedule:
+    - cron: "0 11 * * *"        # daily, 11:00 UTC
+  workflow_dispatch:             # "Run workflow" button in the Actions tab
+  repository_dispatch:           # optional: Airtable pings this for near-instant updates
+    types: [airtable-update]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-directory
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pillow
+
+      - name: Build directory from Airtable
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+        run: python tools/directory/build.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A collaborator-directory
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Update collaborator-directory: sync from Airtable"
+            git push
+          fi
