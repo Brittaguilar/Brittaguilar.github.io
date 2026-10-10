@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SciComm Collaborator Directory</title>
+<style>
+/*FONTS*/
+</style>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF; --panel:#F5F3EE; --ink:#1E1646; --ink-2:#4F4870; --ink-3:#6B6488;
+  --line:#DAD5E6; --line-2:#C4BDD8;
+  --violet:#7B4FA0; --indigo:#2A1F5C; --peri:#5B4EA6; --tint:#F1EEFC;
+  --teal:#12A3A3; --teal-deep:#0B7C7C; --teal-tint:#E2F4F4; --mark:#FFE94D;
+  --lav:#E6E2F3; --violet-tint:#EFE6F7; --indigo-ink:#2A1F5C; --link:#0B7C7C; --on-teal:#FFFFFF;
+  --grad:linear-gradient(135deg,#7B4FA0,#2A1F5C);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#130E31; --panel:#1D1750; --ink:#F1EEFA; --ink-2:#BDB6DB; --ink-3:#9A92C2;
+    --line:#3A3272; --line-2:#4D448E;
+    --violet:#B596DE; --indigo:#2A1F5C; --peri:#9A90E0; --tint:#261F5E;
+    --teal:#3CC9C9; --teal-deep:#3CC9C9; --teal-tint:#123A48;
+    --lav:#2A2468; --violet-tint:#35276B; --indigo-ink:#D3CCF7; --link:#3CC9C9; --on-teal:#130E31;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#130E31; --panel:#1D1750; --ink:#F1EEFA; --ink-2:#BDB6DB; --ink-3:#9A92C2;
+  --line:#3A3272; --line-2:#4D448E;
+  --violet:#B596DE; --indigo:#2A1F5C; --peri:#9A90E0; --tint:#261F5E;
+  --teal:#3CC9C9; --teal-deep:#3CC9C9; --teal-tint:#123A48;
+  --lav:#2A2468; --violet-tint:#35276B; --indigo-ink:#D3CCF7; --link:#3CC9C9; --on-teal:#130E31;
+}
+:root[data-theme="light"]{color-scheme:light}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:400;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select{font-family:inherit}
+a{color:var(--link)}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:var(--grad);border-bottom:4px solid var(--teal);color:#fff}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.hero::before{width:380px;height:380px;right:-120px;top:-180px;border:1px solid rgba(255,255,255,.2);outline:1px solid rgba(255,255,255,.2);outline-offset:64px}
+.hero::after{width:220px;height:220px;right:160px;bottom:-140px;border:1px solid rgba(60,201,201,.3)}
+.hero-inner{position:relative;max-width:1200px;margin:0 auto;padding:56px 24px 40px}
+.hero h1{font-weight:300;font-size:clamp(34px,5.4vw,56px);line-height:1.12;letter-spacing:-.01em;max-width:760px}
+.hero h1 b{font-weight:700;color:#8FE6E6}
+.hero .lede{margin-top:22px;max-width:640px;font-size:17px;line-height:1.6;color:rgba(255,255,255,.9)}
+.hero .lede a{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.hero .lede a:hover{color:#8FE6E6}
+.count-line{margin-top:22px;font-size:12px;font-weight:700;color:#8FE6E6;text-transform:uppercase;letter-spacing:.14em}
+#theme-btn{position:absolute;top:18px;right:24px;z-index:2;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.7);border-radius:999px;padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+#theme-btn:hover{background:rgba(255,255,255,.14)}
+
+/* controls */
+.controls{max-width:1200px;margin:0 auto;padding:24px 24px 8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#search,select{background:var(--bg);color:var(--ink);border:1px solid var(--line-2);border-radius:4px}
+#search{flex:1;min-width:220px;padding:12px 16px;font-size:16px}
+select{padding:11px 12px;font-size:14px;max-width:225px;cursor:pointer}
+#search:focus,select:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.filter-meta{display:flex;justify-content:space-between;align-items:center;padding:10px 0 12px;flex-wrap:wrap;gap:8px}
+#result-count{font-size:13px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+#clear-btn{background:none;border:0;color:var(--link);font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px;display:none}
+
+/* grid + cards */
+main{max-width:1200px;margin:0 auto;padding:24px 24px 56px}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:24px;align-items:stretch}
+.card{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--accent,var(--indigo));display:flex;flex-direction:column;padding:24px 24px 20px;min-width:0}
+.c-head{display:flex;gap:16px;align-items:flex-start}
+.avatar{flex:0 0 68px;width:68px;height:68px;border-radius:50%;object-fit:cover;background:var(--grad)}
+.avatar.ph{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px}
+.c-id{min-width:0}
+.c-name{font-weight:700;font-size:21px;line-height:1.2;color:var(--ink)}
+.c-title{margin-top:4px;font-size:15px;line-height:1.35;color:var(--ink-2)}
+.c-loc{margin-top:6px;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.fit{margin-top:18px;padding:14px 16px;border-left:3px solid var(--violet);background:var(--tint);font-size:17px;line-height:1.5;color:var(--ink)}
+.bio{margin-top:18px;font-size:15px;line-height:1.6;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.bio.open{display:block;-webkit-line-clamp:unset}
+.bio p+p{margin-top:.7em}
+.bio a{color:var(--link)}
+.more{display:none;align-self:flex-start;margin-top:6px;background:none;border:0;padding:0;color:var(--link);font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{font-size:12px;line-height:1.2;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink);background:transparent}
+.chip.svc{border-color:var(--teal);color:var(--teal-deep);background:var(--teal-tint)}
+.c-foot{margin-top:auto;padding-top:18px}
+.c-foot-in{border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.links{display:flex;gap:16px}
+.links a{font-weight:700;font-size:14px;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--teal);padding-bottom:1px}
+.links a:hover{color:var(--link)}
+.meta{font-size:12px;color:var(--ink-3);text-align:right;line-height:1.5;margin-left:auto}
+.meta .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent,var(--indigo));margin-right:6px}
+.empty{grid-column:1/-1;text-align:center;padding:56px 0;color:var(--ink-3)}
+
+footer{background:var(--grad);border-top:4px solid var(--teal);color:#fff}
+footer div{max-width:1200px;margin:0 auto;padding:24px;font-size:13px;color:rgba(255,255,255,.85)}
+
+@media (max-width:760px){
+  .hero::before,.hero::after{display:none}
+  .hero-inner{padding:48px 16px 32px}
+  .controls{padding:16px 16px 4px}
+  main{padding:16px 16px 40px}
+  #grid{grid-template-columns:1fr}
+  select{max-width:none;flex:1 1 140px}
+  #theme-btn{right:16px}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <button id="theme-btn" type="button" aria-label="Toggle dark mode">Dark</button>
+  <div class="hero-inner">
+    <h1>Find your <b>science communication</b> collaborator</h1>
+    <p class="lede">Communicators and strategists ready to help scientists share their work with the world. Every collaborator here is a winner of the <a href="https://www.nationalacademies.org/our-work/eric-and-wendy-schmidt-awards-for-excellence-in-science-communications" target="_blank" rel="noopener">Eric &amp; Wendy Schmidt Awards for Excellence in Science Communications</a>.</p>
+    <p class="count-line" id="count-line"></p>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-row">
+    <input id="search" type="search" placeholder="Search by name, skill, topic, or keyword" aria-label="Search collaborators">
+    <select id="f-service" aria-label="Filter by service"></select>
+    <select id="f-topic" aria-label="Filter by topic"></select>
+    <select id="f-loc" aria-label="Filter by location"></select>
+    <select id="f-job" aria-label="Filter by current job"></select>
+  </div>
+  <div class="filter-meta">
+    <span id="result-count"></span>
+    <button id="clear-btn" type="button">Clear filters</button>
+  </div>
+</div>
+
+<main><div id="grid"></div></main>
+
+<footer><div>Data syncs automatically from the Schmidt Sciences awardee database.</div></footer>
+
+<script>
+const PEOPLE = /*DATA*/;
+
+(function(){
+  var ACCENTS = {"2022":"var(--indigo)","2023":"var(--peri)","2024":"var(--violet)","2025":"var(--teal)","2026":"var(--teal-deep)"};
+  var $ = function(id){return document.getElementById(id)};
+  function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  function uniq(arr){return Array.from(new Set(arr))}
+  function sortAlpha(a){return a.slice().sort(function(x,y){return x.localeCompare(y)})}
+
+  // minimal, safe markdown for bios: links, bold, italic, paragraphs
+  function md(s){
+    var t = esc(s||"").trim();
+    t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    t = t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+    t = t.replace(/(^|[\s(])_([^_]+)_(?=[\s.,;:)]|$)/g,"$1<em>$2</em>");
+    return t.split(/\n{2,}/).map(function(p){return "<p>"+p.replace(/\n/g," ")+"</p>"}).join("");
+  }
+  function initials(n){var p=n.replace(/[^\p{L}\s-]/gu,"").split(/[\s-]+/).filter(Boolean);return ((p[0]||"")[0]||"")+((p[p.length-1]||"")[0]||"")}
+  function where(p){return [p.city,p.country].filter(Boolean).join(", ")}
+
+  // filter options
+  function fill(sel,label,values){
+    sel.innerHTML = '<option value="">'+esc(label)+'</option>'+sortAlpha(values).map(function(v){return '<option>'+esc(v)+'</option>'}).join("");
+  }
+  var fService=$("f-service"), fTopic=$("f-topic"), fLoc=$("f-loc"), fJob=$("f-job"), q=$("search");
+  var services = uniq([].concat.apply([],PEOPLE.map(function(p){return p.services})));
+  var topics   = uniq([].concat.apply([],PEOPLE.map(function(p){return p.topics})));
+  var countries= uniq(PEOPLE.map(function(p){return p.country}).filter(Boolean));
+  var jobs     = uniq([].concat.apply([],PEOPLE.map(function(p){return p.jobs})));
+  fill(fService,"Any service",services); fill(fTopic,"Any topic",topics);
+  fill(fLoc,"Any location",countries);   fill(fJob,"Any current job",jobs);
+  $("count-line").textContent = PEOPLE.length+" collaborators \u00b7 "+countries.length+" countries \u00b7 "+services.length+" services";
+
+  // card
+  function card(p){
+    var accent = ACCENTS[p.year]||"var(--indigo)";
+    var av = p.photo
+      ? '<img class="avatar" src="'+esc(p.photo)+'" alt="" loading="lazy" width="68" height="68">'
+      : '<div class="avatar ph" aria-hidden="true">'+esc(initials(p.name))+'</div>';
+    var chips = p.services.map(function(s){return '<span class="chip svc">'+esc(s)+'</span>'}).join("")
+              + p.topics.map(function(s){return '<span class="chip">'+esc(s)+'</span>'}).join("");
+    var links = (p.website?'<a href="'+esc(p.website)+'" target="_blank" rel="noopener">Website</a>':"")
+              + (p.linkedin?'<a href="'+esc(p.linkedin)+'" target="_blank" rel="noopener">LinkedIn</a>':"");
+    var meta = (p.year?esc(p.year)+" Schmidt Award<br>":"")+(p.jobs.length?'<span class="dot"></span>'+p.jobs.map(esc).join(" \u00b7 "):"");
+    return '<article class="card" style="--accent:'+accent+'">'
+      + '<div class="c-head">'+av+'<div class="c-id"><h2 class="c-name">'+esc(p.name)+'</h2>'
+      + (p.title?'<p class="c-title">'+esc(p.title)+'</p>':"")
+      + (where(p)?'<p class="c-loc">'+esc(where(p))+'</p>':"")+'</div></div>'
+      + (p.fit?'<p class="fit">'+esc(p.fit)+'</p>':"")
+      + (p.bio?'<div class="bio">'+md(p.bio)+'</div><button class="more" type="button">Read more</button>':"")
+      + '<div class="chips">'+chips+'</div>'
+      + '<div class="c-foot"><div class="c-foot-in"><div class="links">'+links+'</div><div class="meta">'+meta+'</div></div></div>'
+      + '</article>';
+  }
+
+  var haystack = PEOPLE.map(function(p){
+    return [p.name,p.title,p.city,p.country,p.bio,p.fit,p.services.join(" "),p.topics.join(" "),p.jobs.join(" ")].join(" ").toLowerCase();
+  });
+
+  function render(){
+    var term=q.value.trim().toLowerCase(), s=fService.value, t=fTopic.value, l=fLoc.value, j=fJob.value;
+    var out=[];
+    PEOPLE.forEach(function(p,i){
+      if(term && haystack[i].indexOf(term)<0) return;
+      if(s && p.services.indexOf(s)<0) return;
+      if(t && p.topics.indexOf(t)<0) return;
+      if(l && p.country!==l) return;
+      if(j && p.jobs.indexOf(j)<0) return;
+      out.push(p);
+    });
+    $("grid").innerHTML = out.length ? out.map(card).join("") : '<p class="empty">No collaborators match these filters.</p>';
+    $("result-count").textContent = "Showing "+out.length+" of "+PEOPLE.length+" collaborators";
+    $("clear-btn").style.display = (term||s||t||l||j) ? "inline" : "none";
+    // reveal "Read more" only where the bio is actually clamped
+    document.querySelectorAll(".bio").forEach(function(b){
+      var btn=b.nextElementSibling;
+      if(btn && b.scrollHeight>b.clientHeight+1) btn.style.display="inline";
+    });
+  }
+  $("grid").addEventListener("click",function(e){
+    var btn=e.target.closest(".more"); if(!btn) return;
+    var bio=btn.previousElementSibling, open=bio.classList.toggle("open");
+    btn.textContent = open ? "Show less" : "Read more";
+  });
+  [q,fService,fTopic,fLoc,fJob].forEach(function(el){el.addEventListener("input",render)});
+  $("clear-btn").addEventListener("click",function(){q.value="";[fService,fTopic,fLoc,fJob].forEach(function(s){s.value=""});render()});
+
+  // theme
+  var root=document.documentElement, btn=$("theme-btn");
+  function isDark(){var t=root.getAttribute("data-theme");return t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches}
+  function paint(){btn.textContent=isDark()?"Light":"Dark"}
+  try{var saved=localStorage.getItem("scicomm-theme"); if(saved) root.setAttribute("data-theme",saved)}catch(e){}
+  btn.addEventListener("click",function(){
+    var next=isDark()?"light":"dark"; root.setAttribute("data-theme",next);
+    try{localStorage.setItem("scicomm-theme",next)}catch(e){}
+    paint();
+  });
+  paint(); render();
+})();
+</script>
+</body>
+</html>
