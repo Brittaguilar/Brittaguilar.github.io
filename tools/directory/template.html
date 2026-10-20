@@ -119,7 +119,6 @@ footer div{max-width:1200px;margin:0 auto;padding:24px;font-size:13px;color:rgba
   <div class="hero-inner">
     <h1>Find your <b>science communication</b> collaborator</h1>
     <p class="lede">Communicators and strategists ready to help scientists share their work with the world. Every collaborator here is a winner of the <a href="https://www.nationalacademies.org/our-work/eric-and-wendy-schmidt-awards-for-excellence-in-science-communications" target="_blank" rel="noopener">Eric &amp; Wendy Schmidt Awards for Excellence in Science Communications</a>.</p>
-    <p class="count-line" id="count-line"></p>
   </div>
 </header>
 
@@ -173,7 +172,6 @@ const PEOPLE = /*DATA*/;
   var jobs     = uniq([].concat.apply([],PEOPLE.map(function(p){return p.jobs})));
   fill(fService,"Any service",services); fill(fTopic,"Any topic",topics);
   fill(fLoc,"Any location",countries);   fill(fJob,"Any current job",jobs);
-  $("count-line").textContent = PEOPLE.length+" collaborators \u00b7 "+countries.length+" countries \u00b7 "+services.length+" services";
 
   // card
   function card(p){
