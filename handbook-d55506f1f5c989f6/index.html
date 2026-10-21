@@ -49,6 +49,10 @@ tbody tr:nth-child(even){background:var(--panel)}
 .stat span{font-size:14px;color:var(--ink-2)}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:6px 0 10px}
 .brow{display:grid;grid-template-columns:minmax(120px,40%) 1fr auto;gap:10px;align-items:center;margin:0 0 9px;font-size:15px}
+.brow.sub{font-size:14px}
+.brow.sub .bl{padding-left:22px;position:relative}
+.brow.sub .bl::before{content:"↳";position:absolute;left:4px;color:var(--ink-2)}
+.brow.sub .bar{opacity:.6}
 .bt{background:var(--panel);height:14px;display:block}
 .bar{display:block;height:14px;background:var(--violet)}
 .bar.hi{background:var(--teal)}
@@ -78,7 +82,9 @@ footer{background:var(--grad);color:#fff;border-top:4px solid var(--teal);margin
 footer .wrap{padding-top:32px;padding-bottom:38px}
 footer a{color:#fff}
 footer h2{color:#fff;font-size:30px}
-@media (max-width:760px){.rings{height:64px}.cols{grid-template-columns:1fr}h2{font-size:30px}.brow{grid-template-columns:1fr auto}.brow .bt{grid-column:1/3;order:3}.brow .bl{grid-column:1}}
+@media (max-width:760px){.rings{height:64px}.cols{grid-template-columns:1fr}h2{font-size:30px}.brow{grid-template-columns:1fr auto}.brow .bt{grid-column:1/3;order:3}.brow .bl{grid-column:1}
+.brow.sub{margin-left:0}
+}
 </style></head><body>
 <header class="hero"><div class="wrap">
 <div class="topbar"><span class="eyebrow">Schmidt Sciences Science Communications</span><button class="theme" id="theme" type="button">Toggle theme</button></div>
@@ -112,15 +118,9 @@ footer h2{color:#fff;font-size:30px}
 <p><strong>How we use what we learn.</strong> We use it in two ways. The first is to improve the support we offer you. The second is to understand the systems you work inside, such as newsrooms, universities and independent media, and where there is real leverage to change them. Conversations with journalist awardees, for example, have shaped how we think about what leverage exists in journalism.</p>
 
 <h3>Awardees at a Glance</h3>
-<div class="stats">
-<div class="stat"><b>120</b><span>awardees, 2022 to 2026 cohorts</span></div>
-<div class="stat"><b>48</b><span>science journalists</span></div>
-<div class="stat"><b>48</b><span>research scientists</span></div>
-<div class="stat"><b>24</b><span>science communicators</span></div>
-</div>
 <div class="cols">
 <div><p><strong>Topics covered</strong></p><div class="brow"><span class="bl">Life Sciences &amp; Biology</span><span class="bt"><span class="bar hi" style="width:100%"></span></span><span class="bv">61<small> · 51%</small></span></div><div class="brow"><span class="bl">Climate, Environment &amp; Earth Systems</span><span class="bt"><span class="bar" style="width:98%"></span></span><span class="bv">60<small> · 50%</small></span></div><div class="brow"><span class="bl">Health, Medicine &amp; the Brain</span><span class="bt"><span class="bar" style="width:84%"></span></span><span class="bv">51<small> · 42%</small></span></div><div class="brow"><span class="bl">Science Policy, Governance &amp; Innovation</span><span class="bt"><span class="bar" style="width:62%"></span></span><span class="bv">38<small> · 32%</small></span></div><div class="brow"><span class="bl">Human Behavior, Society &amp; Social Science</span><span class="bt"><span class="bar" style="width:54%"></span></span><span class="bv">33<small> · 28%</small></span></div><div class="brow"><span class="bl">Science &amp; the Arts / Culture</span><span class="bt"><span class="bar" style="width:51%"></span></span><span class="bv">31<small> · 26%</small></span></div><div class="brow"><span class="bl">Space, Physics &amp; the Universe</span><span class="bt"><span class="bar" style="width:31%"></span></span><span class="bv">19<small> · 16%</small></span></div><div class="brow"><span class="bl">Technology, AI &amp; Data Science</span><span class="bt"><span class="bar" style="width:26%"></span></span><span class="bv">16<small> · 13%</small></span></div><p class="cap">Number of awardees tagging each topic. Most tag more than one.</p></div>
-<div><p><strong>How awardees work</strong></p><div class="brow"><span class="bl">Journalist</span><span class="bt"><span class="bar hi" style="width:100%"></span></span><span class="bv">54<small> · 45%</small></span></div><div class="brow"><span class="bl">Book Author</span><span class="bt"><span class="bar" style="width:63%"></span></span><span class="bv">34<small> · 28%</small></span></div><div class="brow"><span class="bl">Content Creator</span><span class="bt"><span class="bar" style="width:41%"></span></span><span class="bv">22<small> · 18%</small></span></div><div class="brow"><span class="bl">Podcaster</span><span class="bt"><span class="bar" style="width:39%"></span></span><span class="bv">21<small> · 18%</small></span></div><div class="brow"><span class="bl">Educator</span><span class="bt"><span class="bar" style="width:28%"></span></span><span class="bv">15<small> · 12%</small></span></div><div class="brow"><span class="bl">Filmmaker</span><span class="bt"><span class="bar" style="width:22%"></span></span><span class="bv">12<small> · 10%</small></span></div><p class="cap">Current work and formats. Many awardees do several, so counts overlap. A further 39 are tagged as research scientists (students, early-career researchers, faculty or non-academic scientists).</p></div>
+<div><p><strong>How awardees work</strong></p><div class="brow"><span class="bl">Journalist</span><span class="bt"><span class="bar hi" style="width:100%"></span></span><span class="bv">54<small> · 45%</small></span></div><div class="brow"><span class="bl">Research Scientist</span><span class="bt"><span class="bar" style="width:72%"></span></span><span class="bv">39<small> · 33%</small></span></div><div class="brow sub"><span class="bl">Faculty</span><span class="bt"><span class="bar" style="width:44%"></span></span><span class="bv">24<small> · 20%</small></span></div><div class="brow sub"><span class="bl">Early career</span><span class="bt"><span class="bar" style="width:11%"></span></span><span class="bv">6<small> · 5%</small></span></div><div class="brow sub"><span class="bl">Student</span><span class="bt"><span class="bar" style="width:9%"></span></span><span class="bv">5<small> · 4%</small></span></div><div class="brow sub"><span class="bl">Non-academic</span><span class="bt"><span class="bar" style="width:7%"></span></span><span class="bv">4<small> · 3%</small></span></div><div class="brow"><span class="bl">Book Author</span><span class="bt"><span class="bar" style="width:63%"></span></span><span class="bv">34<small> · 28%</small></span></div><div class="brow"><span class="bl">Content Creator</span><span class="bt"><span class="bar" style="width:41%"></span></span><span class="bv">22<small> · 18%</small></span></div><div class="brow"><span class="bl">Podcaster</span><span class="bt"><span class="bar" style="width:39%"></span></span><span class="bv">21<small> · 18%</small></span></div><div class="brow"><span class="bl">Educator</span><span class="bt"><span class="bar" style="width:28%"></span></span><span class="bv">15<small> · 12%</small></span></div><div class="brow"><span class="bl">Filmmaker</span><span class="bt"><span class="bar" style="width:22%"></span></span><span class="bv">12<small> · 10%</small></span></div><p class="cap">Current work and formats. Many awardees do several, so counts overlap. Research scientists are shown with their career status indented below. These come from each awardee’s current-work tags, so they can differ from the award category.</p></div>
 </div>
 <p class="src">Source: the program’s awardee records, as of October 20, 2026. Includes the 2026 cohort.</p>
 </section>
